@@ -1,0 +1,13 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" class="row">
+
+    <div class="col-md-8">
+        <span data-v.field="_token"/>
+        <span data-v.field="name"/>
+        <span data-v.field="email"/>
+        <span data-v.field="password"/>
+        <span data-v.field="password_confirmation"/>
+    </div>
+
+</div>
+
