@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Formlets\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserForm;
@@ -23,7 +24,9 @@ class UserController extends Controller {
 	 */
 	public function create(UserForm $form) {
 
-		$form = $form->render();
+		$form = $form->create(
+		  ['route' => 'user.store']
+		)->render();
 
 		return view('pages.user', compact('form'));
 	}
@@ -36,7 +39,9 @@ class UserController extends Controller {
 	 */
 	public function store(UserForm $form) {
 
-		$user = $form->save();
+		$form->isValid();
+
+		$user = User::create($form->request->only(['name','email','password']));
 
 		return redirect()->route('user.edit', $user->id);
 	}
@@ -52,26 +57,33 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
+	 * @param User     $user
+	 * @param UserForm $form
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function edit(User $user, UserForm $form) {
+	public function edit(User $user, UserEmailForm $form) {
 
 		$form->setModel($user);
-		return view('pages.user', ['form' => $form->render()]);
+
+		$form = $form->create(
+		  [
+			'route'  => ['user.update', $user->id],
+			'method' => 'PATCH'
+		  ]
+		)->render();
+
+		return view('pages.user', compact('form'));
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request $request
-	 * @param  int                      $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id) {
-		//
+
+	public function update(UserEmailForm $form, User $user) {
+
+		$form->setModel($user);
+		$form->isValid();
+
+		$user->update($form->fields());
+
+		return redirect()->back();
 	}
 
 	/**

@@ -2,11 +2,10 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
-use App\User;
 
 class UserForm extends Formlet {
 
-	protected $view = "forms.user";
+	protected $view = "forms.user.create";
 
 	protected $guarded = ['password','password_confirm'];
 
@@ -39,8 +38,5 @@ class UserForm extends Formlet {
 		];
 	}
 
-	public function persist() {
-		return User::create($this->request->only(['name','email','password']));
-	}
 
 }

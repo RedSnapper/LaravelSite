@@ -163,7 +163,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         //Illuminate\View\ViewServiceProvider::class,
 		\RS\NView\NViewServiceProvider::class,
-		//\RS\Form\FormServiceProvider::class,
 		\App\Providers\FormServiceProvider::class,
 
 		/*
