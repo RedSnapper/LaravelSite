@@ -10,7 +10,6 @@ class Main extends ViewController {
 
 	//protected $parent = "page";
 
-
 	public function compose(View $view) {
 		$view->with('foo','bar');
 	}

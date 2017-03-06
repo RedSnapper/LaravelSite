@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 class UserEmailForm extends Formlet {
 
-	protected $view = "forms.user.email";
+	protected $view = "user.email";
 
 	public function prepareForm(){
 

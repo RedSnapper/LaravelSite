@@ -164,6 +164,7 @@ return [
         //Illuminate\View\ViewServiceProvider::class,
 		\RS\NView\NViewServiceProvider::class,
 		\App\Providers\FormServiceProvider::class,
+		//Barryvdh\Debugbar\ServiceProvider::class,
 
 		/*
          * Package Service Providers...

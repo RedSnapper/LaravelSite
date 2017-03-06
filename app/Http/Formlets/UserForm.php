@@ -5,7 +5,7 @@ use App\Http\Fields\Input;
 
 class UserForm extends Formlet {
 
-	protected $view = "forms.user.create";
+	protected $view = "user.create";
 
 	protected $guarded = ['password','password_confirm'];
 

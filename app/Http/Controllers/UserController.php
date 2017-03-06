@@ -28,7 +28,7 @@ class UserController extends Controller {
 		  ['route' => 'user.store']
 		)->render();
 
-		return view('pages.user', compact('form'));
+		return view('user.form', compact('form'));
 	}
 
 	/**
@@ -72,7 +72,7 @@ class UserController extends Controller {
 		  ]
 		)->render();
 
-		return view('pages.user', compact('form'));
+		return view('user.form', compact('form'));
 	}
 
 

@@ -34,7 +34,7 @@
         <span data-v.text="user.name"/> Can update post
     </div>
 
-    <div class="alert alert-danger" data-v.cannot="comment" >
+    <div class="alert alert-danger" data-v.cannot="comment" data-v.child="user.name" >
         <span data-v.text="user.name"/> Cannot comment
     </div>
 
