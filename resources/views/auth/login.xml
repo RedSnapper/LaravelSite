@@ -1,0 +1,15 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.parent="layouts.main">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Login</div>
+                    <div class="panel-body">
+                        <div data-v.text="form"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -20,7 +20,7 @@ class Formlet extends ViewController {
 			$fieldData['errors'] = $data['errors']->get($name);
 			$field = view($fieldData['view'],$fieldData);
 
-			$view->set("//*[@data-v.field='$name']",$field->compile());
+			$view->set("//*[@data-v.field='$name']",$field);
 		}
 
 		return $view;

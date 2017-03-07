@@ -17,7 +17,6 @@
     <ul class="list-group">
         <li data-v.child="user.email" class="list-group-item"/>
         <li data-v.child="user.name" class="list-group-item"/>
-        <li data-v.child="test.name" class="list-group-item"/>
     </ul>
 
     <h2>Text</h2>
@@ -25,7 +24,6 @@
     <ul class="list-group">
         <li class="list-group-item"><span data-v.text="user.email"/></li>
         <li class="list-group-item"><span data-v.text="user.name"/></li>
-        <li class="list-group-item"><span data-v.text="test.name"/></li>
     </ul>
 
     <h2>Security</h2>

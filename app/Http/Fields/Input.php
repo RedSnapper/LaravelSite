@@ -12,9 +12,10 @@ class Input extends AbstractField {
 
 	protected $view = "fields.input";
 
-	public function __construct(string $type, string $name, $value = null) {
+	public function __construct(string $type, string $name, $value = null, $default=null) {
 		$this->name = $name;
 		$this->value = $value;
+		$this->default = $default;
 		$this->attributes = collect(['type'=>$type]);
 	}
 

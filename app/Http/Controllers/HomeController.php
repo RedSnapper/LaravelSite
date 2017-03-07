@@ -1,39 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\User;
 
-use Illuminate\Support\Facades\DB;
-use RS\NView\Factory as ViewFactory;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-	/**
-	 * @var ViewFactory
-	 */
-	private $viewFactory;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-	/**
-	 * HomeController constructor.
-	 *
-	 * @param ViewFactory $viewFactory
-	 */
-	public function __construct(ViewFactory $viewFactory) {
-		$this->viewFactory = $viewFactory;
-	}
-
-	public function index(){
-
-		$user = User::first();
-		$title = "Home Page";
-
-		//$view = $this->viewFactory->make('pages.home',['test'=>['name'=>'Param']]);
-
-		$view = view('pages.home',['test'=>['name'=>'Param']]);
-
-		$view->with(compact('user','title'));
-
-
-		return $view;
-	}
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+    	$user = auth()->user();
+        return view('pages.home',compact('user'));
+    }
 }

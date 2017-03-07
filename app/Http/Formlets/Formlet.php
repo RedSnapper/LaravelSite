@@ -9,6 +9,7 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 abstract class Formlet {
 
@@ -208,7 +209,6 @@ abstract class Formlet {
 		if ($method != 'GET') {
 			$this->token();
 		}
-
 	}
 
 	/**
@@ -259,7 +259,11 @@ abstract class Formlet {
 	 */
 	public function add(AbstractField $field) {
 
-		$field = $this->setFieldValue($field);
+		if(is_null($type = $field->getType())){
+			$field = $this->setFieldValue($field);
+		}else{
+			$this->$type($field);
+		}
 
 		$this->fields[$field->getName()] = $field;
 	}
@@ -313,7 +317,7 @@ abstract class Formlet {
 	 * @param  string $value
 	 * @return mixed
 	 */
-	public function getValueAttribute($name, $value = null) {
+	public function getValueAttribute($name, $value = null, $default = null) {
 
 		// Field should not ne populated from post or from the model
 		if (in_array($name, $this->guarded)) {
@@ -328,11 +332,15 @@ abstract class Formlet {
 			return $this->old($name);
 		}
 
-		if (isset($this->model)) {
-			return $this->getModelValueAttribute($name) ?? $value;
+		if (!is_null($value)) {
+			return $value;
 		}
 
-		return $value;
+		if (isset($this->model)) {
+			return $this->getModelValueAttribute($name);
+		}
+
+		return $default;
 	}
 
 	/**
@@ -361,9 +369,12 @@ abstract class Formlet {
 	}
 
 	protected function setFieldValue(AbstractField $field): AbstractField {
-		$name = $field->getName();
 
-		$value = $this->getValueAttribute($name, $field->getValue());
+		$name = $field->getName();
+		$value = $field->getValue();
+		$default = $field->getDefault();
+
+		$this->getValueAttribute($name, $value, $default);
 		$field->setValue($value);
 
 		return $field;
@@ -374,6 +385,8 @@ abstract class Formlet {
 
 		return true;
 	}
+
+
 
 	protected function token() {
 		$this->hidden[] = new Hidden('_token', $this->session->token());
@@ -388,6 +401,71 @@ abstract class Formlet {
 		$errors = $this->session->get('errors');
 
 		return is_null($errors) ? [] : $errors->getBag('default');
+	}
+
+	/**
+	 * Get the check state for a checkbox input.
+	 *
+	 * @param  string $name
+	 * @param  mixed  $value
+	 * @param  bool   $checked
+	 * @return bool
+	 */
+	protected function getCheckboxCheckedState($name, $value, $checked) {
+
+		if (isset($this->session) && !$this->oldInputIsEmpty() && is_null($this->old($name))) {
+			return false;
+		}
+
+		if ($this->missingOldAndModel($name)) {
+			return $checked;
+		}
+
+		$posted = $this->getValueAttribute($name, $checked);
+
+		if (is_array($posted)) {
+			return in_array($value, $posted);
+		} elseif ($posted instanceof Collection) {
+			return $posted->contains('id', $value);
+		} else {
+			return (bool)$posted;
+		}
+	}
+
+	/**
+	 * Determine if old input or model input exists for a key.
+	 *
+	 * @param  string $name
+	 * @return bool
+	 */
+	protected function missingOldAndModel($name) {
+		return (is_null($this->old($name)) && is_null($this->getModelValueAttribute($name)));
+	}
+
+	/**
+	 * Determine if the old input is empty.
+	 *
+	 * @return bool
+	 */
+	public function oldInputIsEmpty() {
+		return (isset($this->session) && count($this->session->getOldInput()) == 0);
+	}
+
+	protected function checkable(AbstractField $field){
+
+		$name = $field->getName();
+		$value = $field->getValue();
+		$default = $field->getDefault();
+
+		$field->setValue($value);
+
+		$checked = $this->getCheckboxCheckedState($name,$value,$default);
+
+		if ($checked) {
+			$field->setAttribute('checked');
+		}
+
+		return $field;
 	}
 
 }

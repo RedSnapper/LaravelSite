@@ -18,12 +18,12 @@ use App\Http\Formlets\UserForm;
 
 Route::get('/', 'HomeController@index');
 
-Route::get('/facade', function () {
-	return NView::make('pages.home');
-});
-
 Route::get('/welcome', function () {
 	return view('welcome', ['name' => 'Param']);
 });
 
 Route::resource('/user','UserController');
+Auth::routes();
+
+
+

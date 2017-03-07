@@ -48,6 +48,34 @@ abstract class AbstractField {
 	 */
 	protected $populate = true;
 
+	/**
+	 * What type of field this
+	 *
+	 * @var string
+	 */
+	protected $type;
+
+	/**
+	 * Default value for field
+	 *
+	 * @var string|null
+	 */
+	protected $default;
+
+	/**
+	 * Return the type of field eg. checkable
+	 * @return null|string
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public function getDefault() {
+		return $this->default;
+	}
 
 
 	/**
@@ -56,6 +84,7 @@ abstract class AbstractField {
 	public function getValue() {
 		return $this->value;
 	}
+
 
 	/**
 	 * @param mixed $value
