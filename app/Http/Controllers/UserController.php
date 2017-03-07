@@ -13,8 +13,10 @@ class UserController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		//
+	public function index(User $user) {
+		$users = $user->orderBy('email')->paginate(10);
+
+		return view("user.index",compact('users'));
 	}
 
 	/**
@@ -83,7 +85,7 @@ class UserController extends Controller {
 
 		$user->update($form->fields());
 
-		return redirect()->back();
+		return redirect()->route('user.index');
 	}
 
 	/**

@@ -1,0 +1,15 @@
+<!DOCTYPE ul>
+<ul xmlns="http://www.w3.org/1999/xhtml" class="pagination">
+
+    <li data-v.xp="prevDisabled" class="page-item disabled"><span class="page-link">«</span></li>
+    <li data-v.xp="prevEnabled" class="page-item"><a data-v.xp="prevLink" class="page-link" rel="prev">«</a></li>
+
+    <li data-v.xp="currentPage" class="page-item active"><span data-v.child="page" class="page-link"/></li>
+    <li data-v.xp="page" class="page-item"><a class="page-link" data-v.url="{url}" data-v.child="page"/></li>
+    <li data-v.xp="dots" class="page-item disabled"><span data-v.child="page" class="page-link"/></li>
+
+    <li data-v.xp="nextDisabled" class="page-item disabled"><span class="page-link">»</span></li>
+    <li data-v.xp="nextEnabled" class="page-item"><a data-v.url="{url}" class="page-link" rel="next">»</a></li>
+
+</ul>
+

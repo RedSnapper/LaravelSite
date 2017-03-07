@@ -14,8 +14,6 @@ class UserForm extends Formlet {
 		$field = new Input('text','name');
 		$this->add(
 		  $field->setLabel('Name')
-			->setPlaceholder('joe')
-			//->setRequired()
 		);
 
 		$field = new Input('email','email');
