@@ -3,7 +3,7 @@
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
 
-class UserForm extends Formlet {
+class UserFormlet extends Formlet {
 
 	protected $view = "user.create";
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Formlets\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Formlets\UserForm;
+use App\Http\Forms\UserForm;
 
 class UserController extends Controller {
 
@@ -45,7 +45,7 @@ class UserController extends Controller {
 		  ['route' => 'user.store']
 		)->render();
 
-		return view('user.form', compact('form'));
+		return $form;
 	}
 
 	/**
@@ -54,13 +54,14 @@ class UserController extends Controller {
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store() {
+	public function store(Request $request) {
 
-		$this->form->isValid();
+		$this->form->store();
+		//$this->form->isValid();
+		//
+		//$user = User::create($this->form->request->only(['name', 'email', 'password']));
 
-		$user = User::create($this->form->request->only(['name', 'email', 'password']));
-
-		return redirect()->route('user.edit', $user->id);
+		//return redirect()->route('user.edit', $user->id);
 	}
 
 	/**

@@ -4,11 +4,15 @@ namespace App\Http\Forms;
 
 use App\Http\Fields\AbstractField;
 use App\Http\Fields\Hidden;
+use App\Http\Formlets\Formlet;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Session\Session;
-
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 
 abstract class Form {
+
+	use ValidatesRequests;
 
 	protected $view;
 
@@ -25,12 +29,25 @@ abstract class Form {
 	protected $session;
 
 	/**
+	 * @var Request
+	 */
+	public $request;
+
+	/**
 	 * Hidden fields to be rendered by the form
 	 *
 	 * @var array
 	 */
 
 	protected $hidden = [];
+
+	/**
+	 * Formlets
+	 *
+	 * @var Formlet[]
+	 */
+
+	protected $formlets = [];
 
 	/**
 	 * The reserved form open attributes.
@@ -46,7 +63,6 @@ abstract class Form {
 	 */
 	protected $spoofedMethods = ['DELETE', 'PATCH', 'PUT'];
 
-
 	/**
 	 * Form attributes
 	 *
@@ -54,6 +70,12 @@ abstract class Form {
 	 */
 	protected $attributes = [];
 
+	public function prepare() {
+	}
+
+	public function add(string $class, string $name) {
+		$this->formlets[$name] = app()->make($class);
+	}
 
 	public function create(array $options = []): Form {
 
@@ -75,21 +97,26 @@ abstract class Form {
 		return $this;
 	}
 
-
 	public function render() {
 
 		//$errors = $this->getErrors();
 
-		//$this->prepareForm();
+		$this->prepare();
+
+		$formlets = [];
+
+		foreach ($this->formlets as $name => $formlet) {
+			$formlets[$name] = $formlet->render();
+		}
 
 		$data = [
+		  'formlets'   => $formlets,
 		  'attributes' => $this->attributes,
 		  'hidden'     => $this->getFieldData($this->hidden)
 		];
 
 		return view($this->view, $data);
 	}
-
 
 	/**
 	 * Parse the form action method.
@@ -204,6 +231,17 @@ abstract class Form {
 	}
 
 	/**
+	 * Set request on form.
+	 *
+	 * @param Request $request
+	 * @return $this
+	 */
+	public function setRequest(Request $request) {
+		$this->request = $request;
+		return $this;
+	}
+
+	/**
 	 * Set the session store for formlets
 	 *
 	 * @param Session $session
@@ -220,6 +258,28 @@ abstract class Form {
 		return array_map(function (AbstractField $field) {
 			return $field->getData();
 		}, $fields);
+	}
+
+	protected function isValid(){
+
+		$rules = [];
+
+		foreach ($this->formlets as $formlet) {
+			$rules = array_merge($rules,$formlet->rules());
+		}
+
+		$this->validate($this->request, $rules);
+
+		return true;
+	}
+
+	public function store(){
+
+		$this->prepare();
+
+		if($this->isValid()){
+			dd("Valid");
+		}
 	}
 
 }

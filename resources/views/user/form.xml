@@ -3,7 +3,12 @@
 
     <h1>Create User</h1>
 
-    <div data-v.text="form"/>
+    <div class="row" data-v.container="fields.form">
+        <div class="col-md-8">
+            <div data-v.text="formlets.user"/>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </div>
 
 </div>
 

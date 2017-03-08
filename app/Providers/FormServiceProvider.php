@@ -18,12 +18,12 @@ class FormServiceProvider extends ServiceProvider
 		$this->app->resolving(Formlet::class, function (Formlet $formlet, $app) {
 			$formlet->setSessionStore($app['session.store']);
 			$formlet->setRequest($app['request']);
-			$formlet->setURLGenerator($app['url']);
 		});
 
 		$this->app->resolving(Form::class, function (Form $formlet, $app) {
 			$formlet->setSessionStore($app['session.store']);
 			$formlet->setURLGenerator($app['url']);
+			$formlet->setRequest($app['request']);
 		});
     }
 

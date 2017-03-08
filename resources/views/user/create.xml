@@ -1,15 +1,10 @@
 <!DOCTYPE div>
-<div class="row" xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet" data-v.parent="fields.form">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet">
 
-    <div class="col-md-8">
-        <span data-v.field="name"/>
-        <span data-v.field="email"/>
-        <span data-v.field="password"/>
-        <span data-v.field="password_confirmation"/>
-
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </div>
-
+    <span data-v.field="name"/>
+    <span data-v.field="email"/>
+    <span data-v.field="password"/>
+    <span data-v.field="password_confirmation"/>
 
 </div>
 
