@@ -1,0 +1,9 @@
+<!DOCTYPE div>
+<div class="row" xmlns="http://www.w3.org/1999/xhtml" data-v.parent="fields.form">
+
+    <div data-v.text="formlet"/>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+
+</div>
+

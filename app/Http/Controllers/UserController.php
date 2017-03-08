@@ -69,8 +69,12 @@ class UserController extends Controller {
 	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
-		//
+	public function show(\App\Http\Forms\UserForm $form) {
+		$form = $form->create(
+		  ['route' => 'user.store']
+		)->render();
+
+		return view('user.form', compact('form'));
 	}
 
 	/**
