@@ -26,7 +26,7 @@ class LoginForm extends Formlet {
 			//->setRequired()
 		);
 
-		$field = new Checkbox('remember',4,true);
+		$field = new Checkbox('remember');
 		$this->add(
 		  $field->setLabel('Remember Me')
 		);
@@ -36,5 +36,7 @@ class LoginForm extends Formlet {
 	public function rules(): array {
 		return [];
 	}
+
+
 
 }

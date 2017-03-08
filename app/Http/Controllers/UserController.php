@@ -8,15 +8,30 @@ use Illuminate\Http\Request;
 use App\Http\Formlets\UserForm;
 
 class UserController extends Controller {
+
+	/**
+	 * @var User
+	 */
+	private $user;
+	/**
+	 * @var UserForm
+	 */
+	private $form;
+
+	public function __construct(User $user,UserForm $form) {
+		$this->user = $user;
+		$this->form = $form;
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(User $user) {
-		$users = $user->orderBy('email')->paginate(10);
+	public function index() {
+		$users = $this->user->orderBy('email')->paginate(10);
 
-		return view("user.index",compact('users'));
+		return view("user.index", compact('users'));
 	}
 
 	/**
@@ -24,9 +39,9 @@ class UserController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create(UserForm $form) {
+	public function create() {
 
-		$form = $form->create(
+		$form = $this->form->create(
 		  ['route' => 'user.store']
 		)->render();
 
@@ -39,11 +54,11 @@ class UserController extends Controller {
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(UserForm $form) {
+	public function store() {
 
-		$form->isValid();
+		$this->form->isValid();
 
-		$user = User::create($form->request->only(['name','email','password']));
+		$user = User::create($this->form->request->only(['name', 'email', 'password']));
 
 		return redirect()->route('user.edit', $user->id);
 	}
@@ -77,7 +92,6 @@ class UserController extends Controller {
 		return view('user.form', compact('form'));
 	}
 
-
 	public function update(UserEmailForm $form, User $user) {
 
 		$form->setModel($user);
@@ -95,6 +109,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		//
+
+		return redirect()->back();
 	}
 }

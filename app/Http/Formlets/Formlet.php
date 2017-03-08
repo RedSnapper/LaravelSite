@@ -374,7 +374,7 @@ abstract class Formlet {
 		$value = $field->getValue();
 		$default = $field->getDefault();
 
-		$this->getValueAttribute($name, $value, $default);
+		$value = $this->getValueAttribute($name, $value, $default);
 		$field->setValue($value);
 
 		return $field;
