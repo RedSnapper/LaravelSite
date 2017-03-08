@@ -1,14 +1,8 @@
 <!DOCTYPE div>
-<div class="row" xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet" data-v.parent="fields.form">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet">
 
-    <div class="col-md-8">
-
-        <span data-v.field="name"/>
-        <span data-v.field="email"/>
-
-        <button class="btn btn-primary" type="submit">Edit User</button>
-    </div>
-
+    <span data-v.field="name"/>
+    <span data-v.field="email"/>
 
 </div>
 

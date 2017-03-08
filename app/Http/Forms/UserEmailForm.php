@@ -8,18 +8,14 @@
 
 namespace App\Http\Forms;
 
-use App\Http\Formlets\UserFormlet;
+use App\Http\Formlets\UserEmailFormlet;
 
-class UserForm extends Form {
+class UserEmailForm extends Form {
 
 	protected $view = "user.form";
 
-
-
 	public function prepare() {
-
-		$this->add(UserFormlet::class,'user');
-
+		$this->add(UserEmailFormlet::class,'user');
 	}
 
 

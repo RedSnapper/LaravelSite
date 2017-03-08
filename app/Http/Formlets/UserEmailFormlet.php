@@ -4,7 +4,7 @@ namespace App\Http\Formlets;
 use App\Http\Fields\Input;
 use Illuminate\Validation\Rule;
 
-class UserEmailForm extends Formlet {
+class UserEmailFormlet extends Formlet {
 
 	protected $view = "user.email";
 

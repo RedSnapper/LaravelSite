@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Formlets\UserEmailForm;
+use App\Http\Forms\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Forms\UserForm;
@@ -85,7 +85,7 @@ class UserController extends Controller {
 	 */
 	public function edit(User $user, UserEmailForm $form) {
 
-		$form->setModel($user);
+		//$form->setModel($user);
 
 		$form = $form->create(
 		  [
@@ -94,17 +94,17 @@ class UserController extends Controller {
 		  ]
 		)->render();
 
-		return view('user.form', compact('form'));
+		return $form;
 	}
 
 	public function update(UserEmailForm $form, User $user) {
 
-		$form->setModel($user);
-		$form->isValid();
-
-		$user->update($form->fields());
-
-		return redirect()->route('user.index');
+		//$form->setModel($user);
+		//$form->isValid();
+		//
+		//$user->update($form->fields());
+		//
+		//return redirect()->route('user.index');
 	}
 
 	/**

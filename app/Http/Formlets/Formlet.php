@@ -113,11 +113,6 @@ abstract class Formlet {
 		$this->fields[$field->getName()] = $field;
 	}
 
-	public function save() {
-		if ($this->isValid()) {
-			$this->persist();
-		}
-	}
 
 	/**
 	 * Fetch all fields from the form.
@@ -218,13 +213,6 @@ abstract class Formlet {
 
 		return $field;
 	}
-
-	public function isValid(): bool {
-		$this->validate($this->request, $this->rules());
-
-		return true;
-	}
-
 
 
 	/**
