@@ -1,26 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 07/03/2017
- * Time: 11:00
- */
 
-namespace App\View\Fields;
+namespace App\View\Forms\Fields;
 
 use RS\NView\Document;
 
-
-class Checkbox extends  Input {
+class Hidden extends Input {
 
 
 	public function render(Document $view, array $data): Document {
+
 		$this->renderAttributes($view,$data);
 		$this->renderValue($view,$data);
 		$this->renderName($view,$data);
-		$this->renderError($view,$data);
+
 		return $view;
 	}
-
 
 }

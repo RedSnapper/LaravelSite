@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\UserEmailFormlet;
-use App\Http\Forms\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserFormlet;

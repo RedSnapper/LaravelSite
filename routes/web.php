@@ -17,10 +17,7 @@ use App\Http\Formlets\UserForm;
 */
 
 Route::get('/', 'HomeController@index');
-
-Route::get('/welcome', function () {
-	return view('welcome', ['name' => 'Param']);
-});
+Route::get('/home', 'HomeController@index');
 
 Route::resource('/user','UserController');
 Auth::routes();

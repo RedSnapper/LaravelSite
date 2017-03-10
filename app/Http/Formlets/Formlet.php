@@ -35,7 +35,7 @@ abstract class Formlet {
 	public $request;
 
 
-	protected $view;
+	protected $view = "forms.auto";
 
 	protected $formView;
 

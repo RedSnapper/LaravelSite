@@ -10,7 +10,7 @@ namespace App\Http\Fields;
 
 class Input extends AbstractField {
 
-	protected $view = "fields.input";
+	protected $view = "forms.fields.input";
 
 	public function __construct(string $type, string $name, $value = null, $default=null) {
 		$this->name = $name;

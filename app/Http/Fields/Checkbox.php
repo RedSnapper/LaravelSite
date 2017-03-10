@@ -10,7 +10,7 @@ namespace App\Http\Fields;
 
 class Checkbox extends AbstractField {
 
-	protected $view = "fields.checkbox";
+	protected $view = "forms.fields.checkbox";
 
 	protected $type = "checkable";
 

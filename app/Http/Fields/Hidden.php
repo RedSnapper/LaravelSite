@@ -9,7 +9,7 @@
 namespace App\Http\Fields;
 
 class Hidden extends AbstractField {
-	protected $view = "fields.hidden";
+	protected $view = "forms.fields.hidden";
 
 	public function __construct(string $name, $value = null) {
 		$this->name = $name;

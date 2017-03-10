@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Http\Formlets;
+use App\Http\Fields\Checkbox;
 use App\Http\Fields\Input;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class UserFormlet extends Formlet {
 
-
-
-	protected $view = "user.create";
+	protected $view = "forms.auto";
 
 	protected $formView = "user.form";
 
@@ -24,6 +23,7 @@ class UserFormlet extends Formlet {
 
 	public function prepareForm(){
 
+		
 		$field = new Input('text','name');
 		$this->add(
 		  $field->setLabel('Name')
