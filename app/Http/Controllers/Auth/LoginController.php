@@ -47,7 +47,7 @@ class LoginController extends Controller {
 		  ['route' => 'login']
 		)->render();
 
-		return view('auth.login', compact('form'));
+		return $form;
 	}
 
 }

@@ -1,22 +1,9 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet" data-v.container="fields.form">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet">
 
     <span data-v.field="email"/>
     <span data-v.field="password"/>
     <span data-v.field="remember"/>
-
-
-    <div class="form-group">
-        <div class="col-md-8 col-md-offset-4">
-            <button type="submit" class="btn btn-primary">
-                Login
-            </button>
-
-            <a class="btn btn-link" href="password.reset">
-                Forgot Your Password?
-            </a>
-        </div>
-    </div>
 
 </div>
 
