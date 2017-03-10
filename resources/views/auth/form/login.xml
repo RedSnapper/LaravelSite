@@ -1,5 +1,5 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet" data-v.parent="fields.form">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet" data-v.container="fields.form">
 
     <span data-v.field="email"/>
     <span data-v.field="password"/>

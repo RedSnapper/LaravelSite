@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Forms\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Forms\UserForm;
+use App\Http\Formlets\UserFormlet;
 
 class UserController extends Controller {
 
@@ -14,11 +14,11 @@ class UserController extends Controller {
 	 */
 	private $user;
 	/**
-	 * @var UserForm
+	 * @var UserFormlet
 	 */
 	private $form;
 
-	public function __construct(User $user,UserForm $form) {
+	public function __construct(User $user,UserFormlet $form) {
 		$this->user = $user;
 		$this->form = $form;
 	}

@@ -1,11 +1,11 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.parent="layouts.main">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
     <h1>Users</h1>
 
     <ul data-v.foreach="users" data-v.name="user" class="list-group">
         <li class="list-group-item">
-            <a data-v.url="/user/{user.id}/edit"><span data-v.text="user.email"/></a>
+            <a data-v.url="/user/{user.id}/edit"><span data-v.replace="user.email"/></a>
         </li>
     </ul>
 

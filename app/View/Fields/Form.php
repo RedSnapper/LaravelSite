@@ -9,6 +9,7 @@ class Form extends ViewController{
 
    	public function render(Document $view, array $data): Document {
 
+
 		foreach ($data['hidden'] as $fieldData){
 			$field = view($fieldData['view'],$fieldData);
 			$view->set("/*/child-gap()",$field->compile());
@@ -23,11 +24,6 @@ class Form extends ViewController{
    		return $view;
    	}
 
-	public function renderChild(Document $view, Document $child, array $data): Document {
 
-   		$view->set("./child-gap()",$child);
-
-   		return $view;
-	}
 
 }

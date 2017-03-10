@@ -1,10 +1,10 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.parent="layouts.page">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.page">
 
     <div data-v.include="layouts.navigation"/>
 
     <div class="container">
-        <div data-v.section="main" />
+        <div data-v.contents="#document" />
     </div>
 
 

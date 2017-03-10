@@ -7,6 +7,8 @@ class UserFormlet extends Formlet {
 
 	protected $view = "user.create";
 
+	protected $formView = "user.form";
+
 	protected $guarded = ['password','password_confirm'];
 
 	public function prepareForm(){

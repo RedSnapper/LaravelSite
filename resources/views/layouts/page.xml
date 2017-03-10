@@ -15,7 +15,7 @@
 
     <body>
 
-        <div data-v.section="main" />
+        <div data-v.contents="#document" />
 
 
     </body>

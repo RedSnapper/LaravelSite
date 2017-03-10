@@ -8,6 +8,8 @@ class UserEmailFormlet extends Formlet {
 
 	protected $view = "user.email";
 
+	protected $formView = "user.form";
+
 	public function prepareForm(){
 
 		$field = new Input('text','name');

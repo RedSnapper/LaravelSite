@@ -1,5 +1,5 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.parent="layouts.main">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
     <h2>Translations</h2>
 
@@ -22,18 +22,18 @@
     <h2>Text</h2>
 
     <ul class="list-group">
-        <li class="list-group-item"><span data-v.text="user.email"/></li>
-        <li class="list-group-item"><span data-v.text="user.name"/></li>
+        <li class="list-group-item"><span data-v.replace="user.email"/></li>
+        <li class="list-group-item"><span data-v.replace="user.name"/></li>
     </ul>
 
     <h2>Security</h2>
 
     <div class="alert alert-success" data-v.can="update-post" >
-        <span data-v.text="user.name"/> Can update post
+        <span data-v.replace="user.name"/> Can update post
     </div>
 
     <div class="alert alert-danger" data-v.cannot="comment" data-v.child="user.name" >
-        <span data-v.text="user.name"/> Cannot comment
+        <span data-v.replace="user.name"/> Cannot comment
     </div>
 
     <p>This page took <span data-xp="time"/> seconds to render</p>

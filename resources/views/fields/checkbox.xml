@@ -2,7 +2,7 @@
 <div class="form-group" xmlns="http://www.w3.org/1999/xhtml">
     <div class="checkbox">
         <label>
-            <input type="checkbox"/> <span data-v.text="label"/>
+            <input type="checkbox"/> <span data-v.replace="label"/>
         </label>
     </div>
     <div data-v.include="fields.errors"/>
