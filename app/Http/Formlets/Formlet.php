@@ -6,6 +6,7 @@ use App\Http\Fields\AbstractField;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -124,7 +125,24 @@ abstract class Formlet {
 		$this->prepareForm();
 
 		if($this->isValid()){
-			dd("Valid");
+			return $this->persist();
+		}
+	}
+
+	public function persist():Model{
+
+	}
+
+	public function edit():Model{
+
+	}
+
+	public function update(){
+
+		$this->prepareForm();
+
+		if($this->isValid()){
+			return $this->edit();
 		}
 	}
 
@@ -326,7 +344,7 @@ abstract class Formlet {
 	public function render() {
 
 		$this->prepareForm();
-		
+
 		$data = [
 		  'form'   => $this->renderFormlets(),
 		  'attributes' => $this->attributes,

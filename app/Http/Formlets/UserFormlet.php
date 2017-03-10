@@ -2,14 +2,25 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
+use App\User;
+use Illuminate\Database\Eloquent\Model;
 
 class UserFormlet extends Formlet {
+
+
 
 	protected $view = "user.create";
 
 	protected $formView = "user.form";
 
 	protected $guarded = ['password','password_confirm'];
+
+	protected $user;
+
+	
+	public function __construct(User $user) {
+		$this->user = $user;
+	}
 
 	public function prepareForm(){
 
@@ -38,7 +49,13 @@ class UserFormlet extends Formlet {
 		];
 	}
 
+	public function persist():Model {
 
+		$this->model->fill($this->fields());
+		$this->model->save();
+
+		return $this->model;
+	}
 
 
 }

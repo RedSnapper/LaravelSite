@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class UserEmailFormlet extends Formlet {
@@ -26,6 +27,14 @@ class UserEmailFormlet extends Formlet {
 		  'name' => 'required|max:255',
 		  'email' => ['required','email','max:255',Rule::unique('users')->ignore($this->model->id)]
 		];
+	}
+
+	public function edit():Model {
+
+		$this->model->fill($this->fields());
+		$this->model->save();
+
+		return $this->model;
 	}
 
 

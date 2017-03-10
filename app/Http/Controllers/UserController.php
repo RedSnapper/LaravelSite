@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Formlets\UserEmailFormlet;
 use App\Http\Forms\UserEmailForm;
 use App\User;
 use Illuminate\Http\Request;
@@ -35,36 +36,6 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create() {
-
-		$form = $this->form->create(
-		  ['route' => 'user.store']
-		)->render();
-
-		return $form;
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request) {
-
-		$this->form->store();
-		//$this->form->isValid();
-		//
-		//$user = User::create($this->form->request->only(['name', 'email', 'password']));
-
-		//return redirect()->route('user.edit', $user->id);
-	}
-
-	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int $id
@@ -79,13 +50,44 @@ class UserController extends Controller {
 	}
 
 	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create(User $user) {
+
+		$this->form->setModel($user);
+
+		$form = $this->form->create(
+		  ['route' => 'user.store']
+		)->render();
+
+		return $form;
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(User $user,Request $request) {
+
+		$this->form->setModel($user);
+
+		$user = $this->form->store();
+
+		return redirect()->route('user.edit', $user->id);
+	}
+
+	/**
 	 * @param User     $user
 	 * @param UserForm $form
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function edit(User $user, UserEmailForm $form) {
+	public function edit(User $user, UserEmailFormlet $form) {
 
-		//$form->setModel($user);
+		$form->setModel($user);
 
 		$form = $form->create(
 		  [
@@ -97,14 +99,13 @@ class UserController extends Controller {
 		return $form;
 	}
 
-	public function update(UserEmailForm $form, User $user) {
+	public function update(UserEmailFormlet $form, User $user) {
 
-		//$form->setModel($user);
-		//$form->isValid();
-		//
-		//$user->update($form->fields());
-		//
-		//return redirect()->route('user.index');
+		$form->setModel($user);
+
+		$user = $form->update();
+
+		return redirect()->route('user.index');
 	}
 
 	/**
