@@ -28,7 +28,7 @@ class Navigation extends ViewController{
 			$view->set("//*[@data-v.xp='username']",Auth::user()->name);
 			$view->set("//*[@data-v.xp='logout']",$this->showLogoutForm());
 		}
-		
+
    		return $view;
    }
 
