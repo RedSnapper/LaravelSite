@@ -11,7 +11,7 @@ namespace App\View\Forms;
 use RS\NView\Document;
 use RS\NView\ViewController;
 
-class Formlet extends ViewController {
+class Main extends ViewController {
 	public function render(Document $view,array $data): Document {
 
 		foreach ($data['fields'] as $fieldData) {

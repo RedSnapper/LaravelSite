@@ -7,7 +7,7 @@
                     <div class="panel-heading">Login</div>
                     <div class="panel-body">
 
-                        <div data-v.container="forms.main">
+                        <div data-v.container="forms.form">
                             <div data-v.replace="form"/>
 
                             <div class="form-group">

@@ -1,9 +1,0 @@
-<!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.formlet">
-
-    <span data-v.field="email"/>
-    <span data-v.field="password"/>
-    <span data-v.field="remember"/>
-
-</div>
-
