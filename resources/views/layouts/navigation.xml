@@ -1,15 +1,59 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" class="blog-masthead">
 
-    <div class="container">
-        <nav class="blog-nav">
-            <a class="blog-nav-item active" href="/">Home</a>
-            <a class="blog-nav-item" href="/user">User</a>
-            <a class="blog-nav-item" href="#">Press</a>
-            <a class="blog-nav-item" href="#">New hires</a>
-            <a class="blog-nav-item" href="#">About</a>
-        </nav>
-    </div>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+
+                <!-- Collapsed Hamburger -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"/>
+                    <span class="icon-bar"/>
+                    <span class="icon-bar"/>
+                </button>
+
+                <!-- Branding Image -->
+                <a data-v.xp="app" class="navbar-brand" data-v.url="/"/>
+            </div>
+
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <!-- Left Side Of Navbar -->
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a data-v.url="/user">Users</a>
+                    </li>
+                </ul>
+
+                <!-- Right Side Of Navbar -->
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li data-v.auth="false">
+                        <a data-v.url="/login">Login</a>
+                    </li>
+                    <li data-v.auth="false">
+                        <a data-v.url="/register">Register</a>
+                    </li>
+
+                    <li class="dropdown" data-v.auth="true">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <span data-v.xp="username"/>
+                            <span class="caret"/>
+                        </a>
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <div data-v.xp="logout"/>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
 
 </div>
 
