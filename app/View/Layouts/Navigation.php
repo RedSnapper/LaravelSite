@@ -28,13 +28,13 @@ class Navigation extends ViewController{
 			$view->set("//*[@data-v.xp='username']",Auth::user()->name);
 			$view->set("//*[@data-v.xp='logout']",$this->showLogoutForm());
 		}
-
+		
    		return $view;
    }
 
 
 	protected function showLogoutForm(){
-		return $this->form->create(['route'=>'logout'])->render();
+		return $this->form->create(['route'=>'logout','class'=>'dropdown__form'])->render();
 	}
 
 

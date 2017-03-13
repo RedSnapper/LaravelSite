@@ -20,7 +20,7 @@
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" data-v.auth="true">
                     <li>
                         <a data-v.url="/user">Users</a>
                     </li>

@@ -1,4 +1,4 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="forms.form">
-    <button type="submit" class="btn btn-link">Logout</button>
+    <button type="submit" class="dropdown__link">Logout</button>
 </div>
