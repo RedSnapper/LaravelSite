@@ -8,6 +8,7 @@
 
 namespace App\Http\Formlets;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {
@@ -26,7 +27,11 @@ class UserComposite extends Formlet {
 	}
 
 	public function persist():Model {
-		dd($this->fields());
+		$user = User::create($this->request->get('user'));
+		$user->profile()->create($this->request->get('profile'));
+		return $user;
 	}
+
+
 
 }

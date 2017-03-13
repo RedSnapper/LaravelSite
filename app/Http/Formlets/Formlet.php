@@ -560,6 +560,8 @@ abstract class Formlet {
 
 	protected function populate() {
 
+		$this->transformGuardedAttributes();
+
 		foreach ($this->fields as $field) {
 			if (is_null($type = $field->getType())) {
 				$this->setFieldValue($field);
@@ -567,6 +569,13 @@ abstract class Formlet {
 				$this->$type($field);
 			}
 		}
+	}
+
+	protected function transformGuardedAttributes(){
+		$this->guarded = array_map(function($item){
+			return $this->getFieldPrefix($item);
+		},$this->guarded);
+
 	}
 
 	/**

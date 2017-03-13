@@ -12,7 +12,7 @@ class UserFormlet extends Formlet {
 
 	protected $formView = "user.form";
 
-	protected $guarded = ['password','password_confirm'];
+	protected $guarded = ['password','password_confirmation'];
 
 	protected $user;
 
