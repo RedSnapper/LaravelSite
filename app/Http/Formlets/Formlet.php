@@ -8,10 +8,14 @@ use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Contracts\Validation\Validator;
 use App\Http\Fields\Hidden;
+
+use Illuminate\Validation\ValidationException;
 
 abstract class Formlet {
 
@@ -95,6 +99,13 @@ abstract class Formlet {
 	protected $spoofedMethods = ['DELETE', 'PATCH', 'PUT'];
 
 	/**
+	 * The form methods that should be spoofed, in uppercase.
+	 *
+	 * @var Validator
+	 */
+	protected $validator;
+
+	/**
 	 * Formlet name.
 	 *
 	 * @var string
@@ -121,30 +132,63 @@ abstract class Formlet {
 
 	protected function isValid() {
 
+		$errors = [];
+
+		if (count($this->formlets) == 0) {
+			$errors = $this->validate($this->request->all(), $this->rules());
+		}
 
 		foreach ($this->formlets as $formlet) {
-			$this->validate($this->request->get($formlet->getName()),$formlet->rules());
+			$errors = array_merge($errors,$formlet->validate($this->request->get($formlet->getName()), $formlet->rules()));
+		}
+
+		return $this->redirectIfErrors($errors);
+	}
+
+	protected function redirectIfErrors(array $errors) {
+
+		if(count($errors)){
+			throw new ValidationException($this->validator, $this->buildFailedValidationResponse(
+			  $errors
+			));
 		}
 
 		return true;
 	}
 
 	/**
+	 * Create the response for when a request fails validation.
+	 *
+	 * @param  \Illuminate\Http\Request $request
+	 * @param  array                    $errors
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function buildFailedValidationResponse(array $errors) {
+		if ($this->request->expectsJson()) {
+			return new JsonResponse($errors, 422);
+		}
+
+		return redirect()->to($this->getRedirectUrl())
+		  ->withInput($this->request->input())
+		  ->withErrors($errors);
+	}
+
+	/**
 	 * Validate the given request with the given rules.
 	 *
 	 * @param  array $request
-	 * @param  array  $rules
-	 * @param  array  $messages
-	 * @param  array  $customAttributes
-	 * @return void
+	 * @param  array $rules
+	 * @param  array $messages
+	 * @param  array $customAttributes
+	 * @return array
 	 */
-	public function validate(array $request, array $rules, array $messages = [], array $customAttributes = [])
-	{
-		$validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+	public function validate(array $request, array $rules, array $messages = [], array $customAttributes = []) {
+		$this->validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
-		if ($validator->fails()) {
-			dd($validator->getMessageBag());
+		if ($this->validator->fails()) {
+			return $this->formatValidationErrors($this->validator);
 		}
+		return [];
 	}
 
 	public function store() {
@@ -390,7 +434,7 @@ abstract class Formlet {
 
 	protected function setFieldNames() {
 		foreach ($this->fields as $field) {
-			$field->setName($this->getName() . "[" . $field->getName() . "]");
+			$field->setName($this->getFieldPrefix($field->getName()));
 		}
 	}
 
@@ -599,6 +643,40 @@ abstract class Formlet {
 	 */
 	protected function getValidationFactory() {
 		return app(Factory::class);
+	}
+
+	/**
+	 * Format the validation errors to be returned.
+	 *
+	 * @param  \Illuminate\Contracts\Validation\Validator $validator
+	 * @return array
+	 */
+	protected function formatValidationErrors(Validator $validator) {
+
+		$errors = collect($validator->errors()->getMessages());
+
+		$errors = $errors->keyBy(function($item,$key){
+			return $this->getFieldPrefix($key);
+		});
+
+		return $errors->all();
+	}
+
+	protected function getFieldPrefix($field){
+
+		$name = $this->getName();
+
+		return $name == "" ? $field : "{$name}[$field]";
+	}
+
+	/**
+	 * Get the URL we should redirect to.
+	 *
+	 * @return string
+	 */
+	protected function getRedirectUrl()
+	{
+		return app(UrlGenerator::class)->previous();
 	}
 
 }
