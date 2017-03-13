@@ -7,15 +7,13 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use App\Http\Fields\Hidden;
 
 abstract class Formlet {
-
-	use ValidatesRequests;
 
 	/**
 	 * @var UrlGenerator
@@ -33,7 +31,6 @@ abstract class Formlet {
 	 * @var Request
 	 */
 	public $request;
-
 
 	protected $view = "forms.auto";
 
@@ -97,53 +94,95 @@ abstract class Formlet {
 	 */
 	protected $spoofedMethods = ['DELETE', 'PATCH', 'PUT'];
 
+	/**
+	 * Formlet name.
+	 *
+	 * @var string
+	 */
+	protected $name = "";
 
 	abstract public function prepareForm();
 
 	abstract public function rules(): array;
 
-
 	public function addFormlet(string $class, string $name) {
-		$this->formlets[$name] = app()->make($class);
+		$formlet = app()->make($class);
+
+		$formlet->setName($name);
+
+		$formlet->prepareForm();
+
+		$formlet->setFieldNames();
+
+		$formlet->populate();
+
+		$this->formlets[$name] = $formlet;
 	}
 
-	protected function isValid(){
+	protected function isValid() {
 
-		$rules = [];
 
 		foreach ($this->formlets as $formlet) {
-			$rules = array_merge($rules,$formlet->rules());
+			$this->validate($this->request->get($formlet->getName()),$formlet->rules());
 		}
-
-		$this->validate($this->request, $rules);
 
 		return true;
 	}
 
-	public function store(){
+	/**
+	 * Validate the given request with the given rules.
+	 *
+	 * @param  array $request
+	 * @param  array  $rules
+	 * @param  array  $messages
+	 * @param  array  $customAttributes
+	 * @return void
+	 */
+	public function validate(array $request, array $rules, array $messages = [], array $customAttributes = [])
+	{
+		$validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+
+		if ($validator->fails()) {
+			dd($validator->getMessageBag());
+		}
+	}
+
+	public function store() {
 
 		$this->prepareForm();
 
-		if($this->isValid()){
+		if ($this->isValid()) {
 			return $this->persist();
 		}
 	}
 
-	public function persist():Model{
-
+	public function persist(): Model {
 	}
 
-	public function edit():Model{
-
+	public function edit(): Model {
 	}
 
-	public function update(){
+	public function update() {
 
 		$this->prepareForm();
 
-		if($this->isValid()){
+		if ($this->isValid()) {
 			return $this->edit();
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName(): string {
+		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function setName(string $name) {
+		$this->name = $name;
 	}
 
 	// Form specific methods
@@ -284,52 +323,14 @@ abstract class Formlet {
 	}
 
 	/**
-	 * Set url generator
-	 *
-	 * @param UrlGenerator $url
-	 * @return $this
-	 */
-	public function setURLGenerator(UrlGenerator $url) {
-		$this->url = $url;
-		return $this;
-	}
-
-	/**
-	 * Set request on form.
-	 *
-	 * @param Request $request
-	 * @return $this
-	 */
-	public function setRequest(Request $request) {
-		$this->request = $request;
-		return $this;
-	}
-
-	/**
-	 * Set the session store for formlets
-	 *
-	 * @param Session $session
-	 */
-	public function setSessionStore(Session $session) {
-		$this->session = $session;
-	}
-
-	/**
 	 * Add a field to the formlet
 	 *
 	 * @param AbstractField $field
 	 */
 	public function add(AbstractField $field) {
 
-		if(is_null($type = $field->getType())){
-			$field = $this->setFieldValue($field);
-		}else{
-			$this->$type($field);
-		}
-
-		$this->fields[$field->getName()] = $field;
+		$this->fields[] = $field;
 	}
-
 
 	/**
 	 * Fetch all fields from the form.
@@ -340,13 +341,13 @@ abstract class Formlet {
 		return $this->request->all();
 	}
 
-
 	public function render() {
 
 		$this->prepareForm();
+		$this->populate();
 
 		$data = [
-		  'form'   => $this->renderFormlets(),
+		  'form'       => $this->renderFormlets(),
 		  'attributes' => $this->attributes,
 		  'hidden'     => $this->getFieldData($this->hidden)
 		];
@@ -354,18 +355,18 @@ abstract class Formlet {
 		return view($this->formView, $data);
 	}
 
-	protected function renderFormlets():View{
+	protected function renderFormlets(): View {
 
-		if(count($this->formlets)){
+		if (count($this->formlets)) {
 
-			$formlets =[];
+			$formlets = [];
 
-			foreach($this->formlets as $name=>$formlet){
-				$formlet->prepareForm();
+			foreach ($this->formlets as $name => $formlet) {
+
 				$formlets[$name] = $formlet->renderFormlets();
 			}
-			return view($this->view,compact('formlets'));
-		}else{
+			return view($this->view, compact('formlets'));
+		} else {
 			return $this->renderFormlet();
 		}
 	}
@@ -381,14 +382,17 @@ abstract class Formlet {
 		return view($this->view, $data)->withErrors($errors);
 	}
 
-
 	protected function getFieldData(array $fields): array {
 		return array_map(function (AbstractField $field) {
 			return $field->getData();
 		}, $fields);
 	}
 
-
+	protected function setFieldNames() {
+		foreach ($this->fields as $field) {
+			$field->setName($this->getName() . "[" . $field->getName() . "]");
+		}
+	}
 
 	/**
 	 * Get the value that should be assigned to the field.
@@ -431,8 +435,18 @@ abstract class Formlet {
 	 */
 	public function old($name) {
 		if (isset($this->session)) {
-			return $this->session->getOldInput($name);
+			return $this->session->getOldInput($this->transformKey($name));
 		}
+	}
+
+	/**
+	 * Transform key from array to dot syntax.
+	 *
+	 * @param  string $key
+	 * @return mixed
+	 */
+	protected function transformKey($key) {
+		return str_replace(['.', '[]', '[', ']'], ['_', '', '.', ''], $key);
 	}
 
 	/**
@@ -445,7 +459,7 @@ abstract class Formlet {
 		//if (method_exists($this->model, 'getFormValue')) {
 		//	return $this->model->getFormValue($this->transformKey($name));
 		//}
-		return data_get($this->model, $name);
+		return data_get($this->model, $this->transformKey($name));
 	}
 
 	protected function setFieldValue(AbstractField $field): AbstractField {
@@ -459,7 +473,6 @@ abstract class Formlet {
 
 		return $field;
 	}
-
 
 	/**
 	 * Returns any errors from the session
@@ -501,6 +514,17 @@ abstract class Formlet {
 		}
 	}
 
+	protected function populate() {
+
+		foreach ($this->fields as $field) {
+			if (is_null($type = $field->getType())) {
+				$this->setFieldValue($field);
+			} else {
+				$this->$type($field);
+			}
+		}
+	}
+
 	/**
 	 * Determine if old input or model input exists for a key.
 	 *
@@ -520,7 +544,7 @@ abstract class Formlet {
 		return (isset($this->session) && count($this->session->getOldInput()) == 0);
 	}
 
-	protected function checkable(AbstractField $field){
+	protected function checkable(AbstractField $field) {
 
 		$name = $field->getName();
 		$value = $field->getValue();
@@ -528,13 +552,53 @@ abstract class Formlet {
 
 		$field->setValue($value);
 
-		$checked = $this->getCheckboxCheckedState($name,$value,$default);
+		$checked = $this->getCheckboxCheckedState($name, $value, $default);
 
 		if ($checked) {
 			$field->setAttribute('checked');
 		}
 
 		return $field;
+	}
+
+	/**
+	 * Set url generator
+	 *
+	 * @param UrlGenerator $url
+	 * @return $this
+	 */
+	public function setURLGenerator(UrlGenerator $url) {
+		$this->url = $url;
+		return $this;
+	}
+
+	/**
+	 * Set request on form.
+	 *
+	 * @param Request $request
+	 * @return $this
+	 */
+	public function setRequest(Request $request) {
+		$this->request = $request;
+		return $this;
+	}
+
+	/**
+	 * Set the session store for formlets
+	 *
+	 * @param Session $session
+	 */
+	public function setSessionStore(Session $session) {
+		$this->session = $session;
+	}
+
+	/**
+	 * Get a validation factory instance.
+	 *
+	 * @return \Illuminate\Contracts\Validation\Factory
+	 */
+	protected function getValidationFactory() {
+		return app(Factory::class);
 	}
 
 }

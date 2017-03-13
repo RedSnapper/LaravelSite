@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Formlets\UserComposite;
 use App\Http\Formlets\UserEmailFormlet;
 use App\User;
 use Illuminate\Http\Request;
@@ -14,11 +15,11 @@ class UserController extends Controller {
 	 */
 	private $user;
 	/**
-	 * @var UserFormlet
+	 * @var UserComposite
 	 */
 	private $form;
 
-	public function __construct(User $user,UserFormlet $form) {
+	public function __construct(User $user,UserComposite $form) {
 		$this->user = $user;
 		$this->form = $form;
 	}

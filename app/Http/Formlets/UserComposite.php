@@ -8,6 +8,8 @@
 
 namespace App\Http\Formlets;
 
+use Illuminate\Database\Eloquent\Model;
+
 class UserComposite extends Formlet {
 
 	protected $view = "user.composite";
@@ -16,10 +18,15 @@ class UserComposite extends Formlet {
 
 	public function prepareForm(){
 		$this->addFormlet(UserFormlet::class,'user');
-		$this->addFormlet(UserFormlet::class,'bar');
+		$this->addFormlet(UserProfileForm::class,'profile');
 	}
 
 	public function rules():array{
 		return [];
 	}
+
+	public function persist():Model {
+		dd($this->fields());
+	}
+
 }
