@@ -41,10 +41,15 @@ class UserComposite extends Formlet {
 
 	//update
 	public function edit(): Model {
-		dd($this->fields());
+
 		$user = $this->models['user'];
+
+		$user->roles()->sync($this->fields('roles.role'));
+
 		$user->fill($this->fields('user'))->save();
-		$user->profile->fill($this->fields('profile'))->save(); //remember to set the nominal primary key.
+
+		$user->profile->fill($this->fields('profile'))->save();
+
 		return $user;
 	}
 

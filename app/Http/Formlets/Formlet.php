@@ -430,7 +430,7 @@ abstract class Formlet {
 		if(is_null($name)) {
 			return $this->request->all();
 		} else {
-			return $this->request->get($name);
+			return $this->request->input($name);
 		}
 	}
 
