@@ -5,6 +5,7 @@ use App\Http\Fields\Checkbox;
 use App\Http\Fields\Input;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class UserFormlet extends Formlet {
 
@@ -21,9 +22,14 @@ class UserFormlet extends Formlet {
 		$this->user = $user;
 	}
 
+
+	public function prepareModels() {
+		$user = $this->user->find($this->getKey());
+		$this->setModel($user); //needed for the unique email.
+	}
+
 	public function prepareForm(){
 
-		
 		$field = new Input('text','name');
 		$this->add(
 		  $field->setLabel('Name')
@@ -44,18 +50,24 @@ class UserFormlet extends Formlet {
 	public function rules():array{
 		return [
 		  'name' => 'required|max:255',
-		  'email' => 'required|email|max:255|unique:users',
+			'email' => ['required','email','max:255',Rule::unique('users')->ignore($this->getKey())],
 		  'password' => 'required|min:6|confirmed'
 		];
 	}
 
-	public function persist():Model {
-
+	public function edit(): Model {
 		$this->model->fill($this->fields());
 		$this->model->save();
-
 		return $this->model;
 	}
+
+
+	public function persist():Model {
+		$user = User::create($this->fields());
+		return $user;
+	}
+
+
 
 
 }

@@ -25,3 +25,4 @@ class UserProfileForm extends Formlet {
 
 
 }
+

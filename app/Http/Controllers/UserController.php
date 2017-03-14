@@ -13,20 +13,14 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller {
 
 	/**
-	 * @var User
-	 */
-	private $user;
-	/**
 	 * @var UserComposite
 	 */
 	private $form;
-
-	public function __construct(User $user,UserComposite $form) {
+//		UserFormlet / UserComposite
+	public function __construct(UserComposite $form) {
 		//DB::listen(function($sql) {
 		//	print("<code>" . $sql->sql . '  ' . print_r($sql->bindings,true) . "</code><br />" );
 		//});
-
-		$this->user = $user;
 		$this->form = $form;
 	}
 
@@ -35,9 +29,8 @@ class UserController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		$users = $this->user->orderBy('email')->paginate(10);
-
+	public function index(User $user) {
+		$users = $user->orderBy('email')->paginate(10);
 		return view("user.index", compact('users'));
 	}
 
@@ -51,7 +44,6 @@ class UserController extends Controller {
 		$form = $form->create(
 		  ['route' => 'user.store']
 		)->render();
-
 		return view('user.form', compact('form'));
 	}
 
@@ -62,13 +54,7 @@ class UserController extends Controller {
 	 */
 	public function create(User $user) {
 		$this->form->setCreating(true);
-		$this->form->setModel($user);
-
-		$form = $this->form->create(
-		  ['route' => 'user.store']
-		)->render();
-
-		return $form;
+		return $this->form->renderWith(['route' => 'user.store']);
 	}
 
 	/**
@@ -77,12 +63,9 @@ class UserController extends Controller {
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(User $user,Request $request) {
+	public function store(Request $request) {
 		$this->form->setCreating(true);
-		$this->form->setModel($user);
-
 		$user = $this->form->store();
-
 		return redirect()->route('user.edit', $user->id);
 	}
 
@@ -91,27 +74,16 @@ class UserController extends Controller {
 	 * @return \Illuminate\Contracts\View\View
 	 */
 	public function edit($id) {
-
-		$user = User::with('profile')->find($id);
-
-		$this->form->addModel('user',$user);
-		$this->form->addModel('profile',$user->profile);
-
-		return $this->form->create(
-		  [
-			'route'  => ['user.update', $user->id],
+		$this->form->setKey($id);
+		return $this->form->renderWith([
+			'route'  => ['user.update', $id],
 			'method' => 'PATCH'
-		  ]
-		)->render();
-
+		]);
 	}
 
 	public function update($id) {
-		$user = User::with('profile')->find($id);
-		$this->form->addModel('user',$user); //needed for the unique email.
-		$this->form->addModel('profile',$user->profile);
-		$this->form->update();
-
+		$this->form->setKey($id);
+		$user = $this->form->update();
 		return redirect()->route('user.index');
 	}
 
@@ -122,7 +94,6 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-
 		return redirect()->back();
 	}
 }

@@ -113,6 +113,12 @@ abstract class Formlet {
 	 */
 	protected $name = "";
 
+	protected $key;
+
+	public function getKey() {
+		return $this->key;
+	}
+
 	abstract public function prepareForm();
 
 	public function rules(): array {
@@ -192,6 +198,9 @@ abstract class Formlet {
 		return [];
 	}
 
+	public function renderWith($modes) {
+		return $this->create($modes)->render();
+	}
 	public function store() {
 
 		$this->prepareForm();
@@ -203,6 +212,15 @@ abstract class Formlet {
 		}
 	}
 
+	private function setModels() {
+		if (isset($this->key)) {
+			$this->prepareModels();
+		}
+	}
+
+	protected function prepareModels() {
+	}
+
 	public function persist(): Model {
 	}
 
@@ -210,8 +228,8 @@ abstract class Formlet {
 	}
 
 	public function update() {
-
 		$this->prepareForm();
+		$this->setModels();
 		$this->assignModels();
 
 		if ($this->isValid()) {
@@ -394,8 +412,12 @@ abstract class Formlet {
 	 *
 	 * @return array
 	 */
-	public function fields() {
-		return $this->request->all();
+	public function fields($name = null) {
+		if(is_null($name)) {
+			return $this->request->all();
+		} else {
+			return $this->request->get($name);
+		}
 	}
 
 	private function assignModels() {
@@ -407,8 +429,8 @@ abstract class Formlet {
 		}
 	}
 	public function render() {
-
 		$this->prepareForm();
+		$this->setModels();
 		$this->assignModels();
 
 		$this->populate();

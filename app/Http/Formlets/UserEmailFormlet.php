@@ -23,7 +23,7 @@ class UserEmailFormlet extends Formlet {
 
 		return [
 		  'name' => 'required|max:255',
-		  'email' => ['required','email','max:255',Rule::unique('users')->ignore($this->getModel()->id)]
+		  'email' => ['required','email','max:255',Rule::unique('users')->ignore($this->getKey())]
 		];
 	}
 

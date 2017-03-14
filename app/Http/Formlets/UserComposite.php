@@ -22,6 +22,12 @@ class UserComposite extends Formlet {
 		$this->creating = $creating;
 	}
 
+	public function prepareModels() {
+		$user = User::with('profile')->find($this->getKey());
+		$this->addModel('user',$user); //needed for the unique email.
+		$this->addModel('profile',$user->profile);
+	}
+
 		public function prepareForm(){
 		if($this->creating) {
 			$this->addFormlet('user',UserFormlet::class);
@@ -33,15 +39,14 @@ class UserComposite extends Formlet {
 
 	public function edit(): Model {
 		$user = $this->models['user'];
-		$user->fill($this->request->get('user'))->save();
-		$user->profile->fill($this->request->get('profile'))->save(); //remember to set the nominal primary key.
+		$user->fill($this->fields('user'))->save();
+		$user->profile->fill($this->fields('profile'))->save(); //remember to set the nominal primary key.
 		return $user;
 	}
 
-
 	public function persist():Model {
-		$user = User::create($this->request->get('user'));
-		$user->profile()->create($this->request->get('profile'));
+		$user = User::create($this->fields('user'));
+		$user->profile()->create($this->fields('profile'));
 		return $user;
 	}
 
