@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserFormlet extends Formlet {
 
-	protected $view = "forms.auto";
+//	protected $view = "forms.auto";
 
 	protected $formView = "user.form";
 

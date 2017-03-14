@@ -83,6 +83,7 @@ abstract class Formlet {
 	 */
 
 	protected $formlets = [];
+	protected $models = [];
 
 	/**
 	 * The reserved form open attributes.
@@ -114,9 +115,11 @@ abstract class Formlet {
 
 	abstract public function prepareForm();
 
-	abstract public function rules(): array;
+	public function rules(): array {
+		return [];
+	}
 
-	public function addFormlet(string $class, string $name) {
+	public function addFormlet(string $name,string $class) {
 		$formlet = app()->make($class);
 
 		$formlet->setName($name);
@@ -124,8 +127,6 @@ abstract class Formlet {
 		$formlet->prepareForm();
 
 		$formlet->setFieldNames();
-
-		$formlet->populate();
 
 		$this->formlets[$name] = $formlet;
 	}
@@ -194,6 +195,8 @@ abstract class Formlet {
 	public function store() {
 
 		$this->prepareForm();
+		$this->assignModels();
+
 
 		if ($this->isValid()) {
 			return $this->persist();
@@ -209,6 +212,7 @@ abstract class Formlet {
 	public function update() {
 
 		$this->prepareForm();
+		$this->assignModels();
 
 		if ($this->isValid()) {
 			return $this->edit();
@@ -220,6 +224,10 @@ abstract class Formlet {
 	 */
 	public function getName(): string {
 		return $this->name;
+	}
+
+	public function setKey($key) {
+		$this->key = $key;
 	}
 
 	/**
@@ -366,6 +374,11 @@ abstract class Formlet {
 		$this->model = $model;
 	}
 
+	public function addModel($name,$model) {
+		$this->models[$name] = $model;
+	}
+
+
 	/**
 	 * Add a field to the formlet
 	 *
@@ -385,9 +398,19 @@ abstract class Formlet {
 		return $this->request->all();
 	}
 
+	private function assignModels() {
+		foreach ($this->formlets as $name => $formlet) {
+			if(isset($this->models[$name])) {
+				$formlet->setModel([$name => $this->models[$name]]);
+			}
+			$formlet->assignModels();
+		}
+	}
 	public function render() {
 
 		$this->prepareForm();
+		$this->assignModels();
+
 		$this->populate();
 
 		$data = [
@@ -406,9 +429,9 @@ abstract class Formlet {
 			$formlets = [];
 
 			foreach ($this->formlets as $name => $formlet) {
-
 				$formlets[$name] = $formlet->renderFormlets();
 			}
+
 			return view($this->view, compact('formlets'));
 		} else {
 			return $this->renderFormlet();
@@ -569,6 +592,11 @@ abstract class Formlet {
 				$this->$type($field);
 			}
 		}
+
+		foreach($this->formlets as $formlet) {
+			$formlet->populate();
+		}
+
 	}
 
 	protected function transformGuardedAttributes(){
@@ -652,6 +680,14 @@ abstract class Formlet {
 	 */
 	protected function getValidationFactory() {
 		return app(Factory::class);
+	}
+
+	protected function getModel() : Model {
+		if (isset($this->name)) {
+			return $this->model[$this->name];
+		} else {
+			return $this->model;
+		}
 	}
 
 	/**

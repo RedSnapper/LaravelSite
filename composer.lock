@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "50afb965d88b752914e3449b96c34332",
+    "content-hash": "cd7b07aad99af068cb351ad37c161e4f",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -1099,11 +1099,16 @@
         {
             "name": "rs/nview-laravel",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RedSnapper/LaravelNView.git",
+                "reference": "43bdd7edcfa1a3cbafe219983ee9466591b47f2b"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/param/Code/snapper/laravel/nview",
-                "reference": "159062dbaddce05345ef184fa78d3aa265e4174d",
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/RedSnapper/LaravelNView/zipball/43bdd7edcfa1a3cbafe219983ee9466591b47f2b",
+                "reference": "43bdd7edcfa1a3cbafe219983ee9466591b47f2b",
+                "shasum": ""
             },
             "require": {
                 "illuminate/console": "5.4.*",
@@ -1127,7 +1132,12 @@
                     "email": "contact@redsnapper.net"
                 }
             ],
-            "description": "Laravel NView"
+            "description": "Laravel NView",
+            "support": {
+                "source": "https://github.com/RedSnapper/LaravelNView/tree/master",
+                "issues": "https://github.com/RedSnapper/LaravelNView/issues"
+            },
+            "time": "2017-03-13T10:58:53+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

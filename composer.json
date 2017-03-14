@@ -6,12 +6,8 @@
     "type": "project",
     "repositories": [
         {
-            "type": "path",
-            "url": "/Users/param/Code/snapper/laravel/nview"
-        },
-        {
-            "type": "path",
-            "url": "/Users/param/Code/snapper/laravel/form"
+            "type": "vcs",
+            "url": "https://github.com/RedSnapper/LaravelNView.git"
         }
     ],
     "require": {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Formlets\UserComposite;
 use App\Http\Formlets\UserEmailFormlet;
 use App\User;
+use App\UserProfile;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserFormlet;
 
@@ -55,7 +56,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function create(User $user) {
-
+		$this->form->setCreating(true);
 		$this->form->setModel($user);
 
 		$form = $this->form->create(
@@ -72,7 +73,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(User $user,Request $request) {
-
+		$this->form->setCreating(true);
 		$this->form->setModel($user);
 
 		$user = $this->form->store();
@@ -82,28 +83,28 @@ class UserController extends Controller {
 
 	/**
 	 * @param User     $user
-	 * @param UserForm $form
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @return \Illuminate\Contracts\View\View
 	 */
-	public function edit(User $user, UserEmailFormlet $form) {
+	public function edit($id) {
 
-		$form->setModel($user);
+		$user = User::with('profile')->find($id);
 
-		$form = $form->create(
+		$this->form->addModel('user',$user);
+		$this->form->addModel('profile',$user->profile);
+
+		return $this->form->create(
 		  [
 			'route'  => ['user.update', $user->id],
 			'method' => 'PATCH'
 		  ]
 		)->render();
 
-		return $form;
 	}
 
-	public function update(UserEmailFormlet $form, User $user) {
-
-		$form->setModel($user);
-
-		$user = $form->update();
+	public function update($id) {
+		$user = User::with('profile')->find($id);
+		$this->form->addModel('user',$user); //needed for the unique email.
+		$this->form->update();
 
 		return redirect()->route('user.index');
 	}

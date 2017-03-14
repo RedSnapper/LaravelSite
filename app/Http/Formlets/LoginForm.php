@@ -33,10 +33,4 @@ class LoginForm extends Formlet {
 
 	}
 
-	public function rules(): array {
-		return [];
-	}
-
-
-
 }

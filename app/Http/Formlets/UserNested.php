@@ -15,11 +15,8 @@ class UserNested extends Formlet {
 	protected $formView = "user.form";
 
 	public function prepareForm() {
-		$this->addFormlet(UserFormlet::class, 'user');
-		$this->addFormlet(UserComposite::class, 'bar');
+		$this->addFormlet('user',UserFormlet::class);
+		$this->addFormlet('profile',UserComposite::class);
 	}
 
-	public function rules(): array {
-		return [];
-	}
 }
