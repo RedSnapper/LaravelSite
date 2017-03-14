@@ -743,12 +743,29 @@ abstract class Formlet {
 		return $errors->all();
 	}
 
+
+
+
 	protected function getFieldPrefix($field){
 
 		$name = $this->getName();
 
-		return $name == "" ? $field : "{$name}[$field]";
+		if($name == ""){
+			return $field;
+		}
+
+		$parts = explode('[',$field);
+
+		if(count($parts) == 1){
+			return "{$name}[$field]";
+		}
+
+		$field =  array_pull($parts,0);
+		$extra = implode('[',$parts);
+
+		return "{$name}[$field][$extra";
 	}
+
 
 	/**
 	 * Get the URL we should redirect to.
