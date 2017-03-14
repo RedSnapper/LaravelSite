@@ -6,8 +6,8 @@
     "type": "project",
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/RedSnapper/LaravelNView.git"
+            "type": "path",
+            "url": "/Users/Shared/nview"
         }
     ],
     "require": {
