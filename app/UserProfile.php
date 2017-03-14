@@ -11,7 +11,9 @@ class UserProfile extends Model
 	 *
 	 * @var array
 	 */
+	protected $primaryKey = "user_id";
 	protected $fillable = [
 	  'telephone'
 	];
+
 }

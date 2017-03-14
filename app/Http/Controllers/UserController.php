@@ -8,6 +8,7 @@ use App\User;
 use App\UserProfile;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserFormlet;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller {
 
@@ -21,6 +22,10 @@ class UserController extends Controller {
 	private $form;
 
 	public function __construct(User $user,UserComposite $form) {
+		//DB::listen(function($sql) {
+		//	print("<code>" . $sql->sql . '  ' . print_r($sql->bindings,true) . "</code><br />" );
+		//});
+
 		$this->user = $user;
 		$this->form = $form;
 	}
@@ -104,6 +109,7 @@ class UserController extends Controller {
 	public function update($id) {
 		$user = User::with('profile')->find($id);
 		$this->form->addModel('user',$user); //needed for the unique email.
+		$this->form->addModel('profile',$user->profile);
 		$this->form->update();
 
 		return redirect()->route('user.index');

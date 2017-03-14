@@ -34,9 +34,8 @@ class UserComposite extends Formlet {
 	public function edit(): Model {
 		$user = $this->models['user'];
 		$user->fill($this->request->get('user'))->save();
-		$user->profile()->update($this->request->get('profile'));
-
-		return $this->models['user'];
+		$user->profile->fill($this->request->get('profile'))->save(); //remember to set the nominal primary key.
+		return $user;
 	}
 
 
