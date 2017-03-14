@@ -1,0 +1,18 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
+
+    <h1>Roles</h1>
+
+    <ul data-v.foreach="roles" data-v.name="role" class="list-group">
+        <li class="list-group-item">
+            <a data-v.url="/role/{role.id}/edit"><span data-v.replace="role.name"/></a>
+        </li>
+    </ul>
+
+    <div data-v.pagination="layouts.pagination" data-v.name="roles"/>
+
+    <div class="well text-right">
+        <a href="/role/create" class="btn btn-primary">New Role</a>
+    </div>
+
+</div>

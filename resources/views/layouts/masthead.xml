@@ -1,0 +1,7 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" class="blog-masthead">
+    <div class="container">
+        <div data-v.contents="stuff" />
+    </div>
+    <div data-v.contents="wibble" />
+</div>
