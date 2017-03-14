@@ -3,6 +3,7 @@
 
     <div data-v.replace="formlets.user"/>
     <div data-v.replace="formlets.profile"/>
+    <div data-v.replace="formlets.roles"/>
 
 </div>
 

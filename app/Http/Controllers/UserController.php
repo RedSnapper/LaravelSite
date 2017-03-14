@@ -74,7 +74,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Contracts\View\View
 	 */
 	public function edit($id) {
-		$this->form->setKey($id);
+		$this->form->setKey($id,'user');
 		return $this->form->renderWith([
 			'route'  => ['user.update', $id],
 			'method' => 'PATCH'
@@ -82,7 +82,7 @@ class UserController extends Controller {
 	}
 
 	public function update($id) {
-		$this->form->setKey($id);
+		$this->form->setKey($id,'user');
 		$user = $this->form->update();
 		return redirect()->route('user.index');
 	}

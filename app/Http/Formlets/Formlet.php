@@ -84,6 +84,7 @@ abstract class Formlet {
 
 	protected $formlets = [];
 	protected $models = [];
+	protected $keys = [];
 
 	/**
 	 * The reserved form open attributes.
@@ -115,8 +116,13 @@ abstract class Formlet {
 
 	protected $key;
 
-	public function getKey() {
-		return $this->key;
+	public function getKey($name = null) {
+		if(is_null($name)) {
+			return $this->key;
+		} else {
+			return @$this->keys[$name];
+		}
+
 	}
 
 	abstract public function prepareForm();
@@ -133,6 +139,10 @@ abstract class Formlet {
 		$formlet->prepareForm();
 
 		$formlet->setFieldNames();
+
+		if(isset($this->keys[$name])) {
+			$formlet->setKey($this->keys[$name]);
+		}
 
 		$this->formlets[$name] = $formlet;
 	}
@@ -213,7 +223,7 @@ abstract class Formlet {
 	}
 
 	private function setModels() {
-		if (isset($this->key)) {
+		if (!is_null($this->getKey()) || count($this->keys) > 0) {
 			$this->prepareModels();
 		}
 	}
@@ -244,8 +254,12 @@ abstract class Formlet {
 		return $this->name;
 	}
 
-	public function setKey($key) {
-		$this->key = $key;
+	public function setKey($key,$name = null) {
+		if(is_null($name)) {
+			$this->key = $key;
+		} else {
+			$this->keys[$name] = $key;
+		}
 	}
 
 	/**

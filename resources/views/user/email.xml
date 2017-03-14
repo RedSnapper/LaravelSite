@@ -1,8 +1,0 @@
-<!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="forms.main">
-
-    <span data-v.field="name"/>
-    <span data-v.field="email"/>
-
-</div>
-

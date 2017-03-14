@@ -24,6 +24,9 @@
                     <li>
                         <a data-v.url="/user">Users</a>
                     </li>
+                    <li>
+                        <a data-v.url="/role">Roles</a>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

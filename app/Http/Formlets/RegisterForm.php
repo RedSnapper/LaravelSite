@@ -11,9 +11,7 @@ namespace App\Http\Formlets;
 use App\Http\Fields\Input;
 
 class RegisterForm extends Formlet {
-
 	protected $formView = "auth.register";
-
 	protected $guarded = ['password', 'password_confirmation'];
 
 	public function prepareForm() {
