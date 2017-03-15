@@ -541,7 +541,7 @@ abstract class Formlet {
 	 */
 	public function old($name) {
 		if (isset($this->session)) {
-			return $this->session->getOldInput($this->transformKey($name));
+			return $this->session->getOldInput($this->transformKey($this->getFieldPrefix($name)));
 		}
 	}
 
