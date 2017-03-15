@@ -44,7 +44,7 @@ class UserComposite extends Formlet {
 
 		$user = $this->models['user'];
 
-		$user->roles()->sync($this->fields('roles.role'));
+		$user->roles()->sync($this->fields('roles'));
 
 		$user->fill($this->fields('user'))->save();
 

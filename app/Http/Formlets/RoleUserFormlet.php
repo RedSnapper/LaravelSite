@@ -27,7 +27,7 @@ class RoleUserFormlet extends Formlet {
 
 		$roles = Role::all();
 		foreach ($roles as $role) {
-			$this->add((new Checkbox('role[]',$role->id))
+			$this->add((new Checkbox('',$role->id))
 				->setLabel($role->name)
 			);
 		}
