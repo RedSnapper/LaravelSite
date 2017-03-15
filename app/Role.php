@@ -10,4 +10,11 @@ class Role extends Model
 		'name'
 	];
 
+	/**
+	 * Users for a Role.
+	 **/
+	public function users() {
+		return $this->belongsToMany(User::class);
+	}
+
 }
