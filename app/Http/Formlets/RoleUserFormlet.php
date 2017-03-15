@@ -21,16 +21,14 @@ class RoleUserFormlet extends Formlet {
 		$this->user = $user;
 	}
 
-
 	public function prepareForm(){
-
-		$roles = Role::all();
-		foreach ($roles as $role) {
-			$this->add((new Checkbox('',$role->id))
-				->setLabel($role->name)
+		$model =  $this->getName() == 'roles' ? $this->role : $this->user;
+		$items = $model->all();
+		foreach ($items as $item) {
+			$this->add((new Checkbox('',$item->id))
+				->setLabel($item->name)
 			);
 		}
-
 	}
 
 }
