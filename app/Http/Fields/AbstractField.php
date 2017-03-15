@@ -14,6 +14,13 @@ abstract class AbstractField {
 	protected $name;
 
 	/**
+	 * Fieldname of the field
+	 *
+	 * @var string
+	 */
+	protected $fieldName;
+
+	/**
 	 * Label value
 	 *
 	 * @var string|null
@@ -110,6 +117,20 @@ abstract class AbstractField {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getFieldName(): string {
+		return $this->fieldName ?? $this->getName();
+	}
+
+	/**
+	 * @param string $fieldName
+	 */
+	public function setFieldName(string $fieldName) {
+		$this->fieldName = $fieldName;
+	}
+
+	/**
 	 * @return string|null
 	 */
 	public function getLabel() {
@@ -195,7 +216,7 @@ abstract class AbstractField {
 		$attributes = $this->attributes;
 		$value = $this->getValue();
 		$label = $this->getLabel();
-		$name = $this->getName();
+		$name = $this->getFieldName();
 		$view = $this->getView();
 
 		return compact('attributes', 'value', 'label', 'name', 'view');

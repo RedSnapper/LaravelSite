@@ -156,7 +156,10 @@ abstract class Formlet {
 		}
 
 		foreach ($this->formlets as $formlet) {
-			$errors = array_merge($errors,$formlet->validate($this->request->get($formlet->getName()), $formlet->rules()));
+
+			$request = $this->request->get($formlet->getName()) ?? [];
+			$errors = array_merge($errors,$formlet->validate($request, $formlet->rules()));
+
 		}
 
 		return $this->redirectIfErrors($errors);
@@ -430,14 +433,14 @@ abstract class Formlet {
 		if(is_null($name)) {
 			return $this->request->all();
 		} else {
-			return $this->request->input($name);
+			return $this->request->input($name) ?? [];
 		}
 	}
 
 	private function assignModels() {
 		foreach ($this->formlets as $name => $formlet) {
 			if(isset($this->models[$name])) {
-				$formlet->setModel([$name => $this->models[$name]]);
+				$formlet->setModel($this->models[$name]);
 			}
 			$formlet->assignModels();
 		}
@@ -493,7 +496,7 @@ abstract class Formlet {
 
 	protected function setFieldNames() {
 		foreach ($this->fields as $field) {
-			$field->setName($this->getFieldPrefix($field->getName()));
+			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
 	}
 
@@ -562,7 +565,13 @@ abstract class Formlet {
 		//if (method_exists($this->model, 'getFormValue')) {
 		//	return $this->model->getFormValue($this->transformKey($name));
 		//}
-		return data_get($this->model, $this->transformKey($name));
+		$name = $this->transformKey($name);
+		if($name == ""){
+			return $this->model;
+		}
+
+
+		return data_get($this->model, $name);
 	}
 
 	protected function setFieldValue(AbstractField $field): AbstractField {

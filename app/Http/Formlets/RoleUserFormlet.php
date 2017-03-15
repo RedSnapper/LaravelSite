@@ -9,7 +9,6 @@ namespace App\Http\Formlets;
 
 //Which roles does a user have?
 use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
 use App\Role;
 use App\User;
 

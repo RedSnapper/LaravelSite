@@ -84,7 +84,7 @@ class UserController extends Controller {
 	public function update($id) {
 		$this->form->setKey($id,'user');
 		$user = $this->form->update();
-		return redirect()->route('user.index');
+		return redirect()->route('user.edit',$user->id);
 	}
 
 	/**
