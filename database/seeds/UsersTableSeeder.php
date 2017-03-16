@@ -10,6 +10,7 @@ class UsersTableSeeder extends Seeder {
 	 */
 	public function run() {
 		$this->createUsers(1, ['email' => 'param@redsnapper.net', 'name' => 'Param']);
+		$this->createUsers(1, ['email' => 'ben@redsnapper.net', 'name' => 'Ben']);
 		$this->createUsers(5);
 	}
 
