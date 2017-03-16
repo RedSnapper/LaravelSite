@@ -16,11 +16,7 @@ class UserController extends Controller {
 	 * @var UserComposite
 	 */
 	private $form;
-//		UserFormlet / UserComposite
 	public function __construct(UserComposite $form) {
-		//DB::listen(function($sql) {
-		//	print("<code>" . $sql->sql . '  ' . print_r($sql->bindings,true) . "</code><br />" );
-		//});
 		$this->form = $form;
 	}
 
@@ -40,8 +36,8 @@ class UserController extends Controller {
 	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show(\App\Http\Forms\UserForm $form) {
-		$form = $form->create(
+	public function show() {
+		$form = $this->form->create(
 		  ['route' => 'user.store']
 		)->render();
 		return view('user.form', compact('form'));
@@ -49,38 +45,42 @@ class UserController extends Controller {
 
 	/**
 	 * Show the form for creating a new resource.
+	 * This is an empty form.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create(User $user) {
-		$this->form->setCreating(true);
-		return $this->form->renderWith(['route' => 'user.store']);
+	public function create($id = null) {
+		return $this->form->renderWith(['route' => 'user.store']); //store is the method for storing a new model
 	}
 
 	/**
-	 * Store a newly created resource in storage.
+	 * Edit is called when wishing to show the record for editing.
+	 * @param User     $user
+	 * @return \Illuminate\Contracts\View\View
+	 */
+	public function edit($id = null) {
+		$this->form->setKey($id,'user');
+		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']); //update method for updating an existing model.
+	}
+
+
+	/**
+	 * Store a newly created resource in storage. It is the receiver from create() above.
 	 *
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request) {
-		$this->form->setCreating(true);
 		$user = $this->form->store();
 		return redirect()->route('user.edit', $user->id);
 	}
 
 	/**
-	 * @param User     $user
-	 * @return \Illuminate\Contracts\View\View
+	 * update an existing resource in storage. It is the receiver from edit() above.
+	 *
+	 * @param  \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($id) {
-		$this->form->setKey($id,'user');
-		return $this->form->renderWith([
-			'route'  => ['user.update', $id],
-			'method' => 'PATCH'
-		]);
-	}
-
 	public function update($id) {
 		$this->form->setKey($id,'user');
 		$user = $this->form->update();

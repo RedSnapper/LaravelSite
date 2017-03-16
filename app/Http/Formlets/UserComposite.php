@@ -9,18 +9,12 @@
 namespace App\Http\Formlets;
 
 use App\User;
-use App\UserProfile;
 use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {
 
-	private $creating = false;
 	protected $view = "user.composite";
 	protected $formView = "user.form";
-
-	public function setCreating(bool $creating = false) {
-		$this->creating = $creating;
-	}
 
 	public function prepareModels() {
 		$user = User::with('profile')->find($this->getKey('user'));
@@ -30,7 +24,7 @@ class UserComposite extends Formlet {
 	}
 
 		public function prepareForm(){
-		if($this->creating) {
+		if(count($this->keys) == 0) {
 			$this->addFormlet('user',UserFormlet::class);
 		} else {
 			$this->addFormlet('user',UserEmailFormlet::class);
@@ -41,15 +35,10 @@ class UserComposite extends Formlet {
 
 	//update
 	public function edit(): Model {
-
 		$user = $this->models['user'];
-
 		$user->roles()->sync($this->fields('roles'));
-
 		$user->fill($this->fields('user'))->save();
-
 		$user->profile->fill($this->fields('profile'))->save();
-
 		return $user;
 	}
 
