@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
-class Formlet {
+abstract class Formlet {
 
 	/**
 	 * @var UrlGenerator
@@ -117,9 +117,7 @@ class Formlet {
 		return $this->key;
 	}
 
-	public function prepareForm() {
-		//needs to be overloaded.
-	}
+	abstract public function prepareForm();
 
 	public function rules(): array {
 		return [];
@@ -164,7 +162,6 @@ class Formlet {
 	/**
 	 * Create the response for when a request fails validation.
 	 *
-	 * @param  \Illuminate\Http\Request $request
 	 * @param  array                    $errors
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
@@ -200,20 +197,14 @@ class Formlet {
 		return $this->create($modes)->render();
 	}
 	public function store() {
+
 		$this->prepare();
-
-		//$this->prepareForm();
-		//$this->assignModels();
-
 
 		if ($this->isValid()) {
 			return $this->persist();
 		}
 	}
 
-
-	protected function prepareModels() {
-	}
 
 	public function persist(): Model {
 	}
@@ -385,10 +376,6 @@ class Formlet {
 	public function setModel($model) {
 		$this->model = $model;
 	}
-
-	//public function addModel($name,$model) {
-	//	$this->models[$name] = $model;
-	//}
 
 
 	/**
