@@ -15,20 +15,14 @@ class UserFormlet extends Formlet {
 
 	protected $guarded = ['password','password_confirmation'];
 
-	protected $user;
 
 
 	public function __construct(User $user) {
-		$this->user = $user;
+		$this->setModel($user);
 	}
 
 
-	public function prepareModels() {
-		$user = $this->user->find($this->getKey());
-		$this->setModel($user); //needed for the unique email.
-	}
-
-	public function prepareForm(){
+	public function prepareForm() {
 
 		$field = new Input('text','name');
 		$this->add(

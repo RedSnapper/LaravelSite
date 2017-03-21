@@ -20,20 +20,15 @@ class RoleComposite extends Formlet {
 		$this->creating = $creating;
 	}
 
-	protected function prepareModels() {
-		$role = $this->role->find($this->getKey());
-		$this->addModel('role',$role); //needed for the unique email.
-		$this->addModel('users',$role->users);
-	}
-
 	public function prepareForm(){
-		$this->addFormlet('role',RoleFormlet::class);
-		$this->addFormlet('users',RoleUserFormlet::class);
+		$role = $this->role->find($this->getKey());
+		$this->addFormlet('role',RoleFormlet::class)->setModel($role);
+		$this->addFormlet('users',RoleUserFormlet::class)->setModel($role->users);
 	}
 
 	//update
 	public function edit(): Model {
-		$role = $this->models['role'];
+		$role = $this->formlets['role']->getModel();
 		$role->users()->sync($this->fields('users'));
 		$role->fill($this->fields('role'))->save();
 		return $role;

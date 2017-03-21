@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder {
 
-	protected $toTruncate=['users','user_profiles'];
+	protected $toTruncate=['users','user_profiles','roles'];
 
 	/**
 	 * Run the database seeds.
@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder {
 		Schema::enableForeignKeyConstraints();
 
 		$this->call(UsersTableSeeder::class);
+		$this->call(RolesTableSeeder::class);
 	}
 }

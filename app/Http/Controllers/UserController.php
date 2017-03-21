@@ -36,10 +36,12 @@ class UserController extends Controller {
 	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show() {
+	public function show($id = null) {
 		$form = $this->form->create(
 		  ['route' => 'user.store']
-		)->render();
+		);
+		$form->setKey($id);
+		$form->render();
 		return view('user.form', compact('form'));
 	}
 
@@ -59,7 +61,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Contracts\View\View
 	 */
 	public function edit($id = null) {
-		$this->form->setKey($id,'user');
+		$this->form->setKey($id);
 		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']); //update method for updating an existing model.
 	}
 
@@ -82,7 +84,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update($id) {
-		$this->form->setKey($id,'user');
+		$this->form->setKey($id);
 		$user = $this->form->update();
 		return redirect()->route('user.edit',$user->id);
 	}

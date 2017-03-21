@@ -16,4 +16,8 @@ class UserProfile extends Model
 	  'telephone'
 	];
 
+	//public function user() {
+	//	return $this->hasOne(User::class);
+	//}
+
 }

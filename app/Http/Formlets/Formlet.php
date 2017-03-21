@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
-abstract class Formlet {
+class Formlet {
 
 	/**
 	 * @var UrlGenerator
@@ -82,8 +82,6 @@ abstract class Formlet {
 	 */
 
 	protected $formlets = [];
-	protected $models = [];
-	protected $keys = [];
 
 	/**
 	 * The reserved form open attributes.
@@ -115,43 +113,24 @@ abstract class Formlet {
 
 	protected $key;
 
-	public function getKey($name = null) {
-		if(is_null($name)) {
-			return $this->key;
-		} else {
-			return @$this->keys[$name];
-		}
-
+	public function getKey() {
+		return $this->key;
 	}
 
-	abstract public function prepareForm();
+	public function prepareForm() {
+		//needs to be overloaded.
+	}
 
 	public function rules(): array {
 		return [];
 	}
 
-	public function addFormlet(string $name,string $class) {
+	public function addFormlet(string $name,string $class) : Formlet {
 		$formlet = app()->make($class);
 		$formlet->name = $name;
 		$this->formlets[$name] = $formlet;
+		return $formlet;
 	}
-
-
-	//public function addFormlet(string $name,string $class) {
-	//	$formlet = app()->make($class);
-	//
-	//	$formlet->setName($name);
-	//
-	//	$formlet->prepareForm();
-	//
-	//	$formlet->setFieldNames();
-	//
-	//	if(isset($this->keys[$name])) {
-	//		$formlet->setKey($this->keys[$name]);
-	//	}
-	//
-	//	$this->formlets[$name] = $formlet;
-	//}
 
 	protected function isValid() {
 
@@ -244,10 +223,6 @@ abstract class Formlet {
 
 	public function update() {
 		$this->prepare();
-		//$this->prepareForm();
-		//$this->setModels();
-		//$this->assignModels();
-
 		if ($this->isValid()) {
 			return $this->edit();
 		}
@@ -260,12 +235,11 @@ abstract class Formlet {
 		return $this->name;
 	}
 
-	public function setKey($key,$name = null) {
-		if(is_null($name)) {
+	public function setKey($key) {
 			$this->key = $key;
-		} else {
-			$this->keys[$name] = $key;
-		}
+			if(isset($this->model)) {
+				$this->model = $this->model->find($this->key);
+			}
 	}
 
 	/**
@@ -412,9 +386,9 @@ abstract class Formlet {
 		$this->model = $model;
 	}
 
-	public function addModel($name,$model) {
-		$this->models[$name] = $model;
-	}
+	//public function addModel($name,$model) {
+	//	$this->models[$name] = $model;
+	//}
 
 
 	/**
@@ -428,6 +402,7 @@ abstract class Formlet {
 
 	/**
 	 * Fetch all fields from the form.
+	 * I want to change this so that we get stuff for 'this' formlet also, rather than all.
 	 *
 	 * @return array
 	 */
@@ -455,50 +430,17 @@ abstract class Formlet {
 		return view($this->formView, $data);
 	}
 
-	//private function assignModels() {
-	//	foreach ($this->formlets as $name => $formlet) {
-	//		if(isset($this->models[$name])) {
-	//			$formlet->setModel($this->models[$name]);
-	//		}
-	//		$formlet->assignModels();
-	//	}
-	//}
-
 	protected function prepare() {
 		$this->prepareForm();
-		// following was setModels()
-		if (!is_null($this->getKey()) || count($this->keys) > 0) {
-			$this->prepareModels();
-		}
 
 		foreach ($this->fields as $field) {
 			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
 
-		// following was assignModels()
 		foreach ($this->formlets as $name => $formlet) {
-			if(isset($this->keys[$name])) {
-				$formlet->setKey($this->keys[$name]);
-			}
-			if (isset($this->models[$name])) {
-				$formlet->setModel($this->models[$name]);
-			}
 			$formlet->prepare();
 		}
 
-
-		//foreach ($this->fields as $field) {
-		//	$field->setFieldName($this->getFieldPrefix($field->getName()));
-		//}
-		//foreach ($this->formlets as $name => $formlet) {
-		//	if(isset($this->keys[$name])) {
-		//		$formlet->setKey($this->keys[$name]);
-		//	}
-		//	if (isset($this->models[$name])) {
-		//		$formlet->setModel($this->models[$name]);
-		//	}
-		//	$formlet->prepare();
-		//}
 	}
 
 
@@ -768,9 +710,10 @@ abstract class Formlet {
 		return app(Factory::class);
 	}
 
-	protected function getModel() : Model {
-		if (isset($this->name)) {
-			return $this->model[$this->name];
+	//nested formlets need nested name.
+	protected function getModel($name = "") {
+		if (isset($this->formlets[$name])) {
+			return $this->formlets[$name]->getModel();
 		} else {
 			return $this->model;
 		}

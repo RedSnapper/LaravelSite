@@ -62,7 +62,7 @@ class RoleController extends Controller {
 	public function update($id) {
 		$this->form->setKey($id);
 		$role = $this->form->update();
-		return redirect()->route('role.index');
+		return redirect()->route('role.edit',$role->id);
 	}
 
 	/**

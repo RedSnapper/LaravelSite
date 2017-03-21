@@ -2,12 +2,17 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class UserEmailFormlet extends Formlet {
 	
 	protected $formView = "user.form";
+
+	public function __construct(User $user) {
+		$this->setModel($user);
+	}
 
 	public function prepareForm(){
 
@@ -20,18 +25,15 @@ class UserEmailFormlet extends Formlet {
 	}
 
 	public function rules():array{
-
+		$key = $this->model->getKey();
 		return [
 		  'name' => 'required|max:255',
-		  'email' => ['required','email','max:255',Rule::unique('users')->ignore($this->getKey())]
+		  'email' => ['required','email','max:255',Rule::unique('users')->ignore($key)]
 		];
 	}
 
-	public function edit():Model {
-
-		$this->model->fill($this->fields());
-		$this->model->save();
-
+	public function edit(): Model {
+		$this->model->fill($this->fields())->save();
 		return $this->model;
 	}
 
