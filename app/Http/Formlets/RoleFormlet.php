@@ -14,13 +14,9 @@ class RoleFormlet extends Formlet {
 	protected $role;
 
 	public function __construct(Role $role) {
-		$this->role = $role;
+		$this->setModel($role);
 	}
 
-	public function prepareModels() {
-		$role = $this->role->find($this->getKey());
-		$this->setModel($role); //needed for the unique email.
-	}
 
 	public function prepareForm(){
 

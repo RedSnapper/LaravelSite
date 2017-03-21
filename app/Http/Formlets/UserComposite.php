@@ -1,14 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 10/03/2017
- * Time: 15:31
- */
 
 namespace App\Http\Formlets;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {
@@ -31,7 +24,7 @@ class UserComposite extends Formlet {
 	public function edit() : Model {
 		$user = $this->getModel('user'); //gets model from formlet 'user'.
 		$user->fill($this->fields('user'))->save();
-		$user->roles->sync($this->fields('roles'));
+		$user->roles()->sync($this->fields('roles'));
 		$user->profile->fill($this->fields('profile'))->save();
 		return $user;
 	}
