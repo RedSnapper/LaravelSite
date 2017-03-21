@@ -3,18 +3,17 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\AbstractField;
+use App\Http\Fields\Hidden;
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
+use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Contracts\Routing\UrlGenerator;
-use Illuminate\Contracts\Validation\Validator;
-use App\Http\Fields\Hidden;
-
 use Illuminate\Validation\ValidationException;
 
 abstract class Formlet {
@@ -133,19 +132,26 @@ abstract class Formlet {
 
 	public function addFormlet(string $name,string $class) {
 		$formlet = app()->make($class);
-
-		$formlet->setName($name);
-
-		$formlet->prepareForm();
-
-		$formlet->setFieldNames();
-
-		if(isset($this->keys[$name])) {
-			$formlet->setKey($this->keys[$name]);
-		}
-
+		$formlet->name = $name;
 		$this->formlets[$name] = $formlet;
 	}
+
+
+	//public function addFormlet(string $name,string $class) {
+	//	$formlet = app()->make($class);
+	//
+	//	$formlet->setName($name);
+	//
+	//	$formlet->prepareForm();
+	//
+	//	$formlet->setFieldNames();
+	//
+	//	if(isset($this->keys[$name])) {
+	//		$formlet->setKey($this->keys[$name]);
+	//	}
+	//
+	//	$this->formlets[$name] = $formlet;
+	//}
 
 	protected function isValid() {
 
@@ -215,9 +221,10 @@ abstract class Formlet {
 		return $this->create($modes)->render();
 	}
 	public function store() {
+		$this->prepare();
 
-		$this->prepareForm();
-		$this->assignModels();
+		//$this->prepareForm();
+		//$this->assignModels();
 
 
 		if ($this->isValid()) {
@@ -225,11 +232,6 @@ abstract class Formlet {
 		}
 	}
 
-	private function setModels() {
-		if (!is_null($this->getKey()) || count($this->keys) > 0) {
-			$this->prepareModels();
-		}
-	}
 
 	protected function prepareModels() {
 	}
@@ -241,9 +243,10 @@ abstract class Formlet {
 	}
 
 	public function update() {
-		$this->prepareForm();
-		$this->setModels();
-		$this->assignModels();
+		$this->prepare();
+		//$this->prepareForm();
+		//$this->setModels();
+		//$this->assignModels();
 
 		if ($this->isValid()) {
 			return $this->edit();
@@ -420,7 +423,6 @@ abstract class Formlet {
 	 * @param AbstractField $field
 	 */
 	public function add(AbstractField $field) {
-
 		$this->fields[] = $field;
 	}
 
@@ -437,18 +439,10 @@ abstract class Formlet {
 		}
 	}
 
-	private function assignModels() {
-		foreach ($this->formlets as $name => $formlet) {
-			if(isset($this->models[$name])) {
-				$formlet->setModel($this->models[$name]);
-			}
-			$formlet->assignModels();
-		}
-	}
 	public function render() {
-		$this->prepareForm();
-		$this->setModels();
-		$this->assignModels();
+		$this->prepare();
+		//$this->setModels();
+		//$this->assignModels();
 
 		$this->populate();
 
@@ -460,6 +454,53 @@ abstract class Formlet {
 
 		return view($this->formView, $data);
 	}
+
+	//private function assignModels() {
+	//	foreach ($this->formlets as $name => $formlet) {
+	//		if(isset($this->models[$name])) {
+	//			$formlet->setModel($this->models[$name]);
+	//		}
+	//		$formlet->assignModels();
+	//	}
+	//}
+
+	protected function prepare() {
+		$this->prepareForm();
+		// following was setModels()
+		if (!is_null($this->getKey()) || count($this->keys) > 0) {
+			$this->prepareModels();
+		}
+
+		foreach ($this->fields as $field) {
+			$field->setFieldName($this->getFieldPrefix($field->getName()));
+		}
+
+		// following was assignModels()
+		foreach ($this->formlets as $name => $formlet) {
+			if(isset($this->keys[$name])) {
+				$formlet->setKey($this->keys[$name]);
+			}
+			if (isset($this->models[$name])) {
+				$formlet->setModel($this->models[$name]);
+			}
+			$formlet->prepare();
+		}
+
+
+		//foreach ($this->fields as $field) {
+		//	$field->setFieldName($this->getFieldPrefix($field->getName()));
+		//}
+		//foreach ($this->formlets as $name => $formlet) {
+		//	if(isset($this->keys[$name])) {
+		//		$formlet->setKey($this->keys[$name]);
+		//	}
+		//	if (isset($this->models[$name])) {
+		//		$formlet->setModel($this->models[$name]);
+		//	}
+		//	$formlet->prepare();
+		//}
+	}
+
 
 	protected function renderFormlets(): View {
 
