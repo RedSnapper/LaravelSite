@@ -18,5 +18,6 @@ class UsersTableSeeder extends Seeder {
 		factory(\App\User::class, $users)->create($attr)->each(function ($u) {
 			$u->profile()->save(factory(\App\UserProfile::class)->make());
 		});
+
 	}
 }

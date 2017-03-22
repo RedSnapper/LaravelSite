@@ -11,9 +11,14 @@ class Role extends Model
 	];
 
 	/**
-	 * Users for a Role.
+	 * many-many relations
 	 **/
-	public function users() {
+
+	//public function users() {
+	//	return $this->belongsToMany(User::class);
+	//}
+
+	public function mm() {
 		return $this->belongsToMany(User::class);
 	}
 

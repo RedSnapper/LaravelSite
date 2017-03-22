@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable {
 	use Notifiable;
@@ -44,9 +44,9 @@ class User extends Authenticatable {
 	}
 
 	/**
-	 * Roles for a User.
+	 * many-many relations Roles for a User.
 	 **/
-	public function roles() {
+	public function mm() {
 		return $this->belongsToMany(Role::class);
 	}
 

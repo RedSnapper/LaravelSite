@@ -179,9 +179,18 @@ abstract class Formlet {
 
 
 	public function persist(): Model {
+		if(isset($this->model)) {
+			$this->model = $this->model->create($this->fields());
+		}
+		return $this->model;
 	}
 
 	public function edit(): Model {
+		if(isset($this->model)) {
+			$this->model->fill($this->fields());
+			$this->model->save();
+		}
+		return $this->model;
 	}
 
 	public function update() {
@@ -200,9 +209,10 @@ abstract class Formlet {
 
 	public function setKey($key) {
 			$this->key = $key;
-			if(isset($this->model)) {
+			if(isset($this->model) && isset($this->key)) {
 				$this->model = $this->model->find($this->key);
 			}
+			return $this;
 	}
 
 	/**
@@ -216,10 +226,11 @@ abstract class Formlet {
 	 * Set the model instance on the form builder.
 	 *
 	 * @param  mixed $model
-	 * @return void
+	 * @return Formlet
 	 */
 	public function setModel($model) {
 		$this->model = $model;
+		return $this;
 	}
 
 
@@ -240,7 +251,11 @@ abstract class Formlet {
 	 */
 	public function fields($name = null) {
 		if(is_null($name)) {
-			return $this->request->all();
+			if($this->name != "") {
+				return $this->request->input($this->name) ?? [];
+			}	else {
+				return $this->request->all();
+			}
 		} else {
 			return $this->request->input($name) ?? [];
 		}
@@ -248,9 +263,6 @@ abstract class Formlet {
 
 	public function render() {
 		$this->prepare();
-		//$this->setModels();
-		//$this->assignModels();
-
 		$this->populate();
 
 		$data = [
@@ -377,9 +389,6 @@ abstract class Formlet {
 	 * @return mixed
 	 */
 	protected function getModelValueAttribute($name) {
-		//if (method_exists($this->model, 'getFormValue')) {
-		//	return $this->model->getFormValue($this->transformKey($name));
-		//}
 		$name = $this->transformKey($name);
 		if($name == ""){
 			return $this->model;
@@ -550,6 +559,12 @@ abstract class Formlet {
 			return $this->model;
 		}
 	}
+
+	//nested formlets need nested name.
+	protected function getFormlet($name = "") {
+			return @$this->formlets[$name];
+	}
+
 
 	/**
 	 * Format the validation errors to be returned.

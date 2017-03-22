@@ -3,6 +3,11 @@
 
     <div data-v.replace="formlets.user"/>
     <div data-v.replace="formlets.profile"/>
+    <h4>Billing Address</h4>
+    <div data-v.replace="formlets.billing"/>
+    <h4>Delivery Address</h4>
+    <div data-v.replace="formlets.delivery"/>
+    <h4>Roles</h4>
     <div data-v.replace="formlets.roles"/>
 
 </div>

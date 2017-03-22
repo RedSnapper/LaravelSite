@@ -15,26 +15,37 @@ class UserComposite extends Formlet {
 		} else {
 			$this->addFormlet('user',UserEmailFormlet::class)->setKey($this->key);
 		}
-		$user = $this->getModel('user'); //gets model from formlet 'user'.
-		$this->addFormlet('profile',UserProfileForm::class)->setModel($user->profile);
-		$this->addFormlet('roles',RoleUserFormlet::class)->setModel($user->roles);
+		$model = $this->getModel('user');
+		$this->addFormlet('profile',UserProfileForm::class)->setKey($this->key);
+		$profile = $this->getModel('profile');
+		$this->addFormlet('billing',AddressFormlet::class)->setKey($profile->billing_id); //setModel($profile->billing);
+		$this->addFormlet('delivery',AddressFormlet::class)->setKey($profile->delivery_id); //setModel($profile->billing);
+		$this->addFormlet('roles',Subscriber::class)->setModel($model);
 	}
 
 	//update
-	public function edit() : Model {
-		$user = $this->getModel('user'); //gets model from formlet 'user'.
-		$user->fill($this->fields('user'))->save();
-		$user->roles()->sync($this->fields('roles'));
-		$user->profile->fill($this->fields('profile'))->save();
+	public function edit(): Model {
+		$user = $this->getFormlet('user')->edit();
+		$this->getFormlet('roles')->edit();
+		$this->getFormlet('profile')->edit();
+		$this->getFormlet('billing')->edit();
+		$this->getFormlet('delivery')->edit();
+
 		return $user;
 	}
 
 	//new
-	public function persist(): Model {
-		$user = $this->getModel('user'); //gets model from formlet 'user'. (same as $this->model)
-		$user = $user->create($this->fields('user'));
-		$user->roles()->sync($this->fields('roles'));
-		$user->profile()->create($this->fields('profile'));
+	public function persist():Model {
+		$billing = $this->getFormlet('billing')->persist();
+		$delivery = $this->getFormlet('delivery')->persist();
+		$user = $this->getFormlet('user')->persist();
+		$profile = $this->getModel('profile');
+		$profile->setKey($user->getKey());
+		$profile->setBilling($billing->getKey());
+		$profile->setDelivery($delivery->getKey());
+		$this->getFormlet('profile')->setModel($profile);
+		$profile->persist();
+		$this->getFormlet('roles')->setModel($user)->persist();
 		return $user;
 	}
 

@@ -26,8 +26,11 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\UserProfile::class, function (Faker\Generator $faker) {
 
 	return [
-	  'telephone' => $faker->phoneNumber
+	  'telephone' => $faker->phoneNumber,
+		'billing_id' => function () {return factory(App\Address::class)->create()->id;},
+		'delivery_id' => function () {return factory(App\Address::class)->create()->id;}
 	];
+
 });
 
 $factory->define(App\Role::class, function (Faker\Generator $faker) {
@@ -36,3 +39,14 @@ $factory->define(App\Role::class, function (Faker\Generator $faker) {
 		'name' => $faker->jobTitle
 	];
 });
+
+$factory->define(App\Address::class, function (Faker\Generator $faker) {
+	return [
+		'street' => $faker->streetAddress,
+		'city'=> $faker->city,
+		'postcode' => $faker->postcode
+	];
+});
+
+
+

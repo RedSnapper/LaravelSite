@@ -16,8 +16,22 @@ class UserProfile extends Model
 	  'telephone'
 	];
 
-	//public function user() {
-	//	return $this->hasOne(User::class);
-	//}
+	public function billing() {
+		return $this->hasOne(Address::class,'id','billing_id');
+	}
+	public function delivery() {
+		return $this->hasOne(Address::class,'id','delivery_id');
+	}
+
+	public function setDelivery(int $id) {
+		$this->delivery_id = $id;
+		return $this;
+	}
+	public function setBilling(int $id) {
+		$this->billing_id = $id;
+		return $this;
+	}
+
+
 
 }

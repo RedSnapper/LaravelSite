@@ -35,7 +35,6 @@ class Subscriber extends Formlet {
 	}
 
 	public function persist(): Model {
-		//the model (with key) must be set by the new $master.
 		$this->model->mm()->sync($this->fields());
 		return $this->model;
 	}

@@ -1,7 +1,7 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
-    <h1>Create User</h1>
+    <h1>User</h1>
 
     <div class="row" data-v.container="forms.form">
         <div class="col-md-8">
