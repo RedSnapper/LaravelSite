@@ -15,12 +15,5 @@ class Address extends Model
 		'street','city','postcode'
 	];
 
-	public function profileDelivery() {
-		return $this->belongsTo('App\UserProfile','delivery_id');
-	}
-	public function profileBilling() {
-		return $this->belongsTo('App\UserProfile','billing_id');
-	}
-
 
 }

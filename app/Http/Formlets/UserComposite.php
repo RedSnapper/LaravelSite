@@ -34,17 +34,20 @@ class UserComposite extends Formlet {
 		return $user;
 	}
 
-	//new
 	public function persist():Model {
+
 		$billing = $this->getFormlet('billing')->persist();
 		$delivery = $this->getFormlet('delivery')->persist();
 		$user = $this->getFormlet('user')->persist();
+
+		// One query
 		$profile = $this->getModel('profile');
-		$profile->setKey($user->getKey());
-		$profile->setBilling($billing->getKey());
-		$profile->setDelivery($delivery->getKey());
-		$this->getFormlet('profile')->setModel($profile);
-		$profile->persist();
+		$profile->fill($this->fields('profile'));
+		$profile->user()->associate($user);
+		$profile->delivery()->associate($delivery);
+		$profile->billing()->associate($billing);
+		$profile->save();
+		
 		$this->getFormlet('roles')->setModel($user)->persist();
 		return $user;
 	}
