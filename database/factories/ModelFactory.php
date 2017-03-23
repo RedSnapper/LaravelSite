@@ -34,10 +34,22 @@ $factory->define(App\UserProfile::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Role::class, function (Faker\Generator $faker) {
-
 	return [
 		'name' => $faker->jobTitle
 	];
+});
+
+$factory->define(App\Segment::class, function (Faker\Generator $faker) {
+	return [
+		'name' => $faker->domainWord,
+		'docs' => $faker->catchPhrase
+	];
+});
+
+$factory->define(App\Layout::class, function (Faker\Generator $faker) {
+		return [
+			'name' => $faker->domainWord
+		];
 });
 
 $factory->define(App\Address::class, function (Faker\Generator $faker) {

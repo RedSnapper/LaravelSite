@@ -52,7 +52,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function create($id = null) {
-		return $this->form->renderWith(['route' => 'user.store']); //store is the method for storing a new model
+		return $this->form->renderWith(['route' => ['user.store']]); //['user.store','sql']
 	}
 
 	/**
@@ -64,7 +64,6 @@ class UserController extends Controller {
 		$this->form->setKey($id);
 		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']); //update method for updating an existing model.
 	}
-
 
 	/**
 	 * Store a newly created resource in storage. It is the receiver from create() above.

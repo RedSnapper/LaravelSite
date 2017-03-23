@@ -13,18 +13,18 @@ class UserProfile extends Model
 	 */
 	protected $primaryKey = "user_id";
 	protected $fillable = [
-	  'telephone'
+	  'telephone','delivery_id',
 	];
 
 	public function user() {
 		return $this->belongsTo(User::class);
 	}
 
-	public function delivery() {
+	public function delivery() { //This field belongsTo that table...
 		return $this->belongsTo(Address::class,'delivery_id');
 	}
 
-	public function billing() {
+	public function billing() { //This field belongsTo that table...
 		return $this->belongsTo(Address::class,'billing_id');
 	}
 
