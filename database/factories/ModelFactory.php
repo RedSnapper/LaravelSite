@@ -35,20 +35,20 @@ $factory->define(App\UserProfile::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Role::class, function (Faker\Generator $faker) {
 	return [
-		'name' => $faker->jobTitle
+		'name' => $faker->unique()->jobTitle
 	];
 });
 
 $factory->define(App\Segment::class, function (Faker\Generator $faker) {
 	return [
-		'name' => $faker->domainWord,
+		'name' => $faker->unique()->firstName,
 		'docs' => $faker->catchPhrase
 	];
 });
 
 $factory->define(App\Layout::class, function (Faker\Generator $faker) {
 		return [
-			'name' => $faker->domainWord
+			'name' => $faker->unique()->lastName
 		];
 });
 

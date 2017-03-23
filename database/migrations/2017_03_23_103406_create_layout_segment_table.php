@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLayoutSegmentsTable extends Migration
+class CreateLayoutSegmentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateLayoutSegmentsTable extends Migration
      */
     public function up()
     {
- 			Schema::create('layout_segments', function (Blueprint $table) {
+ 			Schema::create('layout_segment', function (Blueprint $table) {
 				$table->integer('layout_id')->unsigned()->index();
 				$table->integer('segment_id')->unsigned()->index();
-				$table->string('syntax');
+				$table->string('syntax')->nullable();
 
 				$table->foreign('layout_id')
 					->references('id')
@@ -38,6 +38,9 @@ class CreateLayoutSegmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('layout_segments');
-    }
+			Schema::disableForeignKeyConstraints();
+      Schema::dropIfExists('layout_segment');
+			Schema::enableForeignKeyConstraints();
+
+		}
 }

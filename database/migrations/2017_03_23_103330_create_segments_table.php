@@ -28,6 +28,8 @@ class CreateSegmentsTable extends Migration
      */
     public function down()
     {
+			Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('segments');
-    }
+			Schema::enableForeignKeyConstraints();
+		}
 }

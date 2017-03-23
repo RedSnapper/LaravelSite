@@ -27,6 +27,8 @@ class CreateLayoutsTable extends Migration
      */
     public function down()
     {
+			Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('layouts');
+			Schema::enableForeignKeyConstraints();
     }
 }
