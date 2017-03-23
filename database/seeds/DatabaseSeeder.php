@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder {
 
-	protected $toTruncate=['users','user_profiles','roles','addresses'];
+	protected $toTruncate=['users','user_profiles','roles','addresses','layouts','segments','layout_segment'];
 
 	/**
 	 * Run the database seeds.

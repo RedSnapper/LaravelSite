@@ -293,8 +293,9 @@ abstract class Formlet {
 
 		if(count($this->formlets)){
 
+			// We have fields for this form so add this formlet to the view
 			$formlets = count($this->fields) ? ['base'=>$this->renderFormlet()] :[];
-			
+
 			return $this->renderFormlets($formlets);
 		}else{
 			return $this->renderFormlet();

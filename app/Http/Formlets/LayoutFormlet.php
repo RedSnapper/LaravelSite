@@ -4,6 +4,7 @@ namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
 use App\Layout;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
@@ -30,6 +31,19 @@ class LayoutFormlet  extends Formlet {
 		return [
 			'name' => ['required','max:255',Rule::unique('layouts')->ignore($key)]
 		];
+	}
+
+	public function edit(): Model {
+		$layout = parent::edit();
+		$this->getFormlet('segments')->setModel($layout)->persist();
+		return $layout;
+	}
+
+
+	public function persist():Model {
+		$layout = parent::edit();
+		$this->getFormlet('segments')->setModel($layout)->persist();
+		return $layout;
 	}
 
 }
