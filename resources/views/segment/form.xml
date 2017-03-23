@@ -1,0 +1,11 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
+    <h1>Segment</h1>
+    <div class="row" data-v.container="forms.form">
+        <div class="col-md-8">
+            <div data-v.replace="form"/>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </div>
+</div>
+

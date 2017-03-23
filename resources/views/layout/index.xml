@@ -1,0 +1,18 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
+
+    <h1>Layouts</h1>
+
+    <ul data-v.foreach="layouts" data-v.name="layout" class="list-group">
+        <li class="list-group-item">
+            <a data-v.url="/layout/{layout.id}/edit"><span data-v.replace="layout.name"/></a>
+        </li>
+    </ul>
+
+    <div data-v.pagination="layouts.pagination" data-v.name="layouts"/>
+
+    <div class="well text-right">
+        <a href="/layout/create" class="btn btn-primary">New Layout</a>
+    </div>
+
+</div>
