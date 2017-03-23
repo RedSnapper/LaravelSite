@@ -293,7 +293,7 @@ abstract class Formlet {
 
 		if(count($this->formlets)){
 
-			// We have fields for this form so add this formlet to the view
+			// We have fields for this form so we need to add this formlet to the view
 			$formlets = count($this->fields) ? ['base'=>$this->renderFormlet()] :[];
 
 			return $this->renderFormlets($formlets);
@@ -304,16 +304,20 @@ abstract class Formlet {
 	}
 
 
-	protected function renderFormlets($formlets = []): View {
+	protected function renderFormlets($formlets = []) {
 
 		if (count($this->formlets)) {
-
 
 			foreach ($this->formlets as $name => $formlet) {
 				$formlets[$name] = $formlet->renderFormlets();
 			}
 
-			return view($this->compositeView, compact('formlets'));
+			if($this->compositeView){
+				return view($this->compositeView, compact('formlets'));
+			}else{
+				return $formlets;
+			}
+
 		} else {
 			return $this->renderFormlet();
 		}

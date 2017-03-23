@@ -11,7 +11,7 @@ class LayoutFormlet  extends Formlet {
 
 	protected $formView = "layout.form";
 
-	protected $compositeView = "layout.composite";
+	//protected $compositeView = "layout.composite";
 
 	public function __construct(Layout $layout) {
 		$this->setModel($layout);

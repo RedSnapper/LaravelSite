@@ -3,7 +3,8 @@
     <h1>Layout</h1>
     <div class="row" data-v.container="forms.form">
         <div class="col-md-8">
-            <div data-v.replace="form"/>
+            <div data-v.replace="form.base"/>
+            <div data-v.replace="form.segments"/>
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>
