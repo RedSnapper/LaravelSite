@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {
 
-	protected $view = "user.composite";
+	protected $compositeView = "user.composite";
 	protected $formView = "user.form";
 
 	public function prepareForm(){

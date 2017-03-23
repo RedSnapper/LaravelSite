@@ -10,7 +10,7 @@ namespace App\Http\Formlets;
 
 class UserNested extends Formlet {
 
-	protected $view = "user.composite";
+	protected $compositeView = "user.composite";
 
 	protected $formView = "user.form";
 

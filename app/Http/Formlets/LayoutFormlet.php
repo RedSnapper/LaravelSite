@@ -1,9 +1,4 @@
 <?php
-/**
- * Part of form
- * User: ben ©2017 Red Snapper Ltd.
- * Date: 23/03/2017 11:45
- */
 
 namespace App\Http\Formlets;
 
@@ -15,6 +10,8 @@ class LayoutFormlet  extends Formlet {
 
 	protected $formView = "layout.form";
 
+	protected $compositeView = "layout.composite";
+
 	public function __construct(Layout $layout) {
 		$this->setModel($layout);
 	}
@@ -24,6 +21,8 @@ class LayoutFormlet  extends Formlet {
 		$this->add(
 			$field->setLabel('Name')->setRequired()
 		);
+
+		$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
 	}
 
 	public function rules():array{

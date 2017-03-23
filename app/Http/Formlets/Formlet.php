@@ -36,7 +36,9 @@ abstract class Formlet {
 	 */
 	public $request;
 
-	protected $view = "forms.auto";
+	protected $formletView = "forms.auto";
+
+	protected $compositeView;
 
 	protected $formView;
 
@@ -261,19 +263,6 @@ abstract class Formlet {
 		}
 	}
 
-	public function render() {
-		$this->prepare();
-		$this->populate();
-
-		$data = [
-		  'form'       => $this->renderFormlets(),
-		  'attributes' => $this->attributes,
-		  'hidden'     => $this->getFieldData($this->hidden)
-		];
-
-		return view($this->formView, $data);
-	}
-
 	protected function prepare() {
 		$this->prepareForm();
 
@@ -287,18 +276,43 @@ abstract class Formlet {
 
 	}
 
+	public function render() {
+		$this->prepare();
+		$this->populate();
 
-	protected function renderFormlets(): View {
+		$data = [
+		  'form'       => $this->renderAll(),
+		  'attributes' => $this->attributes,
+		  'hidden'     => $this->getFieldData($this->hidden)
+		];
+
+		return view($this->formView, $data);
+	}
+
+	protected function renderAll() {
+
+		if(count($this->formlets)){
+
+			$formlets = count($this->fields) ? ['base'=>$this->renderFormlet()] :[];
+			
+			return $this->renderFormlets($formlets);
+		}else{
+			return $this->renderFormlet();
+		}
+
+	}
+
+
+	protected function renderFormlets($formlets = []): View {
 
 		if (count($this->formlets)) {
 
-			$formlets = [];
 
 			foreach ($this->formlets as $name => $formlet) {
 				$formlets[$name] = $formlet->renderFormlets();
 			}
 
-			return view($this->view, compact('formlets'));
+			return view($this->compositeView, compact('formlets'));
 		} else {
 			return $this->renderFormlet();
 		}
@@ -312,7 +326,7 @@ abstract class Formlet {
 		  'fields' => $this->getFieldData($this->fields)
 		];
 
-		return view($this->view, $data)->withErrors($errors);
+		return view($this->formletView, $data)->withErrors($errors);
 	}
 
 	protected function getFieldData(array $fields): array {
@@ -616,5 +630,6 @@ abstract class Formlet {
 	{
 		return app(UrlGenerator::class)->previous();
 	}
+
 
 }

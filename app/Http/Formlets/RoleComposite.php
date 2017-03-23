@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleComposite extends Formlet {
 
-	protected $view = "role.composite";
+	protected $compositeView = "role.composite";
 	protected $formView = "role.form";
 
 	public function prepareForm(){

@@ -1,5 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml">
-    <div data-v.replace="formlets.layout"/>
+    <div data-v.replace="formlets.base"/>
     <div data-v.replace="formlets.segments"/>
 </div>
+
