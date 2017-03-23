@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Formlets\LayoutFormlet;
+use App\Http\Formlets\LayoutComposite;
 use App\Layout;
 use Illuminate\Http\Request;
 
 class LayoutController extends Controller  {
 
 	/**
-	 * @var LayoutFormlet
+	 * @var LayoutComposite
 	 */
 	private $form;
-	public function __construct(LayoutFormlet $form) {
+	public function __construct(LayoutComposite $form) {
 		$this->form = $form;
 	}
 
@@ -30,8 +30,6 @@ class LayoutController extends Controller  {
 
 	/**
 	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
 	 */
 	public function create(Layout $layout) {
 		return $this->form->renderWith(['route' => 'layout.store']);
