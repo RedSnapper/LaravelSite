@@ -23,7 +23,13 @@ class LayoutFormlet  extends Formlet {
 			$field->setLabel('Name')->setRequired()
 		);
 
-		$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
+		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->mm()->getRelated()->all(),$this->model->mm);
+
+		//$this->addFormlets('segments',LayoutSegmentFormlet::class,$this->model->mm);
+
+		//$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
+
+
 	}
 
 	public function rules():array{

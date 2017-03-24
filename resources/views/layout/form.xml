@@ -4,9 +4,10 @@
     <div class="row" data-v.container="forms.form">
         <div class="col-md-8">
             <div data-v.replace="form.base"/>
-            <div data-v.replace="form.segments"/>
+            <div data-v.foreach="form.segments" data-v.name="segment">
+                <div data-v.replace="segment"/>
+            </div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>
 </div>
-

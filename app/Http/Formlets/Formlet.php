@@ -8,7 +8,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -97,11 +96,25 @@ abstract class Formlet {
 		return [];
 	}
 
-	public function addFormlet(string $name,string $class) : Formlet {
+	public function addFormlet(string $name, string $class): Formlet {
 		$formlet = app()->make($class);
 		$formlet->name = $name;
 		$this->formlets[$name] = $formlet;
 		return $formlet;
+	}
+
+	public function addSubscribers(string $name, string $class, Collection $items, Collection $models) {
+		foreach ($items as $item) {
+			$formlet = app()->make($class);
+			$this->addSubscriberFormlet($formlet, $name, $item->getKey(), $models);
+		}
+	}
+
+	protected function addSubscriberFormlet(Formlet $formlet, string $name, int $key, Collection $models) {
+		$formlet->setKey($key);
+		$formlet->setModel($models);
+		$formlet->setName($name);
+		$this->formlets[$name][] = $formlet;
 	}
 
 	protected function isValid() {
@@ -115,8 +128,7 @@ abstract class Formlet {
 		foreach ($this->formlets as $formlet) {
 
 			$request = $this->request->get($formlet->getName()) ?? [];
-			$errors = array_merge($errors,$formlet->validate($request, $formlet->rules()));
-
+			$errors = array_merge($errors, $formlet->validate($request, $formlet->rules()));
 		}
 
 		return $this->redirectIfErrors($errors);
@@ -124,7 +136,7 @@ abstract class Formlet {
 
 	protected function redirectIfErrors(array $errors) {
 
-		if(count($errors)){
+		if (count($errors)) {
 			throw new ValidationException($this->validator, $this->buildFailedValidationResponse(
 			  $errors
 			));
@@ -136,7 +148,7 @@ abstract class Formlet {
 	/**
 	 * Create the response for when a request fails validation.
 	 *
-	 * @param  array                    $errors
+	 * @param  array $errors
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function buildFailedValidationResponse(array $errors) {
@@ -170,6 +182,7 @@ abstract class Formlet {
 	public function renderWith($modes) {
 		return $this->create($modes)->render();
 	}
+
 	public function store() {
 
 		$this->prepare();
@@ -179,16 +192,15 @@ abstract class Formlet {
 		}
 	}
 
-
 	public function persist(): Model {
-		if(isset($this->model)) {
+		if (isset($this->model)) {
 			$this->model = $this->model->create($this->fields());
 		}
 		return $this->model;
 	}
 
 	public function edit(): Model {
-		if(isset($this->model)) {
+		if (isset($this->model)) {
 			$this->model->fill($this->fields());
 			$this->model->save();
 		}
@@ -210,11 +222,11 @@ abstract class Formlet {
 	}
 
 	public function setKey($key) {
-			$this->key = $key;
-			if(isset($this->model) && isset($this->key)) {
-				$this->model = $this->model->find($this->key);
-			}
-			return $this;
+		$this->key = $key;
+		if (isset($this->model) && isset($this->key)) {
+			$this->model = $this->model->find($this->key);
+		}
+		return $this;
 	}
 
 	/**
@@ -235,7 +247,6 @@ abstract class Formlet {
 		return $this;
 	}
 
-
 	/**
 	 * Add a field to the formlet
 	 *
@@ -252,10 +263,10 @@ abstract class Formlet {
 	 * @return array
 	 */
 	public function fields($name = null) {
-		if(is_null($name)) {
-			if($this->name != "") {
+		if (is_null($name)) {
+			if ($this->name != "") {
 				return $this->request->input($this->name) ?? [];
-			}	else {
+			} else {
 				return $this->request->all();
 			}
 		} else {
@@ -270,10 +281,18 @@ abstract class Formlet {
 			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
 
-		foreach ($this->formlets as $name => $formlet) {
-			$formlet->prepare();
-		}
+		$this->prepareFormlets($this->formlets);
+	}
 
+	protected function prepareFormlets(array $formlets) {
+
+		foreach ($formlets as $name => $formlet) {
+			if (is_array($formlet)) {
+				$this->prepareFormlets($formlet);
+			} else {
+				$formlet->prepare();
+			}
+		}
 	}
 
 	public function render() {
@@ -285,39 +304,44 @@ abstract class Formlet {
 		  'attributes' => $this->attributes,
 		  'hidden'     => $this->getFieldData($this->hidden)
 		];
-
+		
 		return view($this->formView, $data);
 	}
 
 	protected function renderAll() {
 
-		if(count($this->formlets)){
+		if (count($this->formlets)) {
 
 			// We have fields for this form so we need to add this formlet to the view
-			$formlets = count($this->fields) ? ['base'=>$this->renderFormlet()] :[];
+			$formlets = count($this->fields) ? ['base' => $this->renderFormlet()] : [];
 
 			return $this->renderFormlets($formlets);
-		}else{
+		} else {
 			return $this->renderFormlet();
 		}
-
 	}
-
 
 	protected function renderFormlets($formlets = []) {
 
 		if (count($this->formlets)) {
 
 			foreach ($this->formlets as $name => $formlet) {
-				$formlets[$name] = $formlet->renderFormlets();
+
+				if(is_array($formlet)){
+					foreach ($formlet as $form) {
+						$formlets[$name][] = $form->renderFormlets();
+					}
+				}else{
+					$formlets[$name] = $formlet->renderFormlets();
+				}
+
 			}
 
-			if($this->compositeView){
+			if ($this->compositeView) {
 				return view($this->compositeView, compact('formlets'));
-			}else{
+			} else {
 				return $formlets;
 			}
-
 		} else {
 			return $this->renderFormlet();
 		}
@@ -409,10 +433,9 @@ abstract class Formlet {
 	 */
 	protected function getModelValueAttribute($name) {
 		$name = $this->transformKey($name);
-		if($name == ""){
+		if ($name == "") {
 			return $this->model;
 		}
-
 
 		return data_get($this->model, $name);
 	}
@@ -481,17 +504,15 @@ abstract class Formlet {
 			}
 		}
 
-		foreach($this->formlets as $formlet) {
-			$formlet->populate();
+		foreach ($this->formlets as $formlet) {
+			//$formlet->populate();
 		}
-
 	}
 
-	protected function transformGuardedAttributes(){
-		$this->guarded = array_map(function($item){
+	protected function transformGuardedAttributes() {
+		$this->guarded = array_map(function ($item) {
 			return $this->getFieldPrefix($item);
-		},$this->guarded);
-
+		}, $this->guarded);
 	}
 
 	/**
@@ -581,9 +602,8 @@ abstract class Formlet {
 
 	//nested formlets need nested name.
 	protected function getFormlet($name = "") {
-			return @$this->formlets[$name];
+		return @$this->formlets[$name];
 	}
-
 
 	/**
 	 * Format the validation errors to be returned.
@@ -595,46 +615,40 @@ abstract class Formlet {
 
 		$errors = collect($validator->errors()->getMessages());
 
-		$errors = $errors->keyBy(function($item,$key){
+		$errors = $errors->keyBy(function ($item, $key) {
 			return $this->getFieldPrefix($key);
 		});
 
 		return $errors->all();
 	}
 
-
-
-
-	protected function getFieldPrefix($field){
+	protected function getFieldPrefix($field) {
 
 		$name = $this->getName();
 
-		if($name == ""){
+		if ($name == "") {
 			return $field;
 		}
 
-		$parts = explode('[',$field);
+		$parts = explode('[', $field);
 
-		if(count($parts) == 1){
+		if (count($parts) == 1) {
 			return "{$name}[$field]";
 		}
 
-		$field =  array_pull($parts,0);
-		$extra = implode('[',$parts);
+		$field = array_pull($parts, 0);
+		$extra = implode('[', $parts);
 
 		return "{$name}[$field][$extra";
 	}
-
 
 	/**
 	 * Get the URL we should redirect to.
 	 *
 	 * @return string
 	 */
-	protected function getRedirectUrl()
-	{
+	protected function getRedirectUrl() {
 		return app(UrlGenerator::class)->previous();
 	}
-
 
 }
