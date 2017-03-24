@@ -10,11 +10,11 @@ class Layout extends Model
 		'name'
 	];
 
-	/**
-	 * many-many relations
-	 **/
-
 	public function mm() {
+		return $this->belongsToMany(Segment::class)->withPivot('syntax');
+	}
+
+	public function segments() {
 		return $this->belongsToMany(Segment::class)->withPivot('syntax');
 	}
 }

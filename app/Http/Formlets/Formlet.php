@@ -8,7 +8,9 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -126,7 +128,11 @@ abstract class Formlet {
 		return $formlet;
 	}
 
-	public function addSubscribers(string $name, string $class, Collection $items, Collection $models) {
+	public function addSubscribers(string $name, string $class, BelongsToMany $builder) {
+
+		$items = $builder->getRelated()->all();
+		$models = $builder->get();
+
 		foreach ($items as $item) {
 			$formlet = app()->make($class);
 			$model = $this->getModelByKey($item->getKey(),$models);

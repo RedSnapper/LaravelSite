@@ -5,6 +5,7 @@ namespace App\Http\Formlets;
 use App\Http\Fields\Input;
 use App\Layout;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
@@ -23,7 +24,7 @@ class LayoutFormlet  extends Formlet {
 			$field->setLabel('Name')
 		);
 
-		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->mm()->getRelated()->all(),$this->model->mm);
+		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
 
 		//$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
 
@@ -38,17 +39,27 @@ class LayoutFormlet  extends Formlet {
 	}
 
 	public function edit(): Model {
-		dd($this->request->all());
-		//$layout = parent::edit();
-		//$this->getFormlet('segments')->setModel($layout)->persist();
-		//return $layout;
+
+		$segments = new Collection($this->fields('segments'));
+
+		$segments = $segments->filter(function ($value, $key) {
+			return isset($value['subscriber']);
+		})->map(function ($item, $key) {
+
+			array_forget($item,'subscriber');
+			return $item;
+		});
+
+		$layout = parent::edit();
+
+		$layout->segments()->sync($segments);
+
+		return $layout;
 	}
 
 
 	public function persist():Model {
-		$layout = parent::edit();
-		$this->getFormlet('segments')->setModel($layout)->persist();
-		return $layout;
+		return $this->edit();
 	}
 
 }
