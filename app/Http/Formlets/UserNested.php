@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 10/03/2017
- * Time: 16:12
- */
 
 namespace App\Http\Formlets;
 

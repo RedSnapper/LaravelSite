@@ -8,13 +8,11 @@ use Illuminate\Contracts\Validation\Validator;
 
 class LayoutSegmentFormlet extends Formlet {
 
+	protected $formletView = "layout.segment";
+
 	public function prepareForm() {
-		$this->add((new Input('text', 'syntax'))
-		  ->setLabel('Syntax')
-		);
-		$this->add((new Checkbox('subscriber'))
-		  ->setLabel('Name here')
-		);
+		$this->add((new Checkbox('subscriber')));
+		$this->add((new Input('text', 'syntax')));
 	}
 
 	public function rules(): array {

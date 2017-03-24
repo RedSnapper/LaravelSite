@@ -217,9 +217,10 @@ abstract class AbstractField {
 		$value = $this->getValue();
 		$label = $this->getLabel();
 		$name = $this->getFieldName();
+		$field = $this->getName();
 		$view = $this->getView();
 
-		return compact('attributes', 'value', 'label', 'name', 'view');
+		return compact('attributes', 'value', 'label', 'name', 'view','field');
 	}
 
 	protected function removeAttribute($key): AbstractField {

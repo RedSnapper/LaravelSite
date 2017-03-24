@@ -8,7 +8,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
@@ -98,6 +97,13 @@ abstract class Formlet {
 
 
 	/**
+	 * Extra view data
+	 *
+	 * @var array
+	 */
+	protected $data = [];
+
+	/**
 	 * @return bool
 	 */
 	public function isMultiple(): bool {
@@ -114,6 +120,24 @@ abstract class Formlet {
 	public function getKey() {
 		return $this->key;
 	}
+
+	/**
+	 * Add a piece of data to the view.
+	 *
+	 * @param  string|array $key
+	 * @param  mixed        $value
+	 * @return $this
+	 */
+	public function with($key, $value = null) {
+		if (is_array($key)) {
+			$this->data = array_merge($this->data, $key);
+		} else {
+			$this->data[$key] = $value;
+		}
+
+		return $this;
+	}
+
 
 	abstract public function prepareForm();
 
@@ -136,7 +160,7 @@ abstract class Formlet {
 		foreach ($items as $item) {
 			$formlet = app()->make($class);
 			$model = $this->getModelByKey($item->getKey(),$models);
-			$this->addSubscriberFormlet($formlet, $name, $item->getKey(),$model);
+			$this->addSubscriberFormlet($formlet, $name, $item,$model);
 		}
 	}
 
@@ -144,8 +168,9 @@ abstract class Formlet {
 		return $models->where($keyName,$key)->first();
 	}
 
-	protected function addSubscriberFormlet(Formlet $formlet, string $name, int $key,$model) {
-		$formlet->setKey($key);
+	protected function addSubscriberFormlet(Formlet $formlet, string $name, Model $subscriber, Model $model = null) {
+		$formlet->setKey($subscriber->getKey());
+		$formlet->with('subscriber',$subscriber);
 		$formlet->setModel($model);
 		$formlet->setName($name);
 		$formlet->setMultiple();
@@ -399,8 +424,10 @@ abstract class Formlet {
 		$errors = $this->getErrors();
 
 		$data = [
-		  'fields' => $this->getFieldData($this->fields)
+		  'fields' => $this->getFieldData($this->fields),
 		];
+
+		$data = array_merge($data,$this->data);
 
 		return view($this->formletView, $data)->withErrors($errors);
 	}

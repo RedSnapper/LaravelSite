@@ -12,8 +12,6 @@ class LayoutFormlet  extends Formlet {
 
 	protected $formView = "layout.form";
 
-	//protected $compositeView = "layout.composite";
-
 	public function __construct(Layout $layout) {
 		$this->setModel($layout);
 	}
@@ -25,8 +23,6 @@ class LayoutFormlet  extends Formlet {
 		);
 
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
-
-		//$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
 
 
 	}
