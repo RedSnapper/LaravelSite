@@ -20,12 +20,10 @@ class LayoutFormlet  extends Formlet {
 	public function prepareForm(){
 		$field = new Input('text','name');
 		$this->add(
-			$field->setLabel('Name')->setRequired()
+			$field->setLabel('Name')
 		);
 
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->mm()->getRelated()->all(),$this->model->mm);
-
-		//$this->addFormlets('segments',LayoutSegmentFormlet::class,$this->model->mm);
 
 		//$this->addFormlet('segments',Subscriber::class)->setModel($this->getModel());
 

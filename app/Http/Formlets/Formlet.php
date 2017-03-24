@@ -129,13 +129,18 @@ abstract class Formlet {
 	public function addSubscribers(string $name, string $class, Collection $items, Collection $models) {
 		foreach ($items as $item) {
 			$formlet = app()->make($class);
-			$this->addSubscriberFormlet($formlet, $name, $item->getKey(), $models);
+			$model = $this->getModelByKey($item->getKey(),$models);
+			$this->addSubscriberFormlet($formlet, $name, $item->getKey(),$model);
 		}
 	}
 
-	protected function addSubscriberFormlet(Formlet $formlet, string $name, int $key, Collection $models) {
+	protected function getModelByKey(int $key,Collection $models,$keyName="id"){
+		return $models->where($keyName,$key)->first();
+	}
+
+	protected function addSubscriberFormlet(Formlet $formlet, string $name, int $key,$model) {
 		$formlet->setKey($key);
-		$formlet->setModel($models);
+		$formlet->setModel($model);
 		$formlet->setName($name);
 		$formlet->setMultiple();
 		$this->formlets[$name][] = $formlet;
@@ -151,12 +156,26 @@ abstract class Formlet {
 
 		foreach ($this->formlets as $formlet) {
 
-			$request = $this->request->get($formlet->getName()) ?? [];
-			$errors = array_merge($errors, $formlet->validate($request, $formlet->rules()));
+			if(is_array($formlet)){
+
+				foreach ($formlet as $f) {
+					$request = $this->request->input($f->getName() . "."  . $f->getKey()) ?? [];
+					$errors = array_merge($errors, $f->validate($request, $f->rules()));
+				}
+
+			}else{
+				$request = $this->request->get($formlet->getName()) ?? [];
+				$errors = array_merge($errors, $formlet->validate($request, $formlet->rules()));
+			}
+
+
+
 		}
 
 		return $this->redirectIfErrors($errors);
 	}
+
+
 
 	protected function redirectIfErrors(array $errors) {
 
@@ -232,10 +251,9 @@ abstract class Formlet {
 
 	public function update() {
 		$this->prepare();
-		return $this->edit();
-		//if ($this->isValid()) {
-		//	return $this->edit();
-		//}
+		if ($this->isValid()) {
+			return $this->edit();
+		}
 	}
 
 	/**
@@ -301,15 +319,18 @@ abstract class Formlet {
 	protected function prepare() {
 		$this->prepareForm();
 
+		$this->prepareFormlets($this->formlets);
+
 		if(count($this->formlets) && count($this->fields)){
 			$this->setName('base');
+			$this->formlets['base'] = clone $this;
+			$this->formlets['base']->formlets = [];
 		}
 
 		foreach ($this->fields as $field) {
 			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
 
-		$this->prepareFormlets($this->formlets);
 
 	}
 
@@ -329,25 +350,12 @@ abstract class Formlet {
 		$this->populate();
 
 		$data = [
-		  'form'       => $this->renderAll(),
+		  'form'       => $this->renderFormlets(),
 		  'attributes' => $this->attributes,
 		  'hidden'     => $this->getFieldData($this->hidden)
 		];
 
 		return view($this->formView, $data);
-	}
-
-	protected function renderAll() {
-
-		if (count($this->formlets)) {
-
-			// We have fields for this form so we need to add this formlet to the view
-			$formlets = count($this->fields) ? ['base' => $this->renderFormlet()] : [];
-
-			return $this->renderFormlets($formlets);
-		} else {
-			return $this->renderFormlet();
-		}
 	}
 
 	protected function renderFormlets($formlets = []) {
@@ -464,7 +472,7 @@ abstract class Formlet {
 			return $this->model;
 		}
 
-		return data_get($this->model, $name);
+		return data_get($this->model, $name) ?? data_get($this->model, "pivot.$name");
 	}
 
 	protected function setFieldValue(AbstractField $field): AbstractField {
@@ -531,8 +539,16 @@ abstract class Formlet {
 			}
 		}
 
-		foreach ($this->formlets as $formlet) {
-			//$formlet->populate();
+		$this->populateFormlets($this->formlets);
+	}
+
+	protected function populateFormlets(array $formlets=[]){
+		foreach ($formlets as $formlet) {
+			if(is_array($formlet)){
+				$this->populateFormlets($formlet);
+			}else{
+				$formlet->populate();
+			}
 		}
 	}
 

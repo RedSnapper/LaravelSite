@@ -11,9 +11,15 @@ class LayoutSegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))
 		  ->setLabel('Syntax')
 		);
-		$this->add((new Checkbox('subscriber'))
+		$this->add((new Checkbox(''))
 		  ->setLabel('Name here')
 		);
+	}
+
+	public function rules(): array {
+		return[
+		  'syntax' => 'required'
+		];
 	}
 
 }
