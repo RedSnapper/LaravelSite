@@ -86,6 +86,29 @@ abstract class Formlet {
 
 	protected $key;
 
+	/**
+	 * If there are multiple of this formlet we need to include
+	 * the key in the formlet
+	 *
+	 * @var bool
+	 */
+	protected $multiple = false;
+
+
+	/**
+	 * @return bool
+	 */
+	public function isMultiple(): bool {
+		return $this->multiple;
+	}
+
+	/**
+	 * @param bool $multiple
+	 */
+	public function setMultiple(bool $multiple = true) {
+		$this->multiple = $multiple;
+	}
+
 	public function getKey() {
 		return $this->key;
 	}
@@ -114,6 +137,7 @@ abstract class Formlet {
 		$formlet->setKey($key);
 		$formlet->setModel($models);
 		$formlet->setName($name);
+		$formlet->setMultiple();
 		$this->formlets[$name][] = $formlet;
 	}
 
@@ -186,7 +210,6 @@ abstract class Formlet {
 	public function store() {
 
 		$this->prepare();
-
 		if ($this->isValid()) {
 			return $this->persist();
 		}
@@ -209,9 +232,10 @@ abstract class Formlet {
 
 	public function update() {
 		$this->prepare();
-		if ($this->isValid()) {
-			return $this->edit();
-		}
+		return $this->edit();
+		//if ($this->isValid()) {
+		//	return $this->edit();
+		//}
 	}
 
 	/**
@@ -277,11 +301,16 @@ abstract class Formlet {
 	protected function prepare() {
 		$this->prepareForm();
 
+		if(count($this->formlets) && count($this->fields)){
+			$this->setName('base');
+		}
+
 		foreach ($this->fields as $field) {
 			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
 
 		$this->prepareFormlets($this->formlets);
+
 	}
 
 	protected function prepareFormlets(array $formlets) {
@@ -304,7 +333,7 @@ abstract class Formlet {
 		  'attributes' => $this->attributes,
 		  'hidden'     => $this->getFieldData($this->hidden)
 		];
-		
+
 		return view($this->formView, $data);
 	}
 
@@ -326,7 +355,6 @@ abstract class Formlet {
 		if (count($this->formlets)) {
 
 			foreach ($this->formlets as $name => $formlet) {
-
 				if(is_array($formlet)){
 					foreach ($formlet as $form) {
 						$formlets[$name][] = $form->renderFormlets();
@@ -334,7 +362,6 @@ abstract class Formlet {
 				}else{
 					$formlets[$name] = $formlet->renderFormlets();
 				}
-
 			}
 
 			if ($this->compositeView) {
@@ -630,16 +657,28 @@ abstract class Formlet {
 			return $field;
 		}
 
+		$instance = $this->getFieldInstance();
+
 		$parts = explode('[', $field);
 
 		if (count($parts) == 1) {
-			return "{$name}[$field]";
+			return "{$name}{$instance}[$field]";
 		}
 
 		$field = array_pull($parts, 0);
 		$extra = implode('[', $parts);
 
-		return "{$name}[$field][$extra";
+
+		return "{$name}[$field]{$instance}[$extra";
+	}
+
+	protected function getFieldInstance():string{
+		if($this->isMultiple()){
+
+			return "[" . $this->getKey() . "]";
+
+		}
+		return "";
 	}
 
 	/**

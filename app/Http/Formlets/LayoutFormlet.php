@@ -40,9 +40,10 @@ class LayoutFormlet  extends Formlet {
 	}
 
 	public function edit(): Model {
-		$layout = parent::edit();
-		$this->getFormlet('segments')->setModel($layout)->persist();
-		return $layout;
+		dd($this->request->all());
+		//$layout = parent::edit();
+		//$this->getFormlet('segments')->setModel($layout)->persist();
+		//return $layout;
 	}
 
 
