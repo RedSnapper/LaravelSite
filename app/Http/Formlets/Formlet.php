@@ -216,10 +216,16 @@ abstract class Formlet {
 	public function validate(array $request, array $rules, array $messages = [], array $customAttributes = []) {
 		$this->validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
+		$this->addCustomValidation($this->validator);
+
 		if ($this->validator->fails()) {
 			return $this->formatValidationErrors($this->validator);
 		}
 		return [];
+	}
+
+	public function addCustomValidation(Validator $validator){
+
 	}
 
 	public function renderWith($modes) {
@@ -516,7 +522,7 @@ abstract class Formlet {
 			return $checked;
 		}
 
-		$posted = $this->getValueAttribute($name, $checked);
+		$posted = $this->getValueAttribute("", $checked);
 
 		if (is_array($posted)) {
 			return in_array($value, $posted);
@@ -565,7 +571,7 @@ abstract class Formlet {
 	 * @return bool
 	 */
 	protected function missingOldAndModel($name) {
-		return (is_null($this->old($name)) && is_null($this->getModelValueAttribute($name)));
+		return (is_null($this->old($name)) && is_null($this->getModelValueAttribute("")));
 	}
 
 	/**
