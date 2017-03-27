@@ -8,6 +8,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
+use App\Http\Fields\TextArea;
 use App\Segment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,7 +26,7 @@ class SegmentFormlet extends Formlet {
 	public function prepareForm(){
 		$this->add((new Input('text','name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text','syntax'))->setLabel('Syntax'));
-		$this->add((new Input('text','docs'))->setLabel('Docs')->setRequired());
+		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 		$this->addSubscribers('layouts',SegmentLayoutFormlet::class,$this->model->layouts());
 
 	}

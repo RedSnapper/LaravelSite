@@ -4,7 +4,7 @@ namespace App\View\Forms\Fields;
 
 use RS\NView\Document;
 
-class Hidden extends Input {
+class Hidden extends Field {
 
 
 	public function render(Document $view, array $data): Document {

@@ -13,7 +13,6 @@ use RS\NView\Document;
 
 class Checkbox extends  Input {
 
-
 	public function render(Document $view, array $data): Document {
 		$this->renderAttributes($view,$data);
 		$this->renderValue($view,$data);
