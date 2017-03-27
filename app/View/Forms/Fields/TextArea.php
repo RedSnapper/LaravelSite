@@ -12,6 +12,7 @@ class TextArea extends Field {
 	public function render(Document $view, array $data): Document {
 
 		$this->renderDefaults($view,$data);
+		$this->renderValue($view,$data);
 
 		return $view;
 	}

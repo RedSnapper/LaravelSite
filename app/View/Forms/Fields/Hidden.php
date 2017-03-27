@@ -12,6 +12,7 @@ class Hidden extends Field {
 		$this->renderAttributes($view,$data);
 		$this->renderValue($view,$data);
 		$this->renderName($view,$data);
+		$this->renderValue($view,$data);
 
 		return $view;
 	}

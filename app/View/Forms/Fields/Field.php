@@ -19,7 +19,6 @@ class Field extends ViewController {
 		$this->renderName($view,$data);
 		$this->renderAttributes($view,$data);
 		$this->renderID($view,$data);
-		$this->renderValue($view,$data);
 		$this->renderError($view,$data);
 		$this->renderLabel($view,$data);
 	}

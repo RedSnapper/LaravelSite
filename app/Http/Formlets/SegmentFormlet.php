@@ -8,6 +8,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
+use App\Http\Fields\Select;
 use App\Http\Fields\TextArea;
 use App\Segment;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,10 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text','name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text','syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
+
+		$field = new Select('size', ['L' => 'Large', 'S' => 'Small'],'S');
+		$this->add($field);
+
 		$this->addSubscribers('layouts',SegmentLayoutFormlet::class,$this->model->layouts());
 
 	}

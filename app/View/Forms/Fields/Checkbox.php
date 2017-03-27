@@ -18,6 +18,7 @@ class Checkbox extends  Input {
 		$this->renderValue($view,$data);
 		$this->renderName($view,$data);
 		$this->renderError($view,$data);
+
 		return $view;
 	}
 

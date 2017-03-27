@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 01/03/2017
- * Time: 11:43
- */
 
 namespace App\Http\Fields;
 
