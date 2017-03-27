@@ -61,4 +61,18 @@ class Select extends AbstractField {
 		return $data;
 	}
 
+	/**
+	 * Multi select
+	 *
+	 * @param boolean $multiple
+	 * @return AbstractField
+	 */
+	public function setMultiple($multiple = true): AbstractField {
+
+		$multiple ? $this->setAttribute('multiple')
+		  : $this->removeAttribute("multiple");
+
+		return $this;
+	}
+
 }

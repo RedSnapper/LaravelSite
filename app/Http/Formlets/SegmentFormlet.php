@@ -32,9 +32,8 @@ class SegmentFormlet extends Formlet {
 		$field = new Select('size', ['L' => 'Large', 'S' => 'Small']);
 		$this->add(
 		  $field->setPlaceholder("Select a size")
-			->setLabel("Size")
+				->setLabel("Size")
 		);
-
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}
 
