@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Formlets\LayoutComposite;
+use App\Http\Formlets\LayoutFormlet;
 use App\Layout;
 use Illuminate\Http\Request;
 
 class LayoutController extends Controller  {
 
 	/**
-	 * @var LayoutComposite
+	 * @var LayoutFormlet
 	 */
 	private $form;
-	public function __construct(LayoutComposite $form) {
+	public function __construct(LayoutFormlet $form) {
 		$this->form = $form;
 	}
 
