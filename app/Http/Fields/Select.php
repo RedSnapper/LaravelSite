@@ -8,13 +8,18 @@
 
 namespace App\Http\Fields;
 
+use Illuminate\Support\Collection;
+
 class Select extends AbstractField {
 
 	protected $view = "forms.fields.select";
 
 	protected $list = [];
 
-	protected $options = [];
+	/**
+	 * @var Collection
+	 */
+	protected $options;
 
 	public function __construct(string $name, $list =[], $selected = null) {
 		$this->name = $name;
@@ -22,7 +27,19 @@ class Select extends AbstractField {
 		$this->attributes = collect([]);
 		$this->list = $list;
 		$this->setOptions();
+	}
 
+	/**
+	 * Set placeholder
+	 *
+	 * @param string $string
+	 * @return AbstractField
+	 */
+	public function setPlaceholder(string $string): AbstractField {
+
+		$this->options->prepend(['display'=>$string,'value'=>null]);
+
+		return $this;
 	}
 
 	protected function setOptions(){

@@ -24,23 +24,25 @@ class SegmentFormlet extends Formlet {
 		$this->setModel($segment);
 	}
 
-	public function prepareForm(){
-		$this->add((new Input('text','name'))->setLabel('Name')->setRequired());
-		$this->add((new Input('text','syntax'))->setLabel('Syntax'));
+	public function prepareForm() {
+		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
+		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('size', ['L' => 'Large', 'S' => 'Small'],'S');
-		$this->add($field);
+		$field = new Select('size', ['L' => 'Large', 'S' => 'Small']);
+		$this->add(
+		  $field->setPlaceholder("Select a size")
+			->setLabel("Size")
+		);
 
-		$this->addSubscribers('layouts',SegmentLayoutFormlet::class,$this->model->layouts());
-
+		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}
 
 	/**
 	 * Add subscribers to this formlet
 	 *
-	 * @param string $name
-	 * @param string $class
+	 * @param string        $name
+	 * @param string        $class
 	 * @param BelongsToMany $builder
 	 */
 	public function addSubscribers(string $name, string $class, BelongsToMany $builder) {
@@ -50,17 +52,16 @@ class SegmentFormlet extends Formlet {
 
 		foreach ($items as $item) {
 			$formlet = app()->make($class);
-			$formlet->with('segment',$this->model);
+			$formlet->with('segment', $this->model);
 			$model = $this->getModelByKey($item->getKey(), $models);
 			$this->addSubscriberFormlet($formlet, $name, $item, $model);
 		}
 	}
 
-
-	public function rules():array{
+	public function rules(): array {
 		$key = $this->model->getKey();
 		return [
-			'name' => ['required','max:255',Rule::unique('segments')->ignore($key)]
+		  'name' => ['required', 'max:255', Rule::unique('segments')->ignore($key)]
 		];
 	}
 
@@ -73,8 +74,7 @@ class SegmentFormlet extends Formlet {
 		return $segment;
 	}
 
-
-	public function persist():Model {
+	public function persist(): Model {
 		return $this->edit();
 	}
 
