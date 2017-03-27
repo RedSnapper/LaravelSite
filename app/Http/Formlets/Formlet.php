@@ -36,10 +36,25 @@ abstract class Formlet {
 	 */
 	public $request;
 
+	/**
+	 * View for formlet
+	 *
+	 * @var string
+	 */
 	protected $formletView = "forms.auto";
 
+	/**
+	 * View for composite formlets
+	 *
+	 * @var string
+	 */
 	protected $compositeView;
 
+	/**
+	 * Main form view
+	 *
+	 * @var string
+	 */
 	protected $formView;
 
 	/**
@@ -64,15 +79,14 @@ abstract class Formlet {
 	protected $guarded = [];
 
 	/**
-	 * Formlets
+	 * Formlets attached to this form
 	 *
 	 * @var Formlet[]
 	 */
-
 	protected $formlets = [];
 
 	/**
-	 * The form methods that should be spoofed, in uppercase.
+	 * Validator for this form
 	 *
 	 * @var Validator
 	 */
@@ -85,6 +99,11 @@ abstract class Formlet {
 	 */
 	protected $name = "";
 
+	/**
+	 * Formlet key.
+	 *
+	 * @var int|null
+	 */
 	protected $key;
 
 	/**
@@ -95,7 +114,6 @@ abstract class Formlet {
 	 */
 	protected $multiple = false;
 
-
 	/**
 	 * Extra view data
 	 *
@@ -103,22 +121,11 @@ abstract class Formlet {
 	 */
 	protected $data = [];
 
-	/**
-	 * @return bool
-	 */
-	public function isMultiple(): bool {
-		return $this->multiple;
-	}
 
-	/**
-	 * @param bool $multiple
-	 */
-	public function setMultiple(bool $multiple = true) {
-		$this->multiple = $multiple;
-	}
+	abstract public function prepareForm();
 
-	public function getKey() {
-		return $this->key;
+	public function rules(): array {
+		return [];
 	}
 
 	/**
@@ -134,17 +141,39 @@ abstract class Formlet {
 		} else {
 			$this->data[$key] = $value;
 		}
-
 		return $this;
 	}
 
-
-	abstract public function prepareForm();
-
-	public function rules(): array {
-		return [];
+	/**
+	 * There are multiple of this formlet
+	 *
+	 * @return bool
+	 */
+	public function isMultiple(): bool {
+		return $this->multiple;
 	}
 
+	/**
+	 * @param bool $multiple
+	 */
+	public function setMultiple(bool $multiple = true) {
+		$this->multiple = $multiple;
+	}
+
+	/**
+	 * Get the key for the formlet
+	 */
+	public function getKey() {
+		return $this->key;
+	}
+
+	/**
+	 * Add formlet to this formlet
+	 *
+	 * @param string $name
+	 * @param string $class
+	 * @return Formlet
+	 */
 	public function addFormlet(string $name, string $class): Formlet {
 		$formlet = app()->make($class);
 		$formlet->name = $name;
@@ -152,6 +181,13 @@ abstract class Formlet {
 		return $formlet;
 	}
 
+	/**
+	 * Add subscribers to this formlet
+	 *
+	 * @param string $name
+	 * @param string $class
+	 * @param BelongsToMany $builder
+	 */
 	public function addSubscribers(string $name, string $class, BelongsToMany $builder) {
 
 		$items = $builder->getRelated()->all();
@@ -159,18 +195,26 @@ abstract class Formlet {
 
 		foreach ($items as $item) {
 			$formlet = app()->make($class);
-			$model = $this->getModelByKey($item->getKey(),$models);
-			$this->addSubscriberFormlet($formlet, $name, $item,$model);
+			$model = $this->getModelByKey($item->getKey(), $models);
+			$this->addSubscriberFormlet($formlet, $name, $item, $model);
 		}
 	}
 
-	protected function getModelByKey(int $key,Collection $models,$keyName="id"){
-		return $models->where($keyName,$key)->first();
+	/**
+	 * Get model from a collection of models for a given key
+	 *
+	 * @param int        $key
+	 * @param Collection $models
+	 * @param string     $keyName
+	 * @return Model|null
+	 */
+	protected function getModelByKey(int $key, Collection $models, $keyName = "id") {
+		return $models->where($keyName, $key)->first();
 	}
 
 	protected function addSubscriberFormlet(Formlet $formlet, string $name, Model $subscriber, Model $model = null) {
 		$formlet->setKey($subscriber->getKey());
-		$formlet->with('subscriber',$subscriber);
+		$formlet->with($name, $subscriber);
 		$formlet->setModel($model);
 		$formlet->setName($name);
 		$formlet->setMultiple();
@@ -187,26 +231,20 @@ abstract class Formlet {
 
 		foreach ($this->formlets as $formlet) {
 
-			if(is_array($formlet)){
+			if (is_array($formlet)) {
 
 				foreach ($formlet as $f) {
-					$request = $this->request->input($f->getName() . "."  . $f->getKey()) ?? [];
+					$request = $this->request->input($f->getName() . "." . $f->getKey()) ?? [];
 					$errors = array_merge($errors, $f->validate($request, $f->rules()));
 				}
-
-			}else{
+			} else {
 				$request = $this->request->get($formlet->getName()) ?? [];
 				$errors = array_merge($errors, $formlet->validate($request, $formlet->rules()));
 			}
-
-
-
 		}
 
 		return $this->redirectIfErrors($errors);
 	}
-
-
 
 	protected function redirectIfErrors(array $errors) {
 
@@ -255,8 +293,7 @@ abstract class Formlet {
 		return [];
 	}
 
-	public function addCustomValidation(Validator $validator){
-
+	public function addCustomValidation(Validator $validator) {
 	}
 
 	public function renderWith($modes) {
@@ -358,7 +395,7 @@ abstract class Formlet {
 
 		$this->prepareFormlets($this->formlets);
 
-		if(count($this->formlets) && count($this->fields)){
+		if (count($this->formlets) && count($this->fields)) {
 			$this->setName('base');
 			$this->formlets['base'] = clone $this;
 			$this->formlets['base']->formlets = [];
@@ -367,8 +404,6 @@ abstract class Formlet {
 		foreach ($this->fields as $field) {
 			$field->setFieldName($this->getFieldPrefix($field->getName()));
 		}
-
-
 	}
 
 	protected function prepareFormlets(array $formlets) {
@@ -400,11 +435,11 @@ abstract class Formlet {
 		if (count($this->formlets)) {
 
 			foreach ($this->formlets as $name => $formlet) {
-				if(is_array($formlet)){
+				if (is_array($formlet)) {
 					foreach ($formlet as $form) {
 						$formlets[$name][] = $form->renderFormlets();
 					}
-				}else{
+				} else {
 					$formlets[$name] = $formlet->renderFormlets();
 				}
 			}
@@ -427,7 +462,7 @@ abstract class Formlet {
 		  'fields' => $this->getFieldData($this->fields),
 		];
 
-		$data = array_merge($data,$this->data);
+		$data = array_merge($data, $this->data);
 
 		return view($this->formletView, $data)->withErrors($errors);
 	}
@@ -581,11 +616,11 @@ abstract class Formlet {
 		$this->populateFormlets($this->formlets);
 	}
 
-	protected function populateFormlets(array $formlets=[]){
+	protected function populateFormlets(array $formlets = []) {
 		foreach ($formlets as $formlet) {
-			if(is_array($formlet)){
+			if (is_array($formlet)) {
 				$this->populateFormlets($formlet);
-			}else{
+			} else {
 				$formlet->populate();
 			}
 		}
@@ -723,16 +758,18 @@ abstract class Formlet {
 		$field = array_pull($parts, 0);
 		$extra = implode('[', $parts);
 
-
 		return "{$name}[$field]{$instance}[$extra";
 	}
 
-	protected function getFieldInstance():string{
-		if($this->isMultiple()){
+	protected function getFieldInstance(): string {
 
+		//If there are multiples of this formlet we need to include
+		//the key in the formlet
+
+		if ($this->isMultiple()) {
 			return "[" . $this->getKey() . "]";
-
 		}
+
 		return "";
 	}
 
