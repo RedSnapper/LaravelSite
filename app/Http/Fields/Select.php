@@ -14,8 +14,6 @@ class Select extends AbstractField {
 
 	protected $view = "forms.fields.select";
 
-	protected $list = [];
-
 	/**
 	 * @var Collection
 	 */
@@ -25,8 +23,7 @@ class Select extends AbstractField {
 		$this->name = $name;
 		$this->value = $selected;
 		$this->attributes = collect([]);
-		$this->list = $list;
-		$this->setOptions();
+		$this->options = $this->setOptions($list);
 	}
 
 	/**
@@ -37,20 +34,42 @@ class Select extends AbstractField {
 	 */
 	public function setPlaceholder(string $string): AbstractField {
 
-		$this->options->prepend(['display'=>$string,'value'=>null]);
+		$this->options->prepend($this->option(null,$string));
 
 		return $this;
 	}
 
-	protected function setOptions(){
+	protected function setOptions(array $list){
 
-		$this->options = collect($this->list)->map(function ($item,$key) {
-			return [
-			  'display' => $item,
-			  'value'=> $key
-			];
+		return collect($list)->map(function ($item,$key) {
+
+			if(!is_array($item)){
+				return $this->option($key,$item);
+			}
+
+			return $this->optgroup($key,$item);
+
+
 		})->values();
 
+	}
+
+	protected function option($value,$display):\stdClass{
+
+		$option = new \stdClass();
+		$option->display = $display;
+		$option->value = $value;
+		return $option;
+	}
+
+	protected function optgroup($label,$options=[]):\stdClass{
+
+		$group = new \stdClass();
+		$group->label = $label;
+
+		$group->options = $this->setOptions($options);
+
+		return $group;
 	}
 
 	public function getData() {
