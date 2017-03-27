@@ -35,8 +35,13 @@ class CreateLayoutSegmentTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::disableForeignKeyConstraints();
+
+		Schema::table('layout_segment',function (Blueprint $table) {
+			$table->dropForeign('layout_segment_layout_id_foreign');
+			$table->dropForeign('layout_segment_segment_id_foreign');
+		});
+
 		Schema::dropIfExists('layout_segment');
-		Schema::enableForeignKeyConstraints();
+
 	}
 }

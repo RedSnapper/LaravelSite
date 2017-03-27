@@ -35,8 +35,14 @@ class CreateAddressesTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::disableForeignKeyConstraints();
+
+		Schema::table('user_profiles',function (Blueprint $table) {
+			$table->dropForeign('user_profiles_billing_id_foreign');
+			$table->dropForeign('user_profiles_delivery_id_foreign');
+		});
+
+
 		Schema::dropIfExists('addresses');
-		Schema::enableForeignKeyConstraints();
+
 	}
 }

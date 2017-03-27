@@ -27,8 +27,12 @@ class CreateUserProfilesTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::disableForeignKeyConstraints();
+
+		Schema::table('user_profiles',function (Blueprint $table) {
+			$table->dropForeign('user_profiles_user_id_foreign');
+		});
+
 		Schema::dropIfExists('user_profiles');
-		Schema::enableForeignKeyConstraints();
+
 	}
 }
