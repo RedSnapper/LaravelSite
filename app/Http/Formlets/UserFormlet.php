@@ -11,7 +11,7 @@ class UserFormlet extends Formlet {
 
 //	protected $view = "forms.auto";
 
-	protected $formView = "user.form";
+	public $formView = "user.form";
 
 	protected $guarded = ['password','password_confirmation'];
 

@@ -5,7 +5,7 @@ use App\Address;
 use App\Http\Fields\Input;
 
 class AddressFormlet extends Formlet {
-	protected $formView = "user.form";
+	public $formView = "user.form";
 
 	public function __construct(Address $address) {
 		$this->setModel($address);

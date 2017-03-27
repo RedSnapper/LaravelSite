@@ -6,7 +6,7 @@ use App\Role;
 
 class RoleFormlet extends Formlet {
 
-	protected $formView = "role.form";
+	public $formView = "role.form";
 
 	public function __construct(Role $role) {
 		$this->setModel($role);

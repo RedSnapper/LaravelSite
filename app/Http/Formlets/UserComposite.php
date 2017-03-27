@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {
 
-	protected $compositeView = "user.composite";
-	protected $formView = "user.form";
+	public $compositeView = "user.composite";
+	public $formView = "user.form";
 
 	public function prepareForm(){
 		if(!isset($this->key)) {

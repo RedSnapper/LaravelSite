@@ -10,7 +10,7 @@ namespace App\Http\Formlets;
 
 class LogoutForm extends Formlet {
 
-	protected $formView = "auth.logout";
+	public $formView = "auth.logout";
 
 	public function prepareForm() {
 

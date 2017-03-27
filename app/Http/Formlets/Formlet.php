@@ -41,21 +41,21 @@ abstract class Formlet {
 	 *
 	 * @var string
 	 */
-	protected $formletView = "forms.auto";
+	public $formletView = "forms.auto";
 
 	/**
 	 * View for composite formlets
 	 *
 	 * @var string
 	 */
-	protected $compositeView;
+	public $compositeView;
 
 	/**
 	 * Main form view
 	 *
 	 * @var string
 	 */
-	protected $formView;
+	public $formView;
 
 	/**
 	 * All fields that are added.

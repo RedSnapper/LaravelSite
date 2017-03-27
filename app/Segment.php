@@ -14,7 +14,7 @@ class Segment extends Model
 	 * many-many relations
 	 **/
 
-	public function mm() {
+	public function layouts() {
 		return $this->belongsToMany(Layout::class)->withPivot('syntax');
 	}
 

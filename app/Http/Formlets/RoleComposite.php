@@ -5,8 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleComposite extends Formlet {
 
-	protected $compositeView = "role.composite";
-	protected $formView = "role.form";
+	public $compositeView = "role.composite";
+	public $formView = "role.form";
 
 	public function prepareForm(){
 		$role = $this->addFormlet('role',RoleFormlet::class)

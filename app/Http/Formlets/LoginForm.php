@@ -7,7 +7,7 @@ use App\Http\Fields\Input;
 
 class LoginForm extends Formlet {
 
-	protected $formView = "auth.login";
+	public $formView = "auth.login";
 
 	protected $guarded = ['password'];
 

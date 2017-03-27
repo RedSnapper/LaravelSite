@@ -6,7 +6,7 @@ use App\Http\Fields\Input;
 use App\UserProfile;
 
 class UserProfileForm extends Formlet {
-	protected $formView = "user.form";
+	public $formView = "user.form";
 
 	public function __construct(UserProfile $profile) {
 		$this->setModel($profile);

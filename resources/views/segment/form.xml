@@ -1,11 +1,24 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-    <h1>Segment</h1>
+    <h1>Segments</h1>
     <div class="row" data-v.container="forms.form">
         <div class="col-md-8">
-            <div data-v.replace="form"/>
+            <div data-v.replace="form.base"/>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Layout</th>
+                        <th>Used</th>
+                        <th>Syntax</th>
+                    </tr>
+                </thead>
+                <tbody data-v.foreach="form.layouts" data-v.name="layout">
+                    <tr data-v.replace="layout"/>
+                </tbody>
+            </table>
+
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>
 </div>
-

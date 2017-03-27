@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class UserEmailFormlet extends Formlet {
-	
-	protected $formView = "user.form";
+
+	public $formView = "user.form";
 
 	public function __construct(User $user) {
 		$this->setModel($user);

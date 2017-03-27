@@ -6,9 +6,9 @@ use App\Http\Fields\Checkbox;
 use App\Http\Fields\Input;
 use Illuminate\Contracts\Validation\Validator;
 
-class LayoutSegmentFormlet extends Formlet {
+class SegmentLayoutFormlet extends Formlet {
 
-	public $formletView = "layout.segment";
+	public $formletView = "segment.layout";
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));

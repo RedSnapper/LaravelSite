@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
 
-	protected $formView = "layout.form";
+	public $formView = "layout.form";
 
 	public function __construct(Layout $layout) {
 		$this->setModel($layout);
