@@ -24,10 +24,30 @@ class SegmentFormlet extends Formlet {
 
 	public function prepareForm(){
 		$this->add((new Input('text','name'))->setLabel('Name')->setRequired());
+		$this->add((new Input('text','syntax'))->setLabel('Syntax'));
 		$this->add((new Input('text','docs'))->setLabel('Docs')->setRequired());
-
 		$this->addSubscribers('layouts',SegmentLayoutFormlet::class,$this->model->layouts());
 
+	}
+
+	/**
+	 * Add subscribers to this formlet
+	 *
+	 * @param string $name
+	 * @param string $class
+	 * @param BelongsToMany $builder
+	 */
+	public function addSubscribers(string $name, string $class, BelongsToMany $builder) {
+
+		$items = $builder->getRelated()->all();
+		$models = $builder->get();
+
+		foreach ($items as $item) {
+			$formlet = app()->make($class);
+			$formlet->with('segment',$this->model);
+			$model = $this->getModelByKey($item->getKey(), $models);
+			$this->addSubscriberFormlet($formlet, $name, $item, $model);
+		}
 	}
 
 
@@ -40,19 +60,9 @@ class SegmentFormlet extends Formlet {
 
 	public function edit(): Model {
 
-		$layouts = new Collection($this->fields('layouts'));
-
-		$layouts = $layouts->filter(function ($value, $key) {
-			return isset($value['subscriber']);
-		})->map(function ($item, $key) {
-
-			array_forget($item,'subscriber');
-			return $item;
-		});
-
 		$segment = parent::edit();
 
-		$segment->layouts()->sync($layouts);
+		$segment->layouts()->sync($this->getSubscriberFields('layouts'));
 
 		return $segment;
 	}

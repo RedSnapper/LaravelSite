@@ -144,6 +144,10 @@ abstract class Formlet {
 		return $this;
 	}
 
+	public function getData(string $name){
+		return data_get($this->data, $name);
+	}
+
 	/**
 	 * There are multiple of this formlet
 	 *
@@ -219,6 +223,27 @@ abstract class Formlet {
 		$formlet->setName($name);
 		$formlet->setMultiple();
 		$this->formlets[$name][] = $formlet;
+	}
+
+	/**
+	 * Get the subscriber fields from the request for a given key
+	 * 
+	 * @param string $field
+	 * @param string $subscriber
+	 * @return Collection
+	 */
+	public function getSubscriberFields(string $field , string $subscriber ="subscriber"){
+
+		$collection = new Collection($this->fields($field));
+
+		$collection = $collection->filter(function ($value) use($subscriber) {
+			return isset($value[$subscriber]);
+		})->map(function ($item) use($subscriber) {
+			array_forget($item,$subscriber);
+			return $item;
+		});
+
+		return $collection;
 	}
 
 	protected function isValid() {
@@ -546,7 +571,11 @@ abstract class Formlet {
 			return $this->model;
 		}
 
-		return data_get($this->model, $name) ?? data_get($this->model, "pivot.$name");
+		if($this->isMultiple()){
+			return data_get($this->model, "pivot.$name") ?? data_get($this->model, $name);
+		}
+
+		return data_get($this->model, $name);
 	}
 
 	protected function setFieldValue(AbstractField $field): AbstractField {

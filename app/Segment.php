@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Segment extends Model
 {
 	protected $fillable = [
-		'name','docs'
+		'name','docs','syntax'
 	];
 
 	/**

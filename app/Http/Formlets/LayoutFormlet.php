@@ -24,7 +24,6 @@ class LayoutFormlet  extends Formlet {
 
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
 
-
 	}
 
 	public function rules():array{
@@ -36,19 +35,9 @@ class LayoutFormlet  extends Formlet {
 
 	public function edit(): Model {
 
-		$segments = new Collection($this->fields('segments'));
-
-		$segments = $segments->filter(function ($value, $key) {
-			return isset($value['subscriber']);
-		})->map(function ($item, $key) {
-
-			array_forget($item,'subscriber');
-			return $item;
-		});
-
 		$layout = parent::edit();
 
-		$layout->segments()->sync($segments);
+		$layout->segments()->sync($this->getSubscriberFields('segments'));
 
 		return $layout;
 	}
