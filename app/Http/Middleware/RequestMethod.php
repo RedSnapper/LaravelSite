@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\DB;
 
-class ShowSQL {
+class RequestMethod {
+
 	/**
 	 * Handle an incoming request.
 	 *
@@ -15,10 +15,10 @@ class ShowSQL {
 	 */
 	public function handle($request, Closure $next) {
 
-		if (!is_null($request->sql)) {
-			DB::listen(function ($sql) {
-				print("<code>" . $sql->sql . ';  ' . print_r($sql->bindings, true) . "</code><br />");
-			});
+		$method = explode(":",$request->get("_method"));
+
+		if(count($method) > 1){
+			$request->merge(['_method'=>$method[0],'_fn'=>$method]);
 		}
 
 		return $next($request);

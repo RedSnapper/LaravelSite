@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-		NView::share('shared','this is shared with all views');
+
     }
 
     /**
