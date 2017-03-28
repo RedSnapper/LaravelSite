@@ -9,10 +9,9 @@ class Form extends ViewController{
 
    	public function render(Document $view, array $data): Document {
 
-
 		foreach ($data['hidden'] as $fieldData){
 			$field = view($fieldData['view'],$fieldData);
-			$view->set("/*/child-gap()",$field->compile());
+			$view->set("(/*/*)[1]/preceding-gap()",$field->compile());
 		}
 
 		if(isset($data['attributes'])){

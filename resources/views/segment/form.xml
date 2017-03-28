@@ -19,6 +19,7 @@
             </table>
 
             <button class="btn btn-primary" type="submit">Submit</button>
+            <button name="_method" class="btn btn-primary" type="submit" value="patch:foo">Patch</button>
         </div>
     </div>
 </div>

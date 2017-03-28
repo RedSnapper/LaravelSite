@@ -22,7 +22,15 @@ Route::get('/home', 'HomeController@index');
 Route::resource('/user','UserController');
 Route::resource('/role','RoleController');
 Route::resource('/layout','LayoutController');
+
 Route::resource('/segment','SegmentController');
+Route::patch('/segment/{segment}','SegmentController@patch')->name('segment.patch');
+Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
+
+
+
+
+
 Auth::routes();
 
 

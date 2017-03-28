@@ -55,7 +55,7 @@ class SegmentController extends Controller
 		$this->form->setKey($id);
 		return $this->form->renderWith([
 			'route'  => ['segment.update', $id],
-			'method' => 'PATCH'
+			'method' => 'PUT'
 		]);
 	}
 
@@ -73,5 +73,16 @@ class SegmentController extends Controller
 	 */
 	public function destroy($id) {
 		return redirect()->back();
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function patch(Request $request) {
+		dd($request);
+		//return redirect()->back();
 	}
 }
