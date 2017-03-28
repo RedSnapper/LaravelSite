@@ -29,15 +29,15 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('animal[]',[
-		  'Cats' => ['leopard' => 'Leopard'],
+		$field = new Select('size[]',[
+		  'Cats' => ['leopard' => 'Leopard','lion'=>'Lion','panther'=>'Panther'],
 		  'Dogs' => ['spaniel' => 'Spaniel'],
 		]);
 
 		$this->add(
 		  $field->setPlaceholder("Select a size")
 				->setLabel("Size")
-		  		->setMultiple()
+		  	->setMultiple()
 		);
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}

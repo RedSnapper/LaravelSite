@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Segment extends Model
 {
 	protected $fillable = [
-		'name','docs','syntax'
+		'name','docs','syntax','size'
+	];
+
+	protected $casts = [
+		'size' => 'array'
 	];
 
 	/**

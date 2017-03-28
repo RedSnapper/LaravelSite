@@ -4,7 +4,6 @@ namespace App\Http\Formlets;
 
 use App\Http\Fields\Checkbox;
 use App\Http\Fields\Input;
-use Illuminate\Contracts\Validation\Validator;
 
 class SegmentLayoutFormlet extends Formlet {
 

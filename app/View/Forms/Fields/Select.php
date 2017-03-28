@@ -67,6 +67,9 @@ class Select extends Field {
 		$view = new Document($this->optionTemplate);
 		$view->set("//h:option/@value", $item->value);
 		$view->set("//h:option/child-gap()", $item->display);
+		if($item->disabled) {
+			$view->set("//h:option/@disabled","disabled");
+		}
 
 		if ($this->isSelected($item->value, $selected)) {
 			$view->set("//h:option/@selected", "selected");

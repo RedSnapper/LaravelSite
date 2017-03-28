@@ -27,14 +27,14 @@ class Select extends AbstractField {
 	}
 
 	/**
-	 * Set placeholder
+	 * Set placeholder. This option needs to be disabled.
 	 *
 	 * @param string $string
 	 * @return AbstractField
 	 */
 	public function setPlaceholder(string $string): AbstractField {
 
-		$this->options->prepend($this->option(null,$string));
+		$this->options->prepend($this->option(null,$string,true));
 
 		return $this;
 	}
@@ -54,11 +54,12 @@ class Select extends AbstractField {
 
 	}
 
-	protected function option($value,$display):\stdClass{
+	protected function option($value,$display,bool $disabled = false):\stdClass{
 
 		$option = new \stdClass();
 		$option->display = $display;
 		$option->value = $value;
+		$option->disabled = $disabled;
 		return $option;
 	}
 
