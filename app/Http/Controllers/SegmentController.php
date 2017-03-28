@@ -72,7 +72,9 @@ class SegmentController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		return redirect()->back();
+		$this->form->delete($id);
+
+		return redirect()->route('segment.index');
 	}
 
 	/**

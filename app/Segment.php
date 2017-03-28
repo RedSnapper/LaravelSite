@@ -10,9 +10,9 @@ class Segment extends Model
 		'name','docs','syntax','size'
 	];
 
-	protected $casts = [
-		'size' => 'array'
-	];
+	//protected $casts = [
+	//	'size' => 'array'
+	//];
 
 	/**
 	 * many-many relations

@@ -340,6 +340,10 @@ abstract class Formlet {
 		return $this->model;
 	}
 
+	public function delete($key): Model {
+		return $this->model->destroy($key);
+	}
+
 	public function edit(): Model {
 		if (isset($this->model)) {
 			$this->model->fill($this->fields());
@@ -531,7 +535,7 @@ abstract class Formlet {
 		}
 
 		if (isset($this->model)) {
-			return $this->getModelValueAttribute($name);
+			return $this->getModelValueAttribute($name) ?? $default;
 		}
 
 		return $default;

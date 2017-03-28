@@ -8,6 +8,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
+use App\Http\Fields\Radio;
 use App\Http\Fields\Select;
 use App\Http\Fields\TextArea;
 use App\Segment;
@@ -29,16 +30,12 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('size[]',[
-		  'Cats' => ['leopard' => 'Leopard','lion'=>'Lion','panther'=>'Panther'],
-		  'Dogs' => ['spaniel' => 'Spaniel'],
-		]);
+		$field = new Radio('size',['S'=>'Small','L'=>'Large'],'S');
 
 		$this->add(
-		  $field->setPlaceholder("Select a size")
-				->setLabel("Size")
-		  	->setMultiple()
+		  $field->setLabel("Size")
 		);
+
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}
 

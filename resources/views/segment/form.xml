@@ -20,6 +20,8 @@
 
             <button class="btn btn-primary" type="submit">Submit</button>
             <button name="_method" class="btn btn-primary" type="submit" value="patch:foo">Patch</button>
+            <button name="_method" class="btn btn-danger" type="submit" value="delete">Delete</button>
+
         </div>
     </div>
 </div>

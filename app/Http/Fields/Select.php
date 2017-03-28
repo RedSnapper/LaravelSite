@@ -8,23 +8,10 @@
 
 namespace App\Http\Fields;
 
-use Illuminate\Support\Collection;
 
-class Select extends AbstractField {
+class Select extends Choice {
 
 	protected $view = "forms.fields.select";
-
-	/**
-	 * @var Collection
-	 */
-	protected $options;
-
-	public function __construct(string $name, $list =[], $selected = null) {
-		$this->name = $name;
-		$this->value = $selected;
-		$this->attributes = collect([]);
-		$this->options = $this->setOptions($list);
-	}
 
 	/**
 	 * Set placeholder. This option needs to be disabled.
@@ -37,48 +24,6 @@ class Select extends AbstractField {
 		$this->options->prepend($this->option(null,$string,true));
 
 		return $this;
-	}
-
-	protected function setOptions(array $list){
-
-		return collect($list)->map(function ($item,$key) {
-
-			if(!is_array($item)){
-				return $this->option($key,$item);
-			}
-
-			return $this->optgroup($key,$item);
-
-
-		})->values();
-
-	}
-
-	protected function option($value,$display,bool $disabled = false):\stdClass{
-
-		$option = new \stdClass();
-		$option->display = $display;
-		$option->value = $value;
-		$option->disabled = $disabled;
-		return $option;
-	}
-
-	protected function optgroup($label,$options=[]):\stdClass{
-
-		$group = new \stdClass();
-		$group->label = $label;
-
-		$group->options = $this->setOptions($options);
-
-		return $group;
-	}
-
-	public function getData() {
-		$data =  parent::getData();
-
-		$data['options'] = $this->options;
-
-		return $data;
 	}
 
 	/**
