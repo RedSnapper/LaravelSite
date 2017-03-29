@@ -7,7 +7,7 @@
 
 namespace App\Http\Formlets;
 
-use App\Role;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Fields\Checkbox;
 

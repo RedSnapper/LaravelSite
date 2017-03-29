@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Formlets;
 
-use App\Address;
+use App\Models\Address;
 use App\Http\Fields\Input;
 
 class AddressFormlet extends Formlet {

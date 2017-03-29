@@ -1,10 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use RS\NView\Facades\NView;
-use Illuminate\Http\Request;
-
-use App\Http\Formlets\UserForm;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,12 +19,9 @@ Route::resource('/user','UserController');
 Route::resource('/role','RoleController');
 Route::resource('/layout','LayoutController');
 
-Route::resource('/segment','SegmentController');
+Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::patch('/segment/{segment}','SegmentController@patch')->name('segment.patch');
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
-
-
-
 
 
 Auth::routes();

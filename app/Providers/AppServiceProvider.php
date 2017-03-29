@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use RS\NView\Facades\NView;
+
 
 class AppServiceProvider extends ServiceProvider
 {

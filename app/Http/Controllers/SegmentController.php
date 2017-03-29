@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\SegmentFormlet;
-use App\Segment;
+use App\Models\Segment;
 use Illuminate\Http\Request;
 
 class SegmentController extends Controller

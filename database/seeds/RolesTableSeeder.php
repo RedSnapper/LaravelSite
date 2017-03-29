@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Role;
 
 class RolesTableSeeder extends Seeder {
 	/**
@@ -9,7 +10,7 @@ class RolesTableSeeder extends Seeder {
 	 * @return void
 	 */
 	public function run() {
-		factory(\App\Role::class, 5)->create();
+		factory(Role::class, 5)->create();
 	}
 
 }

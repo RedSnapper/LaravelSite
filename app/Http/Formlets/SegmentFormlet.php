@@ -11,7 +11,7 @@ use App\Http\Fields\Input;
 use App\Http\Fields\Radio;
 use App\Http\Fields\Select;
 use App\Http\Fields\TextArea;
-use App\Segment;
+use App\Models\Segment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;

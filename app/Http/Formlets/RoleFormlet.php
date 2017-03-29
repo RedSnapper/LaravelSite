@@ -2,7 +2,7 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
-use App\Role;
+use App\Models\Role;
 
 class RoleFormlet extends Formlet {
 

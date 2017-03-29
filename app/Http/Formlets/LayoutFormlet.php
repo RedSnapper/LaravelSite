@@ -3,7 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
-use App\Layout;
+use App\Models\Layout;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;

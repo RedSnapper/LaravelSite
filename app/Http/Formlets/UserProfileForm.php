@@ -3,7 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Fields\Input;
-use App\UserProfile;
+use App\Models\UserProfile;
 
 class UserProfileForm extends Formlet {
 	public $formView = "user.form";

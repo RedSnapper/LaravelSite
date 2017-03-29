@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Forms\Form;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Formlets\Formlet;
 
@@ -17,13 +16,13 @@ class FormServiceProvider extends ServiceProvider
     {
 		$this->app->resolving(Formlet::class, function (Formlet $formlet, $app) {
 			$formlet->setSessionStore($app['session.store']);
-			$formlet->setURLGenerator($app['url']);
+			$formlet->setUrlGenerator($app['url']);
 			$formlet->setRequest($app['request']);
 		});
 
-		$this->app->resolving(Form::class, function (Form $formlet, $app) {
+		$this->app->resolving(Formlet::class, function (Formlet $formlet, $app) {
 			$formlet->setSessionStore($app['session.store']);
-			$formlet->setURLGenerator($app['url']);
+			$formlet->setUrlGenerator($app['url']);
 			$formlet->setRequest($app['request']);
 		});
     }

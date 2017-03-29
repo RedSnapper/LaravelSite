@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\RoleComposite;
-use App\Http\Formlets\RoleFormlet;
-use App\Role;
+//use App\Http\Formlets\RoleFormlet;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller {
 
 	/**
-	 * @var UserComposite
+	 * @var RoleComposite
 	 */
 	private $form;
 	public function __construct(RoleComposite $form) {

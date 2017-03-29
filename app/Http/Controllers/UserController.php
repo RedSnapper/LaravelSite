@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Formlets\UserComposite;
 use App\Http\Formlets\UserEmailFormlet;
-use App\User;
-use App\UserProfile;
+use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserFormlet;
 use Illuminate\Support\Facades\DB;
@@ -62,7 +62,8 @@ class UserController extends Controller {
 	 */
 	public function edit($id = null) {
 		$this->form->setKey($id);
-		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']); //update method for updating an existing model.
+		//now update method for updating an existing model.
+		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']);
 	}
 
 	/**

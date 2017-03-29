@@ -707,7 +707,7 @@ abstract class Formlet {
 	 * @param UrlGenerator $url
 	 * @return $this
 	 */
-	public function setURLGenerator(UrlGenerator $url) {
+	public function setUrlGenerator(UrlGenerator $url) {
 		$this->url = $url;
 		return $this;
 	}

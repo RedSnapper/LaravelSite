@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\UserProfile;
 
 class UsersTableSeeder extends Seeder {
 	/**
@@ -15,8 +17,8 @@ class UsersTableSeeder extends Seeder {
 	}
 
 	public function createUsers($users, $attr = []) {
-		factory(\App\User::class, $users)->create($attr)->each(function ($u) {
-			$u->profile()->save(factory(\App\UserProfile::class)->make());
+		factory(User::class, $users)->create($attr)->each(function ($u) {
+			$u->profile()->save(factory(UserProfile::class)->make());
 		});
 
 	}

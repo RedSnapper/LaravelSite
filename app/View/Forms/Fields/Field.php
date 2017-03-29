@@ -18,7 +18,7 @@ class Field extends ViewController {
 	protected function renderDefaults(Document $view, $data){
 		$this->renderName($view,$data);
 		$this->renderAttributes($view,$data);
-		$this->renderID($view,$data);
+		$this->renderId($view,$data);
 		$this->renderError($view,$data);
 		$this->renderLabel($view,$data);
 	}
@@ -58,7 +58,7 @@ class Field extends ViewController {
 		$view->set("//h:$element/@name",$data['name']);
 	}
 
-	protected function renderID(Document $view, $data){
+	protected function renderId(Document $view, $data){
 
 		$element = $this->rootElement;
 

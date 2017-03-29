@@ -2,7 +2,7 @@
 
 namespace App\Http\Formlets;
 use App\Http\Fields\Input;
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
