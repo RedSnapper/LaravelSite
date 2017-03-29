@@ -27,7 +27,6 @@ class Select extends Field {
 		$this->renderDefaults($view, $data);
 
 		$this->renderOptions($view, $data);
-		$view->set("//h:select/@size",max(1,count($data) - 1));
 
 		return $view;
 	}

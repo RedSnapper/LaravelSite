@@ -23,16 +23,7 @@ class Choice extends AbstractField {
 		$this->options = $this->setOptions($list);
 	}
 
-	//TODO:: This needs serious tidying up.
-	//TODO:: Sorry, param. couldn't work it out.
 	protected function setOptions($list): Collection {
-		if (is_a($list, Collection::class)) {
-			$orig = $list;
-			$list = [];
-			foreach($orig as $thing) {
-				$list[$thing->id] = $thing->name;
-			}
-		}
 
 		return collect($list)->map(function ($item, $key) {
 

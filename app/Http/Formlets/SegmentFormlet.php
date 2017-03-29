@@ -19,13 +19,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {
-	private $root;
+
+	private $category;
+
 	public $formView = "segment.form";
 
-	public function __construct(Segment $segment,Category $cat) {
-		$root = $cat->reference('SEGMENTS');
-		$this->root = is_a($root,Category::class) ? $root : null;
-		//The is_a thing is because scopes don't return nulls when they fail - they return the Builder instead.
+	public function __construct(Segment $segment,Category $category) {
+
+		$this->category = $category->where('name','SEGMENTS')->first();
+
 		$this->setModel($segment);
 	}
 
@@ -38,8 +40,11 @@ class SegmentFormlet extends Formlet {
 		$this->add(
 		  $field->setLabel("Size")
 		);
-		if(!is_null($this->root)) {
-			$field = new Select('category_id',$this->root->descendants()->get());
+
+
+		if(!is_null($this->category)) {
+			$options = $this->category->descendants()->pluck('name','id');
+			$field = new Select('category_id',$options);
 			$this->add($field->setLabel("Category"));
 		}
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
