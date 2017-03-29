@@ -2,6 +2,9 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Models\Layout;
+use App\Models\Role;
+use App\Models\Segment;
 
 /**
  * Part of form
@@ -9,7 +12,6 @@ use App\Models\Category;
  * Date: 29/03/2017 10:33
  */
 class CategoriesTableSeeder extends Seeder  {
-//	private $finalSize = 60;
 	private $nodeCount = 1;
 	private $faker;
 
@@ -18,14 +20,12 @@ class CategoriesTableSeeder extends Seeder  {
 
 		//Do ROOT node first.
 		factory(Category::class,1)->create(['id'=>1,'tw'=>1,'sz'=>1,'pa'=>null,'name'=>'ROOT']);
-		$this->addGroup('MEDIA',10);
-		$this->addGroup('TEAMS',10);
-		$this->addGroup('ROLES',10);
-		$this->addGroup('SEGMENTS',10);
-		$this->addGroup('LAYOUTS',3);
+		$this->addGroup('ROLES',Role::class,12);
+		$this->addGroup('SEGMENTS',Segment::class,12);
+		$this->addGroup('LAYOUTS',Layout::class,12);
 	}
 
-	private function addGroup($name,$size) {
+	private function addGroup($name,$modelClass = null,$size = 3) {
 		factory(Category::class,1)->create(['pa'=>1,'name'=>$name]);
 		$this->nodeCount++;
 		$branchRoot = $this->nodeCount;
@@ -40,6 +40,16 @@ class CategoriesTableSeeder extends Seeder  {
 		while($this->nodeCount < $branchSize) {
 			factory(Category::class,1)->create(['pa' => mt_rand($branchRoot,$this->nodeCount)]);
 			$this->nodeCount++;
+		}
+
+		if (isset($modelClass)) {
+			$tree  = new Category;
+			$model = new $modelClass;
+			$records = $model->get();
+			foreach ($records as $record) {
+				$record->category_id = $tree->index(mt_rand($branchRoot+1,$this->nodeCount))->id;
+				$record->save();
+			}
 		}
 	}
 }
