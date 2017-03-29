@@ -16,6 +16,7 @@ use App\Models\Address;
 use App\Models\Role;
 use App\Models\Segment;
 use App\Models\Layout;
+use App\Models\Category;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(User::class, function (Faker\Generator $faker) {
@@ -58,6 +59,8 @@ $factory->define(Layout::class, function (Faker\Generator $faker) {
 		];
 });
 
+
+
 $factory->define(Address::class, function (Faker\Generator $faker) {
 	return [
 		'street' => $faker->streetAddress,
@@ -65,6 +68,13 @@ $factory->define(Address::class, function (Faker\Generator $faker) {
 		'postcode' => $faker->postcode
 	];
 });
+
+$factory->define(Category::class, function (Faker\Generator $faker) {
+	return [
+		'name' => $faker->unique()->firstNameFemale,'pa' => 1
+	];
+});
+
 
 
 

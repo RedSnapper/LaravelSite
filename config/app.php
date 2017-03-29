@@ -161,9 +161,12 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
+
         //Illuminate\View\ViewServiceProvider::class,
-		\RS\NView\NViewServiceProvider::class,
-		\App\Providers\FormServiceProvider::class,
+
+				\RS\NView\NViewServiceProvider::class,
+
+				\App\Providers\FormServiceProvider::class,
 		//Barryvdh\Debugbar\ServiceProvider::class,
 
 		/*
