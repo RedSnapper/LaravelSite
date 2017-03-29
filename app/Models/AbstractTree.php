@@ -15,6 +15,8 @@ class AbstractTree extends Model {
 	protected $guarded  = ['id','sz','nc'];
 	public $timestamps = false;
 
+	//		$node = Node::index(20); //C2.
+
 	public function scopeAncestors(Builder $query,bool $self = false){
 		$plus = $self ? [$this->pa,$this->tw] : [$this->pa];
 		return $query->where(function($node) {$node->where('nc', '>=', $this->tw)->where('tw','<',$this->pa);})->orWhereIn('tw',$plus)->ordered();
@@ -34,6 +36,9 @@ class AbstractTree extends Model {
 	}
 	public function scopeIndex(Builder $query,int $index, $columns = ['*']){
 		return $query->where('tw', '=', $index)->first($columns);
+	}
+	public function scopeReference(Builder $query,string $name, $columns = ['*']){
+		return $query->where('name', '=', $name)->first($columns);
 	}
 	public function scopeParent(Builder $query, $columns = ['*']){
 		return $query->where('pa', '=', $this->tw)->first($columns);

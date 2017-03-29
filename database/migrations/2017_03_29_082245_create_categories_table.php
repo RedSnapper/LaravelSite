@@ -8,7 +8,7 @@ class CreateCategoriesTable extends Migration {
 	public function up() {
 		Schema::create('categories', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('name');
+			$table->string('name',32)->index(); //this should really be a binary field - but 'binary' returns a blob.
 			$table->integer('tw')->unsigned()->index();
 			$table->integer('pa')->unsigned()->index()->nullable();
 			$table->integer('sz')->unsigned()->nullable();

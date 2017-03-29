@@ -7,16 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
 	protected $fillable = [
-		'name'
+		'name','category_id'
 	];
 
-	/**
-	 * many-many relations
-	 **/
 
-	//public function users() {
-	//	return $this->belongsToMany(User::class);
-	//}
+	public function category() {
+		return $this->hasOne(Category::class);
+	}
 
 	public function mm() {
 		return $this->belongsToMany(User::class);

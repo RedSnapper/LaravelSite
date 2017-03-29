@@ -11,6 +11,7 @@ use App\Http\Fields\Input;
 use App\Http\Fields\Radio;
 use App\Http\Fields\Select;
 use App\Http\Fields\TextArea;
+use App\Models\Category;
 use App\Models\Segment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,10 +19,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {
-
+	private $root;
 	public $formView = "segment.form";
 
-	public function __construct(Segment $segment) {
+	public function __construct(Segment $segment,Category $cat) {
+		$root = $cat->reference('SEGMENTS');
+		$this->root = is_a($root,Category::class) ? $root : null;
+		//The is_a thing is because scopes don't return nulls when they fail - they return the Builder instead.
 		$this->setModel($segment);
 	}
 
@@ -31,11 +35,13 @@ class SegmentFormlet extends Formlet {
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
 		$field = new Radio('size',['S'=>'Small','L'=>'Large'],'S');
-
 		$this->add(
 		  $field->setLabel("Size")
 		);
-
+		if(!is_null($this->root)) {
+			$field = new Select('category_id',$this->root->descendants()->get());
+			$this->add($field->setLabel("Category"));
+		}
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}
 

@@ -11,36 +11,39 @@ namespace App\Http\Fields;
 use Illuminate\Support\Collection;
 
 class Choice extends AbstractField {
-
 	/**
 	 * @var Collection
 	 */
 	protected $options;
 
-	public function __construct(string $name, $list =[], $selected = null) {
+	public function __construct(string $name, $list = [], $selected = null) {
 		$this->name = $name;
 		$this->default = $selected;
 		$this->attributes = collect([]);
 		$this->options = $this->setOptions($list);
 	}
 
-
-	protected function setOptions(array $list):Collection{
-
-		return collect($list)->map(function ($item,$key) {
-
-			if(!is_array($item)){
-				return $this->option($key,$item);
+	//TODO:: This needs serious tidying up.
+	//TODO:: Sorry, param. couldn't work it out.
+	protected function setOptions($list): Collection {
+		if (is_a($list, Collection::class)) {
+			$orig = $list;
+			$list = [];
+			foreach($orig as $thing) {
+				$list[$thing->id] = $thing->name;
 			}
+		}
 
-			return $this->optgroup($key,$item);
+		return collect($list)->map(function ($item, $key) {
 
+			if (!is_array($item)) {
+				return $this->option($key, $item);
+			}
+			return $this->optgroup($key, $item);
 		})->values();
-
 	}
 
-	protected function option($value,$display,bool $disabled = false):\stdClass{
-
+	protected function option($value, $display, bool $disabled = false): \stdClass {
 		$option = new \stdClass();
 		$option->display = $display;
 		$option->value = $value;
@@ -48,7 +51,7 @@ class Choice extends AbstractField {
 		return $option;
 	}
 
-	protected function optgroup($label,$options=[]):\stdClass{
+	protected function optgroup($label, $options = []): \stdClass {
 
 		$group = new \stdClass();
 		$group->label = $label;
@@ -59,11 +62,10 @@ class Choice extends AbstractField {
 	}
 
 	public function getData() {
-		$data =  parent::getData();
+		$data = parent::getData();
 
 		$data['options'] = $this->options;
 
 		return $data;
 	}
-
 }
