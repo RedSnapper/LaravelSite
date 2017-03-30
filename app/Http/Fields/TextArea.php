@@ -5,10 +5,8 @@ namespace App\Http\Fields;
 class TextArea extends AbstractField {
 	protected $view = "forms.fields.textarea";
 
-	public function __construct(string $name, $value = null, $default=null) {
+	public function __construct(string $name) {
 		$this->name = $name;
-		$this->value = $value;
-		$this->default = $default;
 		$this->attributes = collect([]);
 	}
 

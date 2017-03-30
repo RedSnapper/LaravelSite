@@ -11,7 +11,10 @@ class SegmentLayoutFormlet extends Formlet {
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));
-		$this->add((new Input('text', 'syntax',null,$this->getData('segment.syntax'))));
+		$field = new Input('text', 'syntax');
+		$this->add(
+		  $field->setDefault($this->getData('segment.syntax'))
+		);
 	}
-	
+
 }

@@ -36,9 +36,10 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Radio('size',['S'=>'Small','L'=>'Large'],'S');
+		$field = new Radio('size',['S'=>'Small','L'=>'Large']);
 		$this->add(
 		  $field->setLabel("Size")
+			->setDefault('S')
 		);
 
 

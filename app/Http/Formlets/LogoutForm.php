@@ -16,8 +16,6 @@ class LogoutForm extends Formlet {
 
 	}
 
-	public function rules(): array {
-		return [];
-	}
+
 
 }

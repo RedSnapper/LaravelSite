@@ -16,9 +16,8 @@ class Choice extends AbstractField {
 	 */
 	protected $options;
 
-	public function __construct(string $name, $list = [], $selected = null) {
+	public function __construct(string $name, $list = []) {
 		$this->name = $name;
-		$this->default = $selected;
 		$this->attributes = collect([]);
 		$this->options = $this->setOptions($list);
 	}

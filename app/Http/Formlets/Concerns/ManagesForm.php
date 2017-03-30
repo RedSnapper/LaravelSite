@@ -147,7 +147,7 @@ trait ManagesForm {
 		// method spoofer hidden input to the form. This allows us to use regular
 		// form to initiate PUT and DELETE requests in addition to the typical.
 		if (in_array($method, $this->spoofedMethods)) {
-			$this->hidden [] = new Hidden('_method', $method);
+			$this->hidden [] = (new Hidden('_method'))->setValue($method);
 		}
 
 		// If the method is something other than GET we will go ahead and attach the
@@ -159,6 +159,6 @@ trait ManagesForm {
 	}
 
 	protected function token() {
-		$this->hidden[] = new Hidden('_token', $this->session->token());
+		$this->hidden[] = (new Hidden('_token'))->setValue($this->session->token());
 	}
 }
