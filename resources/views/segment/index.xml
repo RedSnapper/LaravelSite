@@ -2,7 +2,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
     <h1>Segments</h1>
-
+    <a href="/segment/cats">Category Editor</a>
     <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
         <li class="list-group-item">
             <a data-v.url="/segment/{segment.id}/edit">
