@@ -10,8 +10,6 @@ use Illuminate\Validation\Rule;
 
 class UserFormlet extends Formlet {
 
-//	protected $view = "forms.auto";
-
 	public $formView = "user.form";
 
 	protected $guarded = ['password','password_confirmation'];
