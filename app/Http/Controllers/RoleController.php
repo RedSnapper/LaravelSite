@@ -40,13 +40,15 @@ class RoleController extends Controller {
 		  ->with('title','New Role');
 	}
 
+	public function cats() {
+		return view("role.cats");
+	}
 	/**
 	 * @return json (this is an api call)
 	 */
 	public function branch(Request $request) {
 		return Category::nodeBranch('ROLES'); //1024 is maximum ancestry.
 	}
-
 
 	/**
 	 * Store a newly created resource in storage.

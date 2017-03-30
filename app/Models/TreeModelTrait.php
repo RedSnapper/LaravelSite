@@ -47,7 +47,7 @@ trait TreeModelTrait {
 				$nodes[$item->pa]->addChild($nodes[$item->tw]);
 			}
 		}
-		return [reset($nodes)] ;
+		return reset($nodes)->children;
 	}
 	//returns an id,name list of descendants ordered by tw.
 	public static function options(string $reference) {
