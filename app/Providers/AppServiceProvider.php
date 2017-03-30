@@ -4,7 +4,7 @@ namespace App\Providers;
 
 //use App\Models\AbstractTree;
 use App\Models\Category;
-use App\Models\TreeObserver;
+use App\Models\TreeModelObserver;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -17,7 +17,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-			Category::observe(TreeObserver::class);
     }
 
     /**

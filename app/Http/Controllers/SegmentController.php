@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\SegmentFormlet;
+use App\Models\Category;
 use App\Models\Segment;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -28,6 +29,9 @@ class SegmentController extends Controller
 		return view("segment.index", compact('segments'));
 	}
 
+	public function cats() {
+		return view("segment.cats");
+	}
 
 	/**
 	 * Show the form for creating a new resource.
@@ -59,6 +63,13 @@ class SegmentController extends Controller
 			'route'  => ['segment.update', $id],
 			'method' => 'PUT'
 		])->with('title',"Edit Segment: {$this->form->getModel()->name}");
+	}
+
+	/**
+	 * @return json (this is an api call)
+	 */
+	public function branch(Request $request) {
+		return Category::nodeBranch('SEGMENTS'); //1024 is maximum ancestry.
 	}
 
 	public function update($id) {

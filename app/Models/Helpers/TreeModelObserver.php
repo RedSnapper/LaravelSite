@@ -5,22 +5,23 @@
  * Date: 29/03/2017 09:52
  */
 
-namespace App\Models;
+namespace App\Models\Helpers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class TreeObserver {
+class TreeModelObserver {
 	/*
 	 * Add "AbstractTree::observe(TreeObserver::class);" into AppServiceProvider:boot()
 	 * These event handlers ensure the stability of the tree.
 	 */
 
-	public function updating(Category $node) {
+	public function updating(Model $node) {
 		$org = $node->getOriginal();
 		$node->sz = $org['sz'];
 		if($node->tw != $org['tw'] || $node->pa != $org['pa'] ) {
-			$orig = new Category(); //This will be the mirror of the original.
+			$orig = new get_class($node); //This will be the mirror of the original.
 			$orig->setRawAttributes($org);
 			$orgTw = $orig->tw;
 			$treeSize = $node->count();
