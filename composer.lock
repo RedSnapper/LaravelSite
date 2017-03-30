@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4b5c5590fd23433387e7adc7ba010ee",
+    "content-hash": "5b68fe3ae911e54ca611919a9b9a7fc4",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -108,16 +108,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "20ff8bbb57205368b4b42d094642a3e52dac85fb"
+                "reference": "1bf24f7334fe16c88bf9d467863309ceaf285b01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/20ff8bbb57205368b4b42d094642a3e52dac85fb",
-                "reference": "20ff8bbb57205368b4b42d094642a3e52dac85fb",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/1bf24f7334fe16c88bf9d467863309ceaf285b01",
+                "reference": "1bf24f7334fe16c88bf9d467863309ceaf285b01",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2016-11-02T15:56:58+00:00"
+            "time": "2017-03-29T16:04:15+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -980,6 +980,41 @@
                 "uuid"
             ],
             "time": "2017-03-26T20:37:53+00:00"
+        },
+        {
+            "name": "rs/form-laravel",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "/Users/Shared/form",
+                "reference": "6dd07f247a63b648e492377657bc74d8ad69f91f",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/console": "5.4.*",
+                "illuminate/container": "5.4.*",
+                "illuminate/contracts": "5.4.*",
+                "illuminate/database": "5.4.*",
+                "illuminate/http": "5.4.*",
+                "illuminate/routing": "5.4.*",
+                "illuminate/session": "5.4.*",
+                "illuminate/support": "5.4.*",
+                "illuminate/validation": "5.4.*",
+                "php": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RS\\Form\\": "src"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Red Snapper Development Team",
+                    "email": "contact@redsnapper.net"
+                }
+            ],
+            "description": "Laravel Form"
         },
         {
             "name": "rs/nview-laravel",
@@ -3372,7 +3407,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "rs/nview-laravel": 20
+        "rs/nview-laravel": 20,
+        "rs/form-laravel": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

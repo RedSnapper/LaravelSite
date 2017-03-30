@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Formlets;
+
+use RS\Form\Formlet;
 use Illuminate\Database\Eloquent\Model;
 
 class RoleComposite extends Formlet {

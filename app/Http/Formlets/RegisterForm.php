@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 13/03/2017
- * Time: 08:52
- */
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Input;
 
 class RegisterForm extends Formlet {
 	public $formView = "auth.register";

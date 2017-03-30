@@ -7,9 +7,10 @@
 
 namespace App\Http\Formlets;
 
+use RS\Form\Formlet;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Fields\Checkbox;
+use RS\Form\Fields\Checkbox;
 
 class Subscriber extends Formlet {
 	/**

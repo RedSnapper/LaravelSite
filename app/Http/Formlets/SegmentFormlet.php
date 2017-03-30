@@ -7,15 +7,15 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Input;
-use App\Http\Fields\Radio;
-use App\Http\Fields\Select;
-use App\Http\Fields\TextArea;
+use RS\Form\Formlet;
+use RS\Form\Fields\Input;
+use RS\Form\Fields\Radio;
+use RS\Form\Fields\Select;
+use RS\Form\Fields\TextArea;
 use App\Models\Category;
 use App\Models\Segment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {

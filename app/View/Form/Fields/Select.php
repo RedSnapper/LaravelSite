@@ -6,7 +6,7 @@
  * Time: 16:23
  */
 
-namespace App\View\Forms\Fields;
+namespace App\View\Form\Fields;
 
 use PhpParser\Comment\Doc;
 use RS\NView\Document;

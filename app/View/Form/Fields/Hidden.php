@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Forms\Fields;
+namespace App\View\Form\Fields;
 
 use RS\NView\Document;
 

@@ -2,7 +2,8 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Input;
 use App\Models\UserProfile;
 
 class UserProfileForm extends Formlet {

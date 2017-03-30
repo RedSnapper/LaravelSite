@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 28/02/2017
- * Time: 17:39
- */
 
-namespace App\View\Forms;
+namespace App\View\Form;
 
 use RS\NView\Document;
 use RS\NView\ViewController;

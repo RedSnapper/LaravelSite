@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Forms;
+namespace App\View\Form;
 
 use RS\NView\Document;
 use RS\NView\ViewController;

@@ -6,7 +6,7 @@
  * Time: 15:41
  */
 
-namespace App\View\Forms\Fields;
+namespace App\View\Form\Fields;
 
 use RS\NView\ViewController;
 use RS\NView\Document;

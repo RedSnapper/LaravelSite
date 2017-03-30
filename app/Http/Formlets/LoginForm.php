@@ -2,8 +2,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Checkbox;
+use RS\Form\Fields\Input;
 
 class LoginForm extends Formlet {
 

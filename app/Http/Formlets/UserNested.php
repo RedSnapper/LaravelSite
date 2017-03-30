@@ -2,6 +2,8 @@
 
 namespace App\Http\Formlets;
 
+use RS\Form\Formlet;
+
 class UserNested extends Formlet {
 
 	public $compositeView = "user.composite";
