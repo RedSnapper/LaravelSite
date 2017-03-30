@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 //use App\Http\Formlets\LayoutComposite;
 use App\Http\Formlets\LayoutFormlet;
+use App\Models\Category;
 use App\Models\Layout;
 use Illuminate\Http\Request;
 
@@ -63,6 +64,18 @@ class LayoutController extends Controller  {
 		$layout = $this->form->update();
 		return redirect()->route('layout.edit',$layout->id);
 	}
+
+	public function cats() {
+		return view("layout.cats");
+	}
+	/**
+	 * @return json (this is an api call)
+	 */
+	public function branch(Request $request) {
+		return Category::nodeBranch('LAYOUTS'); //1024 is maximum ancestry.
+	}
+
+
 
 	/**
 	 * Remove the specified resource from storage.

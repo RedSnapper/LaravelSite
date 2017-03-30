@@ -28,10 +28,6 @@ class SegmentController extends Controller
 		return view("segment.index", compact('segments'));
 	}
 
-	public function cats() {
-		return view("segment.cats");
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -69,6 +65,11 @@ class SegmentController extends Controller
 	public function branch(Request $request) {
 		return Category::nodeBranch('SEGMENTS'); //1024 is maximum ancestry.
 	}
+
+	public function cats() {
+		return view("segment.cats");
+	}
+
 
 	public function update($id) {
 		$this->form->setKey($id);

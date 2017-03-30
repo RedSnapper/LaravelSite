@@ -16,8 +16,12 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 
 Route::resource('/user','UserController');
-Route::resource('/role','RoleController');
+
+Route::get('/layout/cats','LayoutController@cats');
 Route::resource('/layout','LayoutController');
+
+Route::get('/role/cats','RoleController@cats');
+Route::resource('/role','RoleController');
 
 Route::get('/segment/cats','SegmentController@cats');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
