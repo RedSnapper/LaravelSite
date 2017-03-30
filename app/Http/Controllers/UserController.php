@@ -6,6 +6,7 @@ use App\Http\Formlets\UserComposite;
 use App\Http\Formlets\UserEmailFormlet;
 use App\Models\User;
 use App\Models\UserProfile;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Http\Formlets\UserFormlet;
 use Illuminate\Support\Facades\DB;
@@ -49,10 +50,11 @@ class UserController extends Controller {
 	 * Show the form for creating a new resource.
 	 * This is an empty form.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return View
 	 */
 	public function create($id = null) {
-		return $this->form->renderWith(['route' => ['user.store']]); //['user.store','sql']
+		return $this->form->renderWith(['route' => ['user.store']])
+		  ->with('title','New User');
 	}
 
 	/**
@@ -63,7 +65,8 @@ class UserController extends Controller {
 	public function edit($id = null) {
 		$this->form->setKey($id);
 		//now update method for updating an existing model.
-		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH']);
+		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH'])
+		  ->with('title',"Edit User: {$this->form->getModel('user')->name}");
 	}
 
 	/**

@@ -11,7 +11,7 @@ class Page extends ViewController {
 	public function render(Document $view,array $data): Document {
 
 		if(isset($data['title'])){
-			$view->set("//h:title/text()",$data['title']);
+			$view->set("//h:title/text()","Builder | {$data['title']}");
 		}
 
 		$view->set("/h:html/@lang",config('app.locale'));

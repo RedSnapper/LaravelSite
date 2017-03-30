@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Formlets\SegmentFormlet;
 use App\Models\Segment;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class SegmentController extends Controller
@@ -31,10 +32,11 @@ class SegmentController extends Controller
 	/**
 	 * Show the form for creating a new resource.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return View
 	 */
 	public function create(Segment $segment) {
-		return $this->form->renderWith(['route' => 'segment.store']);
+		return $this->form->renderWith(['route' => 'segment.store'])
+		  ->with('title','New Segment');
 	}
 
 	/**
@@ -56,7 +58,7 @@ class SegmentController extends Controller
 		return $this->form->renderWith([
 			'route'  => ['segment.update', $id],
 			'method' => 'PUT'
-		]);
+		])->with('title',"Edit Segment: {$this->form->getModel()->name}");
 	}
 
 	public function update($id) {
@@ -77,14 +79,4 @@ class SegmentController extends Controller
 		return redirect()->route('segment.index');
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function patch(Request $request) {
-		dd($request);
-		//return redirect()->back();
-	}
 }

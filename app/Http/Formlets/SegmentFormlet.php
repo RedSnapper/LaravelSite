@@ -41,14 +41,14 @@ class SegmentFormlet extends Formlet {
 		  $field->setLabel("Size")
 			->setDefault('S')
 		);
-
-
+		
 		if(!is_null($this->category)) {
 			$options = $this->category->descendants()->pluck('name','id');
 			$field = new Select('category_id',$options);
 			$this->add($field->setLabel("Category"));
 		}
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
+
 	}
 
 	/**

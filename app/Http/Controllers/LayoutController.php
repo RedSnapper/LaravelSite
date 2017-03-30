@@ -33,7 +33,8 @@ class LayoutController extends Controller  {
 	 * Show the form for creating a new resource.
 	 */
 	public function create(Layout $layout) {
-		return $this->form->renderWith(['route' => 'layout.store']);
+		return $this->form->renderWith(['route' => 'layout.store'])
+		  ->with('title','New Layout');
 	}
 
 	/**
@@ -55,7 +56,7 @@ class LayoutController extends Controller  {
 		return $this->form->renderWith([
 			'route'  => ['layout.update', $id],
 			'method' => 'PATCH'
-		]);
+		])->with('title',"Edit Layout: {$this->form->getModel()->name}");
 	}
 
 	public function update($id) {

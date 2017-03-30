@@ -1,6 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-    <h1>Layout</h1>
+    <h1 data-v.child="title"/>
     <div class="row" data-v.container="form.form">
         <div class="col-md-8">
             <div data-v.replace="form.base"/>

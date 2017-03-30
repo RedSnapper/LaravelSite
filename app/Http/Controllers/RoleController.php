@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Formlets\RoleComposite;
 //use App\Http\Formlets\RoleFormlet;
 use App\Models\Role;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller {
@@ -31,10 +32,11 @@ class RoleController extends Controller {
 	/**
 	 * Show the form for creating a new resource.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return View
 	 */
 	public function create(Role $role) {
-		return $this->form->renderWith(['route' => 'role.store']);
+		return $this->form->renderWith(['route' => 'role.store'])
+		  ->with('title','New Role');
 	}
 
 	/**
@@ -56,7 +58,7 @@ class RoleController extends Controller {
 		return $this->form->renderWith([
 			'route'  => ['role.update', $id],
 			'method' => 'PATCH'
-		]);
+		])->with('title',"Edit Role: {$this->form->getModel('role')->name}");
 	}
 
 	public function update($id) {
