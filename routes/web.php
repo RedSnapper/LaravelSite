@@ -19,6 +19,7 @@ Route::resource('/user','UserController');
 Route::resource('/role','RoleController');
 Route::resource('/layout','LayoutController');
 
+Route::get('/segment/cats','SegmentController@cats');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::patch('/segment/{segment}','SegmentController@patch')->name('segment.patch');
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');

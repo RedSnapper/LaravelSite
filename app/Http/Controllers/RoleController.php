@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Formlets\RoleComposite;
 //use App\Http\Formlets\RoleFormlet;
+use App\Models\Category;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,14 @@ class RoleController extends Controller {
 	public function create(Role $role) {
 		return $this->form->renderWith(['route' => 'role.store']);
 	}
+
+	/**
+	 * @return json (this is an api call)
+	 */
+	public function branch(Request $request) {
+		return Category::nodeBranch('ROLES'); //1024 is maximum ancestry.
+	}
+
 
 	/**
 	 * Store a newly created resource in storage.

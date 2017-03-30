@@ -7,15 +7,61 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Helpers\Node;
+use App\Models\Helpers\TreeModelObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class AbstractTree extends Model {
-	protected $guarded  = ['id','sz','nc'];
-	public $timestamps = false;
 
-	//		$node = Node::index(20); //C2.
+trait TreeModelTrait {
+
+	protected static function boot() {
+		if(method_exists(parent::class,'boot')) {
+			parent::boot();
+			self::observe(TreeModelObserver::class);
+		}
+	}
+
+	/*
+	 * The following attempt to supply a result..
+	 * */
+	public static function id(int $index, $columns = ['*']){
+		return with(new static)->newQuery()->where('id', '=', $index)->first($columns);
+	}
+	public static function index(int $index, $columns = ['*']){
+		return with(new static)->newQuery()->where('tw', '=', $index)->first($columns);
+	}
+	public static function reference(string $name, $columns = ['*']){
+		return with(new static)->newQuery()->where('name', '=', $name)->first($columns);
+	}
+
+	public static function nodeBranch($name='ROOT') : array {
+		$table = with(new static)->getTable();
+		$items = DB::table("$table as r")->join("$table as d",function ($join) {
+			$join->on('d.tw','<','r.nc')->on('d.tw','>=','r.tw');
+		})->where('r.name', '=',$name)->orderBy('d.tw','asc')->get(['d.id','d.tw','d.pa','d.name']);
+		$nodes = [];
+		foreach($items as $item) {
+			$nodes[$item->tw] = new Node($item->id,$item->name);
+			if($item->name != $name) {
+				$nodes[$item->pa]->addChild($nodes[$item->tw]);
+			}
+		}
+		return [reset($nodes)] ;
+	}
+	//returns an id,name list of descendants ordered by tw.
+	public static function options(string $reference) {
+		$table = $table = with(new static)->getTable();
+		return DB::table("$table as r")->join("$table as d",function ($join) {
+			$join->on('d.tw','<','r.nc')->on('d.tw','>','r.tw');
+		})->where('r.name', '=', $reference)->orderBy('d.tw','asc')->pluck('d.name','d.id');
+	}
+
+//Note that (annoyingly?) scopes are meant to return a Builder, not a query result!
+
+	public function scopeParent(Builder $query, $columns = ['*']){
+		return $query->where('pa', '=', $this->tw)->first($columns);
+	}
 
 	public function scopeAncestors(Builder $query,bool $self = false){
 		$plus = $self ? [$this->pa,$this->tw] : [$this->pa];
@@ -28,21 +74,7 @@ class AbstractTree extends Model {
 			return $query->where('pa', '=', $this->pa)->where('tw', '!=',$this->tw)->ordered();
 		}
 	}
-	/*
-	 * id is exactly the same as find().
-	 * */
-	public function scopeID(Builder $query,int $index, $columns = ['*']){
-		return $query->where('id', '=', $index)->first($columns);
-	}
-	public function scopeIndex(Builder $query,int $index, $columns = ['*']){
-		return $query->where('tw', '=', $index)->first($columns);
-	}
-	public function scopeReference(Builder $query,string $name, $columns = ['*']){
-		return $query->where('name', '=', $name)->first($columns);
-	}
-	public function scopeParent(Builder $query, $columns = ['*']){
-		return $query->where('pa', '=', $this->tw)->first($columns);
-	}
+
 	public function scopeChildren(Builder $query){
 		return $query->where('pa', '=', $this->tw)->ordered();
 	}

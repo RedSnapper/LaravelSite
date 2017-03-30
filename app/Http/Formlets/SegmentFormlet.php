@@ -19,14 +19,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {
-
-	private $category;
-
 	public $formView = "segment.form";
 
-	public function __construct(Segment $segment,Category $category) {
-
-		$this->category = $category->where('name','SEGMENTS')->first();
+	public function __construct(Segment $segment) {
 
 		$this->setModel($segment);
 	}
@@ -41,12 +36,9 @@ class SegmentFormlet extends Formlet {
 		  $field->setLabel("Size")
 		);
 
+		$field = new Select('category_id',Category::options('SEGMENTS'));
+		$this->add($field->setLabel("Category"));
 
-		if(!is_null($this->category)) {
-			$options = $this->category->descendants()->pluck('name','id');
-			$field = new Select('category_id',$options);
-			$this->add($field->setLabel("Category"));
-		}
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 	}
 

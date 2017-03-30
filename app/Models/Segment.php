@@ -10,10 +10,6 @@ class Segment extends Model
 		'name','docs','syntax','size','category_id'
 	];
 
-	//protected $casts = [
-	//	'size' => 'array'
-	//];
-
 	public function category() {
 		return $this->hasOne(Category::class);
 	}
