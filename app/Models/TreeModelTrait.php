@@ -119,7 +119,8 @@ trait TreeModelTrait {
 		//select m.* from `node` as `m` left join `node` as `d` on `d`.`tw` < m.nc and d.tw > m.tw and d.pa >= m.tw and d.nc <= m.nc and d.pa < m.nc group by m.id having m.sz=count(d.id)+1
 		$bad_nodes =  DB::table("$table as m")->select(DB::Raw('m.*'))->leftJoin("$table as d",function ($join) {
 			$join->on('d.tw', '<', DB::Raw("m.nc and d.tw > m.tw and d.pa >= m.tw and d.nc <= m.nc and d.pa < m.nc"));
-		})->groupBy('m.id')->having(DB::Raw("m.sz=count(d.id)+1"))->get();
+		})->groupBy('m.id')->havingRaw("m.sz=count(d.id)+1")->get();
+
 		if($bad_nodes->count() > 0) {$result['descendants not well-formed'] = $bad_nodes->all(); }
 
 		//select * from node p,node n where p.id=n.p and not(p.tw < n.tw and p.nc > n.tw)";
