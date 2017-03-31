@@ -36,12 +36,12 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Radio('size',['S'=>'Small','L'=>'Large']);
+		$field = new Select('size',['S'=>'Small','L'=>'Large']);
 		$this->add(
 		  $field->setLabel("Size")
-			->setDefault('S')
+			->setPlaceholder('Some placeholder')
 		);
-		
+
 		if(!is_null($this->category)) {
 			$options = $this->category->descendants()->pluck('name','id');
 			$field = new Select('category_id',$options);
@@ -74,7 +74,8 @@ class SegmentFormlet extends Formlet {
 	public function rules(): array {
 		$key = $this->model->getKey();
 		return [
-		  'name' => ['required', 'max:255', Rule::unique('segments')->ignore($key)]
+		  'name' => ['required', 'max:255', Rule::unique('segments')->ignore($key)],
+		  'size' => 'required'
 		];
 	}
 
