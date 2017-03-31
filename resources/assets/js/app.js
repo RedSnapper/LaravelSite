@@ -9,7 +9,17 @@ require('./bootstrap');
 require('jqtree');
 require('./jqTreeContextMenu');
 
-var $tree = $('#tree');
+const $tree = $('#tree');
+
+const deleteNode = (node)=>{
+
+    $.ajax({
+        url: `/ajax/categories/${node.id}`,
+        type: 'DELETE'
+    });
+
+    $('#tree').tree('removeNode',node);
+};
 
 $tree.tree({
     dragAndDrop: true,
@@ -23,9 +33,7 @@ $tree.jqTreeContextMenu($('#myMenu'), {
     "add": addNode
 });
 
-function deleteNode(node) {
-    $('#tree').tree('removeNode',node);
-}
+
 function editNode(node) {
     location.href="/?" + node.id;
     // node.name = "foobar";

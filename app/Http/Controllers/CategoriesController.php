@@ -58,4 +58,8 @@ class CategoriesController extends Controller
 		  'data'=>['message'=>'Category created successfully']
 		],201);
 	}
+
+	public function destroy($id){
+		Category::destroy($id);
+	}
 }
