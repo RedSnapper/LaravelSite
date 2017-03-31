@@ -16,20 +16,23 @@ class RoleFormlet extends Formlet {
 		$this->setModel($role);
 	}
 
-	public function prepareForm(){
-		$field = new Input('text','name');
+	public function prepareForm() {
+		$field = new Input('text', 'name');
 		$this->add(
-			$field->setLabel('Name')->setRequired()
+		  $field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id',Category::options('ROLES'));
-		$this->add($field->setLabel("Category"));
-
+		$field = new Select('category_id', Category::options('ROLES'));
+		$this->add(
+		  $field->setLabel("Category")
+			->setPlaceholder("Please select a category")
+		);
 	}
 
-	public function rules():array{
+	public function rules(): array {
 		return [
-			'name' => 'required|max:255',
+		  'name' => 'required|max:255',
+		  'category_id' => 'required'
 		];
 	}
 

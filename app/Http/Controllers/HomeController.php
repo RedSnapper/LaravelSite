@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**
@@ -25,7 +22,7 @@ class HomeController extends Controller
     public function index()
     {
     	$user = auth()->user();
-        return view('pages.home',compact('user','title'));
+        return view('pages.home',compact('user'));
     }
 
 }

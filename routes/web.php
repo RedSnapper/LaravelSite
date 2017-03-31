@@ -17,15 +17,12 @@ Route::get('/home', 'HomeController@index');
 
 Route::resource('/user','UserController');
 
-Route::get('/layout/cats','LayoutController@cats');
 Route::resource('/layout','LayoutController');
 
-Route::get('/role/cats','RoleController@cats');
 Route::resource('/role','RoleController');
 
-Route::get('/segment/cats','SegmentController@cats');
+Route::get('/segment/categories','SegmentController@categories');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
-Route::patch('/segment/{segment}','SegmentController@patch')->name('segment.patch');
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
 
 

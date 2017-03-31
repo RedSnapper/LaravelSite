@@ -18,4 +18,3 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/segments/','SegmentController@branch');
-Route::get('/roles/','RoleController@branch');

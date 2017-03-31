@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-//use App\Http\Formlets\LayoutComposite;
 use App\Http\Formlets\LayoutFormlet;
 use App\Models\Category;
 use App\Models\Layout;

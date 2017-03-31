@@ -2,7 +2,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
     <h1>Roles</h1>
-    <a href="/role/cats">Category Editor</a>
+
     <ul data-v.foreach="roles" data-v.name="role" class="list-group">
         <li class="list-group-item">
             <a data-v.url="/role/{role.id}/edit"><span data-v.replace="role.name"/></a>

@@ -62,14 +62,14 @@ class SegmentController extends Controller
 	}
 
 	/**
-	 * @return json (this is an api call)
+	 * @return array (this is an api call)
 	 */
-	public function branch(Request $request) {
-		return Category::nodeBranch('SEGMENTS'); //1024 is maximum ancestry.
+	public function branch() {
+		return Category::nodeBranch('SEGMENTS');
 	}
 
-	public function cats() {
-		return view("segment.cats");
+	public function categories() {
+		return view("segment.categories");
 	}
 
 

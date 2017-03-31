@@ -29,10 +29,10 @@ class TreeModelObserver {
 			$earthSize = $treeSize - $nodeSize;
 			$heaven = $treeSize + 1000;
 			if ($node->tw == $orgTw) { //we only have the parent.
-				$ref = $node->newQuery()->index($node->pa,['nc']); //now we have the parent's nc.
+				$ref = $node::index($node->pa,['nc']); //now we have the parent's nc.
 				$node->tw = $ref->nc;
 			} else { //moving by tw. if tw is same then we need to see if it's pa
-				$ref = $node->newQuery()->index($node->tw,['pa']);
+				$ref = $node::index($node->tw,['pa']);
 				$node->pa = $ref->pa;
 			}
 			//now both the tw and pa are ready. Let's check that they have actually changed after all.
@@ -69,30 +69,30 @@ class TreeModelObserver {
 		return true;
 	}
 
-	public function deleted(Category $node) {
+	public function deleted($node) {
 		$this->adjustTree($node,false);
 		return true;
 	}
-	public function creating(Category $node) {
+	public function creating($node) {
 		/**
 		 * when we create a node we must either have:
 		 * (1) a parent (and this node will be the last child)
 		 * (2) a treewalk. It will inherit the current tw position and nodes to it's right will be shifted.
 		 */
 		$node->sz = 1; //The size of a new node is always going to be 1. so the nc will be tw+1;
-		$root = $node->newQuery()->index(1,['tw','nc']);
+		$root = $node::index(1,['tw','nc']);
 		if(isset($root->tw)) {
 			if(!isset($node->tw) || ($node->tw > $root->nc) || ($node->tw < 1)) {
 				if(!isset($node->pa)) {
 					$parent = $root;
 				} else {
-					$parent = $node->newQuery()->index($node->pa,['tw','nc']);
+					$parent = $node::index($node->pa,['tw','nc']);
 				}
 				$node->pa = $parent->tw;
 				$node->tw = $parent->nc;
 			} else {
 				//new tree.
-				$curr = $node->newQuery()->index($node->tw,['pa','tw']);
+				$curr = $node::index($node->tw,['pa','tw']);
 				$node->pa = $curr->pa;
 				$node->tw = $curr->tw;
 			}
@@ -117,7 +117,7 @@ class TreeModelObserver {
 	 * @param Category $node - must have pa/tw set correctly. This is where the new node/branch will be placed.
 	 * @param int  $size - the size of the branch that is being inserted.
 	 */
-	private function adjustTree(Category $node,bool $inserting) {
+	private function adjustTree($node,bool $inserting) {
 		if(isset($node->tw) && isset($node->sz)) {
 			$adj = ($inserting ? "+ " : "- ") .$node->sz; //insertion or deletion
 			//ancestors have sz adjusted. We need to force parent here because it's current nc is us and we don't want our left siblings.

@@ -1,9 +1,0 @@
-<!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-
-    <h1>Role Categories</h1>
-    <a href="/role/">Role List</a>
-
-    <div id="tree" data-url="/api/roles" />
-    <div data-v.include="layouts.treemenu" />
-</div>
