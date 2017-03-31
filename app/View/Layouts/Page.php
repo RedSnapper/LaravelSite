@@ -14,6 +14,8 @@ class Page extends ViewController {
 			$view->set("//h:title/text()","Builder | {$data['title']}");
 		}
 
+		$view->set("//h:meta[@name='csrf-token']/@content",csrf_token());
+
 		$view->set("/h:html/@lang",config('app.locale'));
 
 		return $view;
