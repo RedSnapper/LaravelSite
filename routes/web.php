@@ -25,7 +25,6 @@ Route::get('/segment/categories','SegmentController@categories');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
 
-
 Auth::routes();
 
 

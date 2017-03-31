@@ -17,6 +17,7 @@ class SegmentController extends Controller
 	private $form;
 	public function __construct(SegmentFormlet $form) {
 		$this->form = $form;
+		$this->middleware('auth');
 	}
 
 	/**

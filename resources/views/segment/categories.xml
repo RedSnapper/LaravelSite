@@ -3,6 +3,6 @@
 
     <h1>Segment Categories</h1>
     <a href="/segment/">Segment List</a>
-    <div id="tree" data-url="/api/segments" />
+    <div id="tree" data-url="/ajax/segments" />
     <div data-v.include="layouts.treemenu" />
 </div>

@@ -15,6 +15,7 @@ class LayoutController extends Controller  {
 	private $form;
 	public function __construct(LayoutFormlet $form) {
 		$this->form = $form;
+		$this->middleware('auth');
 	}
 
 	/**
