@@ -57,7 +57,14 @@ trait TreeModelTrait {
 		})->where('r.name', '=', $reference)->orderBy('d.tw','asc')->pluck('d.name','d.id');
 	}
 
-//Note that (annoyingly?) scopes are meant to return a Builder, not a query result!
+	public function createNode(int $parent, string $name) {
+		$parent = $this->find($parent);
+
+		return  $this->create([
+		  'pa'   => $parent->tw,
+		  'name' => $name
+		]);
+	}
 
 	public function scopeParent(Builder $query, $columns = ['*']){
 		return $query->where('pa', '=', $this->tw)->first($columns);

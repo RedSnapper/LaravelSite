@@ -12,11 +12,20 @@ class CategoriesController extends ApiController
 	protected $transformer;
 
 	/**
-	 * CategoriesController constructor.
+	 * @var Category
 	 */
-	public function __construct(CategoryTransformer $transformer) {
+	private $category;
+
+	/**
+	 * CategoriesController constructor.
+	 *
+	 * @param Category            $category
+	 * @param CategoryTransformer $transformer
+	 */
+	public function __construct(Category $category,CategoryTransformer $transformer) {
 		$this->middleware('auth');
 		$this->transformer = $transformer;
+		$this->category = $category;
 	}
 
 	public function index(){
@@ -40,14 +49,11 @@ class CategoriesController extends ApiController
 	public function store(Request $request){
 
     	$this->validate($request,[
-    	  'parent'=> 'required',
+    	  'parent'=> 'required|exists:categories,id',
 		  'name'=> 'required'
 		]);
 
-    	$category = Category::create([
-    	  'pa'=> $request->get('parent'),
-		  'name'=> $request->get('name')
-		]);
+		$category = $this->category->createNode($request->get('parent'),$request->get('name'));
 
 		return $this->respondWithItemCreated($category);
 	}
