@@ -7,22 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 
-class CategoriesController extends Controller
+class CategoriesController extends ApiController
 {
 
 	/**
 	 * CategoriesController constructor.
 	 */
 	public function __construct() {
-		$this->middleware('auth');
+		//$this->middleware('auth');
 	}
 
 	public function index(){
 		$categories =  Category::all();
 
-		return Response::json([
+		return $this->respond([
 		  'data'=>$categories->toArray()
-		],200);
+		]);
 	}
 
 	public function show($id){
@@ -30,16 +30,12 @@ class CategoriesController extends Controller
 		$category = Category::find($id);
 
 		if(!$category){
-			return Response::json([
-			  'errors'=>[
-			    'message' => 'Category does not exist'
-			  ]
-			],404);
+			return $this->respondNotFound('Category does not exist');
 		}
 
-		return Response::json([
+		return $this->respond([
 		  'data'=>$category
-		],200);
+		]);
 	}
 
 	public function store(Request $request){
@@ -54,9 +50,9 @@ class CategoriesController extends Controller
 		  'name'=> $request->get('name')
 		]);
 
-		return Response::json([
+		return $this->setStatusCode(201)->respond([
 		  'data'=>['message'=>'Category created successfully']
-		],201);
+		]);
 	}
 
 	public function destroy($id){

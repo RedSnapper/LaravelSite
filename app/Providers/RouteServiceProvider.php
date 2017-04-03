@@ -56,21 +56,6 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/web.php'));
     }
 
-	/**
-	 * Define the "web" routes for the application.
-	 *
-	 * These routes all receive session state, CSRF protection, etc.
-	 *
-	 * @return void
-	 */
-	protected function mapAjaxRoutes()
-	{
-		Route::prefix('ajax')
-		  ->middleware('web')
-		  ->namespace($this->namespace)
-		  ->group(base_path('routes/ajax.php'));
-	}
-
     /**
      * Define the "api" routes for the application.
      *
@@ -81,7 +66,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api')
-             ->middleware('api')
+             ->middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
