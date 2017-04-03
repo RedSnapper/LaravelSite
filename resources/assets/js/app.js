@@ -2,8 +2,12 @@
 import './bootstrap';
 import 'jqtree';
 import './jqTreeContextMenu';
+import Echo from 'laravel-echo';
 
 import * as api from './api/categories';
+
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
 
 
 const $tree = $('#tree');
@@ -71,5 +75,24 @@ $tree.jqTreeContextMenu($('#myMenu'), {
     "add": addNode
 });
 
+const echo = new Echo({
+    broadcaster: 'pusher',
+    key: '9e4086f49da43ef0ba99',
+    cluster: 'eu',
+    encrypted: true
+});
 
+if($tree.length){
 
+    echo.channel('category')
+        .listen('CategoryCreated', (e) => {
+
+            const node = $tree.tree('getNodeById', e.parent);
+
+            $tree.tree('appendNode',{
+                name:e.name,
+                id: e.id
+            },node);
+
+        });
+}
