@@ -166,6 +166,7 @@ return [
 
 		\RS\NView\NViewServiceProvider::class,
 		\RS\Form\FormServiceProvider::class,
+		\App\Providers\FractalServiceProvider::class,
 
 		/*
          * Package Service Providers...

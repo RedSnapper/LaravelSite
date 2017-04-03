@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 03/04/2017
- * Time: 09:25
- */
 
 namespace App\Http\Controllers;
 
@@ -17,9 +11,27 @@ use League\Fractal\TransformerAbstract;
 class ApiController extends Controller {
 
 	/**
+	 * @var TransformerAbstract|null
+	 */
+	protected $transformer;
+
+	/**
+	 * @var \League\Fractal\Manager
+	 */
+	protected $manager;
+
+	/**
 	 * @var int
 	 */
 	protected $statusCode = 200;
+
+	/**
+	 * @param Manager $manager
+	 */
+	public function setManager(Manager $manager) {
+		$this->manager = $manager;
+	}
+
 
 	/**
 	 * @return int
@@ -66,27 +78,39 @@ class ApiController extends Controller {
 		]);
 	}
 
-	public function respondWithItem($item,TransformerAbstract $transformer){
-		$fractal = new Manager();
+	/**
+	 * @param                     $item
+	 * @param TransformerAbstract $transformer
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function respondWithItem($item){
 
-		$resource = new Item($item,$transformer);
+		$resource = new Item($item,$this->transformer);
 
-		return $this->respond($fractal->createData($resource)->toArray());
+		return $this->respondWithArray($this->createData($resource));
 	}
 
-	public function respondWithCollection($item,TransformerAbstract $transformer){
+	/**
+	 * @param                     $item
+	 * @param TransformerAbstract $transformer
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function respondWithCollection($item){
 
-		$fractal = new Manager();
+		$resource = new Collection($item,$this->transformer);
 
-		$resource = new Collection($item,$transformer);
-
-		return $this->respondWithArray($fractal->createData($resource)->toArray());
+		return $this->respondWithArray($this->createData($resource));
 	}
 
-	public function respondWithItemCreated($item,TransformerAbstract $transformer) {
+	/**
+	 * @param                     $item
+	 * @param TransformerAbstract $transformer
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function respondWithItemCreated($item) {
 		$this->setStatusCode(201);
 
-		return $this->respondWithItem($item,$transformer);
+		return $this->respondWithItem($item);
 	}
 
 	/**
@@ -99,6 +123,10 @@ class ApiController extends Controller {
 	 */
 	protected function respondWithArray(array $array, array $headers = []) {
 		return response()->json($array, $this->getStatusCode(), $headers);
+	}
+
+	private function createData($resource){
+		return $this->manager->createData($resource)->toArray();
 	}
 
 

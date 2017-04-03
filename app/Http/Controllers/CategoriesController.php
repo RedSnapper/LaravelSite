@@ -15,7 +15,7 @@ class CategoriesController extends ApiController
 	 * CategoriesController constructor.
 	 */
 	public function __construct(CategoryTransformer $transformer) {
-		//$this->middleware('auth');
+		$this->middleware('auth');
 		$this->transformer = $transformer;
 	}
 
@@ -23,7 +23,7 @@ class CategoriesController extends ApiController
 
 		$categories =  Category::all();
 
-		return $this->respondWithCollection($categories,$this->transformer);
+		return $this->respondWithCollection($categories);
 	}
 
 	public function show($id){
@@ -34,7 +34,7 @@ class CategoriesController extends ApiController
 			return $this->respondNotFound('Category does not exist');
 		}
 
-		return $this->respondWithItem($category,$this->transformer);
+		return $this->respondWithItem($category);
 	}
 
 	public function store(Request $request){
@@ -49,7 +49,7 @@ class CategoriesController extends ApiController
 		  'name'=> $request->get('name')
 		]);
 
-		return $this->respondWithItemCreated($category,$this->transformer);
+		return $this->respondWithItemCreated($category);
 	}
 
 	public function destroy($id){
