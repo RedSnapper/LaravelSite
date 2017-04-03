@@ -66,6 +66,15 @@ trait TreeModelTrait {
 		]);
 	}
 
+	public function moveNodeBefore(int $node) {
+
+		$node = $this->find($node);
+
+		return  $this->update([
+		  'tw'   => $node->tw,
+		]);
+	}
+
 	public function scopeParent(Builder $query, $columns = ['*']){
 		return $query->where('pa', '=', $this->tw)->first($columns);
 	}

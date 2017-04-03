@@ -21,3 +21,9 @@ export const renameCategory = (id,name)=>{
         name
     });
 };
+
+export const moveBefore = (id,node)=>{
+    return api.put(`/categories/${id}/moveBefore`,{
+        node
+    });
+};

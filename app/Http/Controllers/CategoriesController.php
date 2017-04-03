@@ -73,13 +73,20 @@ class CategoriesController extends ApiController
 		return $this->respondWithItem($category);
 	}
 
+	public function moveBefore(Category $category,Request $request){
+
+		$category->moveNodeBefore($request->get('node'));
+
+		return $this->respondWithItem($category);
+	}
+
 	public function destroy($id){
 		$category = Category::find($id);
 
 		if(!$category){
 			return $this->respondNotFound('Category does not exist');
 		}
-		
+
 		$category->delete();
 
 		return $this->respondWithItem($category);

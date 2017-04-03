@@ -52,6 +52,19 @@ $tree.tree({
     usecontextmenu: true
 });
 
+$tree.bind(
+    'tree.move',(e)=>{
+        const moveInfo = e.move_info;
+
+        const movedNode = moveInfo.moved_node;
+        const targetNode = moveInfo.target_node;
+
+        //api.moveBefore(movedNode.id,targetNode.id);
+
+    }
+
+);
+
 $tree.jqTreeContextMenu($('#myMenu'), {
     "rename": renameNode,
     "delete": deleteNode,

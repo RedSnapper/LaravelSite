@@ -20,4 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/segments','SegmentController@branch');
 
-Route::resource('/categories','CategoriesController');
+Route::resource('/categories','CategoriesController',['except'=>['create','edit']]);
+
+Route::put('/categories/{category}/moveBefore','CategoriesController@moveBefore');

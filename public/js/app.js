@@ -11371,6 +11371,15 @@ $tree.tree({
     usecontextmenu: true
 });
 
+$tree.bind('tree.move', function (e) {
+    var moveInfo = e.move_info;
+
+    var movedNode = moveInfo.moved_node;
+    var targetNode = moveInfo.target_node;
+
+    //api.moveBefore(movedNode.id,targetNode.id);
+});
+
 $tree.jqTreeContextMenu($('#myMenu'), {
     "rename": renameNode,
     "delete": deleteNode,
@@ -18390,6 +18399,7 @@ module.exports = function spread(callback) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return addCategory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return removeCategory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return renameCategory; });
+/* unused harmony export moveBefore */
 
 
 var api = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
@@ -18411,6 +18421,12 @@ var removeCategory = function removeCategory(id) {
 var renameCategory = function renameCategory(id, name) {
     return api.put('/categories/' + id, {
         name: name
+    });
+};
+
+var moveBefore = function moveBefore(id, node) {
+    return api.put('/categories/' + id + '/moveBefore', {
+        node: node
     });
 };
 
