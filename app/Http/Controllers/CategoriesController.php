@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Transformers\CategoryTransformer;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-
 
 class CategoriesController extends ApiController
 {
 
+	protected $transformer;
+
 	/**
 	 * CategoriesController constructor.
 	 */
-	public function __construct() {
+	public function __construct(CategoryTransformer $transformer) {
 		//$this->middleware('auth');
+		$this->transformer = $transformer;
 	}
 
 	public function index(){
+
 		$categories =  Category::all();
 
-		return $this->respond([
-		  'data'=>$categories->toArray()
-		]);
+		return $this->respondWithCollection($categories,$this->transformer);
 	}
 
 	public function show($id){
@@ -33,9 +34,7 @@ class CategoriesController extends ApiController
 			return $this->respondNotFound('Category does not exist');
 		}
 
-		return $this->respond([
-		  'data'=>$category
-		]);
+		return $this->respondWithItem($category,$this->transformer);
 	}
 
 	public function store(Request $request){
@@ -45,14 +44,12 @@ class CategoriesController extends ApiController
 		  'name'=> 'required'
 		]);
 
-    	Category::create([
+    	$category = Category::create([
     	  'pa'=> $request->get('parent'),
 		  'name'=> $request->get('name')
 		]);
 
-		return $this->setStatusCode(201)->respond([
-		  'data'=>['message'=>'Category created successfully']
-		]);
+		return $this->respondWithItemCreated($category,$this->transformer);
 	}
 
 	public function destroy($id){
