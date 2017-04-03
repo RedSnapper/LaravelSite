@@ -1,24 +1,49 @@
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+import './bootstrap';
+import 'jqtree';
+import './jqTreeContextMenu';
 
-require('./bootstrap');
-require('jqtree');
-require('./jqTreeContextMenu');
+import * as api from './api/categories';
+
 
 const $tree = $('#tree');
 
 const deleteNode = (node)=>{
 
-    $.ajax({
-        url: `/ajax/categories/${node.id}`,
-        type: 'DELETE'
-    });
+    api.removeCategory(node.id);
 
-    $('#tree').tree('removeNode',node);
+    $tree.tree('removeNode',node);
+};
+
+const addNode = node=> {
+
+    const name = prompt("Name of category?");
+
+    api.addCategory(node.id,name)
+        .then(response=>{
+
+            const data = response.data.data;
+
+            $tree.tree('appendNode',{
+                name:data.name,
+                id: data.id
+            },node);
+
+            $tree.tree('openNode', node);
+        });
+};
+
+const renameNode = node=> {
+
+    const name = prompt("New name",node.name);
+
+    api.renameCategory(node.id,name)
+        .then(response=>{
+
+            const data = response.data.data;
+            $tree.tree('updateNode', node, data.name);
+
+        });
 };
 
 $tree.tree({
@@ -28,17 +53,10 @@ $tree.tree({
 });
 
 $tree.jqTreeContextMenu($('#myMenu'), {
-    "edit": editNode,
+    "rename": renameNode,
     "delete": deleteNode,
     "add": addNode
 });
 
 
-function editNode(node) {
-    location.href="/?" + node.id;
-    // node.name = "foobar";
-    // $('#tree').tree('updateNode',node,node.getData());
-}
-function addNode(node) {
-    $('#tree').tree('addNodeAfter',{name: 'new_node'},node);
- }
+

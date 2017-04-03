@@ -8,6 +8,8 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
 class ApiController extends Controller {
 
 	/**
@@ -23,7 +25,7 @@ class ApiController extends Controller {
 	/**
 	 * @var int
 	 */
-	protected $statusCode = 200;
+	protected $statusCode = SymfonyResponse::HTTP_OK;
 
 	/**
 	 * @param Manager $manager
@@ -54,7 +56,11 @@ class ApiController extends Controller {
 	 * @return mixed
 	 */
 	public function respondNotFound($message = "Not Found") {
-		return $this->setStatusCode(404)->respondWithError($message);
+		return $this->setStatusCode(SymfonyResponse::HTTP_NOT_FOUND)->respondWithError($message);
+	}
+
+	public function respondDeleted($message = "Not Found") {
+		return $this->setStatusCode(SymfonyResponse::HTTP_NOT_FOUND)->respondWithError($message);
 	}
 
 	/**
@@ -108,7 +114,7 @@ class ApiController extends Controller {
 	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function respondWithItemCreated($item) {
-		$this->setStatusCode(201);
+		$this->setStatusCode(SymfonyResponse::HTTP_CREATED);
 
 		return $this->respondWithItem($item);
 	}

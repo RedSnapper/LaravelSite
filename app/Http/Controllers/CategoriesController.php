@@ -58,7 +58,32 @@ class CategoriesController extends ApiController
 		return $this->respondWithItemCreated($category);
 	}
 
-	public function destroy($id){
-		Category::destroy($id);
+	public function update($id,Request $request){
+
+		$category = Category::find($id);
+
+		if(!$category){
+			return $this->respondNotFound('Category does not exist');
+		}
+
+		$category->fill($request->all());
+
+		$category->save();
+
+		return $this->respondWithItem($category);
 	}
+
+	public function destroy($id){
+		$category = Category::find($id);
+
+		if(!$category){
+			return $this->respondNotFound('Category does not exist');
+		}
+		
+		$category->delete();
+
+		return $this->respondWithItem($category);
+	}
+
+
 }

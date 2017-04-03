@@ -1,6 +1,6 @@
 <!DOCTYPE ul>
 <ul xmlns="http://www.w3.org/1999/xhtml"  id="myMenu" class="dropdown-menu" role="menu" aria-labelledby="dLabel" style="display: none;">
-    <li class="edit"><a href="#edit">Edit</a></li>
+    <li class="rename"><a href="#rename">Rename</a></li>
     <li class="delete"><a href="#delete">Delete</a></li>
     <li class="add"><a href="#add">Add</a></li>
 </ul>
