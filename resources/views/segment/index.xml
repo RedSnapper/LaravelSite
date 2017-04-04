@@ -24,7 +24,7 @@
     </div>
 
     <div class="well text-right">
-        <a href="/segment/create" class="btn btn-primary">New Segment</a>
+        <a data-v.url="/segment/create/?category={category.id}" class="btn btn-primary">New Segment</a>
     </div>
 
 

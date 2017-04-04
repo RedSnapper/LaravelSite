@@ -44,9 +44,12 @@ class SegmentController extends Controller
 	 *
 	 * @return View
 	 */
-	public function create(Segment $segment) {
-		return $this->form->renderWith(['route' => 'segment.store'])
-		  ->with('title','New Segment');
+	public function create(Request $request) {
+
+		$category = $request->get('category','');
+		$form =  $this->form->create(['route' => 'segment.store']);
+		$form->with('category',$category);
+		return $form->render()->with('title','New Segment');
 	}
 
 	/**

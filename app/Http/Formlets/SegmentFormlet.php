@@ -35,6 +35,7 @@ class SegmentFormlet extends Formlet {
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")
+		  	->setDefault($this->getData('category'))
 		);
 
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
