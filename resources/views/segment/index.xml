@@ -1,20 +1,31 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
-    <h1>Segments</h1>
-    <a href="/segment/categories">Category Editor</a>
-    <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
-        <li class="list-group-item">
-            <a data-v.url="/segment/{segment.id}/edit">
-                <span data-v.replace="segment.name"/>
-            </a>
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Segments</h1>
+            <div id="tree" data-v.xp="tree" data-url="/api/segments"/>
+            <div data-v.include="layouts.treemenu"/>
+        </div>
 
-    <div data-v.pagination="layouts.pagination" data-v.name="segments"/>
+        <div class="col-md-6">
+            <h2 data-v.child="category.name"/>
+            <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
+                <li class="list-group-item">
+                    <a data-v.url="/segment/{segment.id}/edit">
+                        <span data-v.replace="segment.name"/>
+                    </a>
+                </li>
+            </ul>
+
+            <div data-v.pagination="layouts.pagination" data-v.name="segments"/>
+
+        </div>
+    </div>
 
     <div class="well text-right">
         <a href="/segment/create" class="btn btn-primary">New Segment</a>
     </div>
+
 
 </div>

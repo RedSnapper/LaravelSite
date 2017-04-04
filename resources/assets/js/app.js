@@ -46,11 +46,23 @@ const renameNode = node=> {
         });
 };
 
+const getAncestors  = (node,ancestors=[])=>{
+    return !node.id ? ancestors : getAncestors(node.parent,ancestors.concat(node.id));
+};
+
 $tree.tree({
     dragAndDrop: true,
-    autoOpen: true,
     usecontextmenu: true
 });
+
+const init = _=>{
+    if($tree.data('selected')){
+
+        const node = $tree.tree('getNodeById', $tree.data('selected'));
+        const open_nodes = getAncestors(node);
+        $tree.tree('setState',{open_nodes,selected_node:[node.id]});
+    }
+};
 
 
 const moveToFirstChild = (node,parent)=> {
@@ -83,8 +95,12 @@ $tree.bind(
             } break;
         }
     }
-
 );
+
+$tree.bind('tree.click', e => window.location.href = `/segment?category=${e.node.id}`);
+
+$tree.bind('tree.init',init);
+
 
 $tree.jqTreeContextMenu($('#myMenu'), {
     "rename": renameNode,

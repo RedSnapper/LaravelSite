@@ -25,9 +25,18 @@ class SegmentController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Segment $segment) {
-		$segments = $segment->orderBy('name')->paginate(10);
-		return view("segment.index", compact('segments'));
+	public function index(Request $request) {
+
+		$category = $request->get('category');
+		$data = [];
+
+		if($category){
+			$category = Category::findOrFail($category);
+			$segments = $category->segments()->orderBy('name')->paginate(10);
+			$data = compact('segments','category');
+		}
+
+		return view("segment.index",$data);
 	}
 
 	/**

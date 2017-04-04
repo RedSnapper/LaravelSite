@@ -11,4 +11,8 @@ class Category extends Model implements TreeInterface {
 	protected $guarded  = ['id','sz','nc'];
 	public $timestamps = false;
 	protected $table="categories";
+
+	public function segments(){
+		return $this->hasMany(Segment::class);
+	}
 }

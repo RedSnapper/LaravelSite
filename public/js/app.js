@@ -12223,11 +12223,25 @@ var renameNode = function renameNode(node) {
     });
 };
 
+var getAncestors = function getAncestors(node) {
+    var ancestors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+    return !node.id ? ancestors : getAncestors(node.parent, ancestors.concat(node.id));
+};
+
 $tree.tree({
     dragAndDrop: true,
-    autoOpen: true,
     usecontextmenu: true
 });
+
+var init = function init(_) {
+    if ($tree.data('selected')) {
+
+        var node = $tree.tree('getNodeById', $tree.data('selected'));
+        var open_nodes = getAncestors(node);
+        $tree.tree('setState', { open_nodes: open_nodes, selected_node: [node.id] });
+    }
+};
 
 var moveToFirstChild = function moveToFirstChild(node, parent) {
 
@@ -12261,6 +12275,12 @@ $tree.bind('tree.move', function (e) {
             }break;
     }
 });
+
+$tree.bind('tree.click', function (e) {
+    return window.location.href = '/segment?category=' + e.node.id;
+});
+
+$tree.bind('tree.init', init);
 
 $tree.jqTreeContextMenu($('#myMenu'), {
     "rename": renameNode,
