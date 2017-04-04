@@ -5,20 +5,18 @@
  * Date: 29/03/2017 09:48
  */
 
-namespace App\Models;
+namespace App\Models\Helpers;
 
-use App\Models\Helpers\Node;
-use App\Models\Helpers\TreeModelObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 
-trait TreeModelTrait {
+trait TreeTrait {
 
 	protected static function boot() {
 		if(method_exists(parent::class,'boot')) {
 			parent::boot();
-			self::observe(TreeModelObserver::class);
+			self::observe(TreeObserver::class);
 		}
 	}
 

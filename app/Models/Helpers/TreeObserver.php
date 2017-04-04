@@ -7,17 +7,16 @@
 
 namespace App\Models\Helpers;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class TreeModelObserver {
+class TreeObserver {
 	/*
 	 * Add "AbstractTree::observe(TreeObserver::class);" into AppServiceProvider:boot()
 	 * These event handlers ensure the stability of the tree.
 	 */
 
-	public function updating(Model $node) {
+	public function updating(TreeInterface $node) {
 		$org = $node->getOriginal();
 		$node->sz = $org['sz'];
 		if($node->tw != $org['tw'] || $node->pa != $org['pa'] ) {
@@ -69,30 +68,30 @@ class TreeModelObserver {
 		return true;
 	}
 
-	public function deleted(Category $node) {
+	public function deleted(TreeInterface $node) {
 		$this->adjustTree($node,false);
 		return true;
 	}
-	public function creating(Category $node) {
+	public function creating(TreeInterface $node) {
 		/**
 		 * when we create a node we must either have:
 		 * (1) a parent (and this node will be the last child)
 		 * (2) a treewalk. It will inherit the current tw position and nodes to it's right will be shifted.
 		 */
 		$node->sz = 1; //The size of a new node is always going to be 1. so the nc will be tw+1;
-		$root = $node->newQuery()->index(1,['tw','nc']);
+		$root = $node->index(1,['tw','nc']);
 		if(isset($root->tw)) {
 			if(!isset($node->tw) || ($node->tw > $root->nc) || ($node->tw < 1)) {
 				if(!isset($node->pa)) {
 					$parent = $root;
 				} else {
-					$parent = $node->newQuery()->index($node->pa,['tw','nc']);
+					$parent = $node->index($node->pa,['tw','nc']);
 				}
 				$node->pa = $parent->tw;
 				$node->tw = $parent->nc;
 			} else {
 				//new tree.
-				$curr = $node->newQuery()->index($node->tw,['pa','tw']);
+				$curr = $node->index($node->tw,['pa','tw']);
 				$node->pa = $curr->pa;
 				$node->tw = $curr->tw;
 			}
@@ -117,7 +116,7 @@ class TreeModelObserver {
 	 * @param Category $node - must have pa/tw set correctly. This is where the new node/branch will be placed.
 	 * @param int  $size - the size of the branch that is being inserted.
 	 */
-	private function adjustTree(Category $node,bool $inserting) {
+	private function adjustTree(TreeInterface $node,bool $inserting) {
 		if(isset($node->tw) && isset($node->sz)) {
 			$adj = ($inserting ? "+ " : "- ") .$node->sz; //insertion or deletion
 			//ancestors have sz adjusted. We need to force parent here because it's current nc is us and we don't want our left siblings.

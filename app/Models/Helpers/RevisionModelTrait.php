@@ -7,7 +7,6 @@
 
 namespace App\Models;
 
-use App\Models\Helpers\TreeModelObserver;
 
 trait RevisionModelTrait {
 	protected static function boot() {

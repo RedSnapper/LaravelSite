@@ -11,6 +11,10 @@
         },
         {
             "type": "path",
+            "url": "/Users/Shared/LaravelForm"
+        },
+        {
+            "type": "path",
             "url": "/Users/Shared/jqtree"
         }
 
@@ -19,7 +23,8 @@
         "php": ">=5.6.4",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
-        "rs/nview-laravel": "dev-master"
+        "rs/nview-laravel": "dev-master",
+        "rs/form-laravel": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
