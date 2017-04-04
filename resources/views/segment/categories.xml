@@ -3,6 +3,18 @@
 
     <h1>Segment Categories</h1>
     <a href="/segment/">Segment List</a>
-    <div id="tree" data-url="/api/segments" />
-    <div data-v.include="layouts.treemenu" />
+    <div id="tree" data-url="/api/segments"/>
+    <div data-v.include="layouts.treemenu"/>
+    <div data-v.foreach="integrity" data-v.name="item">
+        <div>
+            <div data-v.replace="#key"/>
+            <ul data-v.foreach="item" data-v.name="node">
+                <li>
+                    <div data-v.replace="node.id"/>
+                    <div data-v.replace="node.name"/>
+                </li>
+            </ul>
+
+        </div>
+    </div>
 </div>

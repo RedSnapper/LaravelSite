@@ -72,10 +72,25 @@ class CategoriesController extends ApiController
 		return $this->respondWithItem($category);
 	}
 
+	public function moveTo(Category $category,Request $request){
+
+		$category->moveTo($request->get('parent'),$request->get('index'));
+
+		return $this->respondWithItem($category);
+	}
+
+	public function moveInto(Category $category,Request $request){
+		$category->moveInto($request->get('node'));
+		return $this->respondWithItem($category);
+	}
+
 	public function moveBefore(Category $category,Request $request){
+		$category->moveBefore($request->get('node'));
+		return $this->respondWithItem($category);
+	}
 
-		$category->moveNodeBefore($request->get('node'));
-
+	public function moveAfter(Category $category,Request $request){
+		$category->moveAfter($request->get('node'));
 		return $this->respondWithItem($category);
 	}
 

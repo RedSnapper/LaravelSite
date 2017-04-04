@@ -65,15 +65,35 @@ trait TreeTrait {
 		return  $this->create($fields);
 	}
 
-	public function moveNode(int $parentId = null,int $indexReplace = null) {
+	public function moveTo(int $parentId = null,int $indexReplace = null) {
 		$fields = [];
 		if(!is_null($indexReplace)) {
 			$fields['tw'] = $this->find($indexReplace)->tw;
+		} elseif (is_null($parentId)) {
+			return;
 		}
 		if(!is_null($parentId)) {
 			$fields['pa'] = $this->find($parentId)->tw;
 		}
 		return  $this->update($fields);
+	}
+
+	public function moveAfter(int $sibling) {
+		$siblingLeft = $this->find($sibling);
+		$siblingRight = $this->index($siblingLeft->nc);
+		if(is_null($siblingRight) || ($siblingRight->pa != $siblingLeft->pa)) {
+			return  $this->update(['tw' => null, 'pa'=> $siblingLeft->pa ] );
+		} else {
+			return  $this->update(['tw' => $siblingLeft->nc,'pa'=> $siblingLeft->pa  ] );
+		}
+	}
+
+	public function moveBefore(int $sibling) {
+		return  $this->update(['tw' => $this->find($sibling)->tw ]);
+	}
+
+	public function moveInto(int $parentId) {
+		return  $this->update(['pa' => $this->find($parentId)->tw ]);
 	}
 
 //Note that (annoyingly?) scopes are meant to return a Builder, not a query result!
@@ -135,10 +155,10 @@ trait TreeTrait {
 		})->get();
 		if($bad_nodes->count() > 0) {$result['greedy descendants'] = $bad_nodes->all(); }
 
-		//select m.* from `node` as `m` left join `node` as `d` on `d`.`tw` < m.nc and d.tw > m.tw and d.pa >= m.tw and d.nc <= m.nc and d.pa < m.nc group by m.id having m.sz=count(d.id)+1
+		//select m.* from `node` as `m` left join `node` as `d` on `d`.`tw` < m.nc and d.tw > m.tw and d.pa >= m.tw and d.nc <= m.nc and d.pa < m.nc group by m.id having m.sz!=count(d.id)+1
 		$bad_nodes =  DB::table("$table as m")->select(DB::Raw('m.*'))->leftJoin("$table as d",function ($join) {
 			$join->on('d.tw', '<', DB::Raw("m.nc and d.tw > m.tw and d.pa >= m.tw and d.nc <= m.nc and d.pa < m.nc"));
-		})->groupBy('m.id')->having(DB::Raw("m.sz=count(d.id)+1"))->get();
+		})->groupBy('m.id')->havingRaw("m.sz!=count(d.id)+1")->get();
 		if($bad_nodes->count() > 0) {$result['descendants not well-formed'] = $bad_nodes->all(); }
 
 		//select * from node p,node n where p.id=n.p and not(p.tw < n.tw and p.nc > n.tw)";

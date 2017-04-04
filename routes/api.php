@@ -22,4 +22,8 @@ Route::get('/segments','SegmentController@branch');
 
 Route::resource('/categories','CategoriesController',['except'=>['create','edit']]);
 
+Route::put('/categories/{category}/moveTo','CategoriesController@moveTo');
+
+Route::put('/categories/{category}/moveInto','CategoriesController@moveInto');
 Route::put('/categories/{category}/moveBefore','CategoriesController@moveBefore');
+Route::put('/categories/{category}/moveAfter','CategoriesController@moveAfter');
