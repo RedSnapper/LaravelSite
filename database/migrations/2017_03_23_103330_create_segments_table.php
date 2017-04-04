@@ -14,7 +14,6 @@ class CreateSegmentsTable extends Migration {
 		Schema::create('segments', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name')->unique();
-			$table->string('size')->nullable();
 			$table->string('syntax')->nullable();
 			$table->text('docs');
 			$table->timestamps();

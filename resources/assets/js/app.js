@@ -1,15 +1,50 @@
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+import './bootstrap';
+import 'jqtree';
+import './jqTreeContextMenu';
 
-require('./bootstrap');
-require('jqtree');
-require('./jqTreeContextMenu');
+import * as api from './api/categories';
 
-var $tree = $('#tree');
+
+const $tree = $('#tree');
+
+const deleteNode = (node)=>{
+
+    api.removeCategory(node.id);
+
+    $tree.tree('removeNode',node);
+};
+
+const addNode = node=> {
+
+    const name = prompt("Name of category?");
+
+    api.addCategory(node.id,name)
+        .then(response=>{
+
+            const data = response.data.data;
+
+            $tree.tree('appendNode',{
+                name:data.name,
+                id: data.id
+            },node);
+
+            $tree.tree('openNode', node);
+        });
+};
+
+const renameNode = node=> {
+
+    const name = prompt("New name",node.name);
+
+    api.renameCategory(node.id,name)
+        .then(response=>{
+
+            const data = response.data.data;
+            $tree.tree('updateNode', node, data.name);
+
+        });
+};
 
 $tree.tree({
     dragAndDrop: true,
@@ -17,20 +52,24 @@ $tree.tree({
     usecontextmenu: true
 });
 
+$tree.bind(
+    'tree.move',(e)=>{
+        const moveInfo = e.move_info;
+
+        const movedNode = moveInfo.moved_node;
+        const targetNode = moveInfo.target_node;
+
+        //api.moveBefore(movedNode.id,targetNode.id);
+
+    }
+
+);
+
 $tree.jqTreeContextMenu($('#myMenu'), {
-    "edit": editNode,
+    "rename": renameNode,
     "delete": deleteNode,
     "add": addNode
 });
 
-function deleteNode(node) {
-    $('#tree').tree('removeNode',node);
-}
-function editNode(node) {
-    location.href="/?" + node.id;
-    // node.name = "foobar";
-    // $('#tree').tree('updateNode',node,node.getData());
-}
-function addNode(node) {
-    $('#tree').tree('addNodeAfter',{name: 'new_node'},node);
- }
+
+

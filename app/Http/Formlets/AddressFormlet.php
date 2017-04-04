@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Formlets;
 
+use RS\Form\Formlet;
 use App\Models\Address;
-use App\Http\Fields\Input;
+use RS\Form\Fields\Input;
 
 class AddressFormlet extends Formlet {
 	public $formView = "user.form";

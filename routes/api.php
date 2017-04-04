@@ -17,5 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/segments/','SegmentController@branch');
-Route::get('/roles/','RoleController@branch');
+
+Route::get('/segments','SegmentController@branch');
+
+Route::resource('/categories','CategoriesController',['except'=>['create','edit']]);
+
+Route::put('/categories/{category}/moveBefore','CategoriesController@moveBefore');

@@ -2,8 +2,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Checkbox;
+use RS\Form\Fields\Input;
 
 class SegmentLayoutFormlet extends Formlet {
 
@@ -11,7 +12,10 @@ class SegmentLayoutFormlet extends Formlet {
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));
-		$this->add((new Input('text', 'syntax',null,$this->getData('segment.syntax'))));
+		$field = new Input('text', 'syntax');
+		$this->add(
+		  $field->setDefault($this->getData('segment.syntax'))
+		);
 	}
-	
+
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\RoleComposite;
-//use App\Http\Formlets\RoleFormlet;
-use App\Models\Category;
 use App\Models\Role;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller {
@@ -14,6 +13,7 @@ class RoleController extends Controller {
 	 * @var RoleComposite
 	 */
 	private $form;
+
 	public function __construct(RoleComposite $form) {
 		$this->form = $form;
 	}
@@ -32,20 +32,11 @@ class RoleController extends Controller {
 	/**
 	 * Show the form for creating a new resource.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return View
 	 */
 	public function create(Role $role) {
-		return $this->form->renderWith(['route' => 'role.store']);
-	}
-
-	public function cats() {
-		return view("role.cats");
-	}
-	/**
-	 * @return json (this is an api call)
-	 */
-	public function branch(Request $request) {
-		return Category::nodeBranch('ROLES'); //1024 is maximum ancestry.
+		return $this->form->renderWith(['route' => 'role.store'])
+		  ->with('title','New Role');
 	}
 
 	/**
@@ -67,7 +58,7 @@ class RoleController extends Controller {
 		return $this->form->renderWith([
 			'route'  => ['role.update', $id],
 			'method' => 'PATCH'
-		]);
+		])->with('title',"Edit Role: {$this->form->getModel('role')->name}");
 	}
 
 	public function update($id) {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Input;
 use App\Models\Layout;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {

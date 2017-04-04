@@ -2,8 +2,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Checkbox;
+use RS\Form\Fields\Input;
 
 class LoginForm extends Formlet {
 
@@ -16,14 +17,14 @@ class LoginForm extends Formlet {
 		$field = new Input('email', 'email');
 		$this->add(
 		  $field->setLabel('E-Mail Address')
-			//->setRequired()
+			->setRequired()
 			->autofocus()
 		);
 
 		$field = new Input('password', 'password');
 		$this->add(
 		  $field->setLabel('Password')
-			//->setRequired()
+			->setRequired()
 		);
 
 		$field = new Checkbox('remember');

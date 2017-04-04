@@ -4,19 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Segment extends Model
-{
+class Segment extends Model {
 	protected $fillable = [
-		'name','docs','syntax','size','category_id'
+	  'name',
+	  'docs',
+	  'syntax',
+	  'category_id'
 	];
 
 	public function category() {
-		return $this->hasOne(Category::class);
+		return $this->belongsTo(Category::class);
 	}
-
-	/**
-	 * many-many relations
-**/
 
 	public function layouts() {
 		return $this->belongsToMany(Layout::class)->withPivot('syntax');

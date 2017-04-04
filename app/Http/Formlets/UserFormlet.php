@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Http\Formlets;
-use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
+
+use RS\Form\Formlet;
+use RS\Form\Fields\Input;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class UserFormlet extends Formlet {
-
-//	protected $view = "forms.auto";
 
 	public $formView = "user.form";
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 
+use RS\Form\Formlet;
 use Illuminate\Database\Eloquent\Model;
 
 class UserComposite extends Formlet {

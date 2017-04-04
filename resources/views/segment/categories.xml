@@ -1,0 +1,8 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
+
+    <h1>Segment Categories</h1>
+    <a href="/segment/">Segment List</a>
+    <div id="tree" data-url="/api/segments" />
+    <div data-v.include="layouts.treemenu" />
+</div>

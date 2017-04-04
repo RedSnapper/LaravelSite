@@ -2,8 +2,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Fields\Checkbox;
-use App\Http\Fields\Input;
+use RS\Form\Formlet;
+use RS\Form\Fields\Checkbox;
+use RS\Form\Fields\Input;
 use Illuminate\Contracts\Validation\Validator;
 
 class LayoutSegmentFormlet extends Formlet {
@@ -12,7 +13,11 @@ class LayoutSegmentFormlet extends Formlet {
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));
-		$this->add((new Input('text', 'syntax',null,$this->getData('segments.syntax'))));
+
+		$field = new Input('text', 'syntax');
+		$this->add(
+		  $field->setDefault($this->getData('segments.syntax'))
+		);
 	}
 
 	public function rules(): array {

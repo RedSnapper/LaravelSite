@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-//use App\Http\Formlets\LayoutComposite;
 use App\Http\Formlets\LayoutFormlet;
 use App\Models\Category;
 use App\Models\Layout;
@@ -17,6 +15,7 @@ class LayoutController extends Controller  {
 	private $form;
 	public function __construct(LayoutFormlet $form) {
 		$this->form = $form;
+		$this->middleware('auth');
 	}
 
 	/**
@@ -34,7 +33,8 @@ class LayoutController extends Controller  {
 	 * Show the form for creating a new resource.
 	 */
 	public function create(Layout $layout) {
-		return $this->form->renderWith(['route' => 'layout.store']);
+		return $this->form->renderWith(['route' => 'layout.store'])
+		  ->with('title','New Layout');
 	}
 
 	/**
@@ -56,7 +56,7 @@ class LayoutController extends Controller  {
 		return $this->form->renderWith([
 			'route'  => ['layout.update', $id],
 			'method' => 'PATCH'
-		]);
+		])->with('title',"Edit Layout: {$this->form->getModel()->name}");
 	}
 
 	public function update($id) {

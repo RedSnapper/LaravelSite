@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: param
- * Date: 13/03/2017
- * Time: 08:52
- */
 
 namespace App\Http\Formlets;
+
+use RS\Form\Formlet;
 
 class LogoutForm extends Formlet {
 
@@ -16,8 +12,6 @@ class LogoutForm extends Formlet {
 
 	}
 
-	public function rules(): array {
-		return [];
-	}
+
 
 }
