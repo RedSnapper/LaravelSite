@@ -45,7 +45,7 @@ class TreeObserver {
 					//send branch to heaven.
 					Schema::disableForeignKeyConstraints();
 					//The branch root's parent is different = it's the node->parent + heaven.
-					$orig->descendants(true)->update(['index' => DB::raw("index $indexAdj"),'parent' => DB::raw("if(parent < $originalIndex,$parentAdj,parent $indexAdj)")]);
+					$orig->descendants(true)->update(['index' => DB::raw("`index` $indexAdj"),'parent' => DB::raw("if(parent < $originalIndex,$parentAdj,parent $indexAdj)")]);
 					Schema::enableForeignKeyConstraints();
 
 					$this->adjustTree($orig,false); //downsize the tree (the branch has gone to heaven).
@@ -56,7 +56,7 @@ class TreeObserver {
 					$node->newQuery()
 						->where('index', '>=', $heaven + $node->index)
 						->where('index', '<', $heaven + $node->index + $nodeSize)
-						->update(['index' => DB::raw("index - $heaven"),'parent' => DB::raw("parent - $heaven")]);
+						->update(['index' => DB::raw("`index` - $heaven"),'parent' => DB::raw("parent - $heaven")]);
 					Schema::enableForeignKeyConstraints();
 				} else {
 					$node->index = $originalIndex;
