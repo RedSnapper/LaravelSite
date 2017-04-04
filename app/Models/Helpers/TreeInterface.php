@@ -26,6 +26,10 @@ interface TreeInterface {
 
 	public function scopeChildren(Builder $query);
 
+	public function createNode(int $parent = null, string $name) : TreeInterface;
+
+	public function moveNode(int $parentId = null,int $indexReplace = null);
+
 	public function scopeDescendants(Builder $query, bool $self = false);
 
 	public function scopeTier(Builder $query, $columns = ['aggregate']);

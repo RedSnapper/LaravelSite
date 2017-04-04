@@ -17,21 +17,22 @@ class TreeObserver {
 	 */
 
 	public function updating(TreeInterface $node) {
-		$org = $node->getOriginal();
-		$node->sz = $org['sz'];
-		if($node->tw != $org['tw'] || $node->pa != $org['pa'] ) {
-			$orig = new get_class($node); //This will be the mirror of the original.
+		$org = $node->getOriginal(); //Get the original values of the node.
+		$node->sz = $org['sz'];			 //Set the node to it's original size.
+		if($node->tw != $org['tw'] || ($node->pa != $org['pa'] && !is_null($node->pa)) ) {
+			$nodeClass = get_class($node);
+			$orig = new $nodeClass; //This will be the mirror of the original.
 			$orig->setRawAttributes($org);
 			$orgTw = $orig->tw;
 			$treeSize = $node->count();
 			$nodeSize = $node->sz;
 			$earthSize = $treeSize - $nodeSize;
 			$heaven = $treeSize + 1000;
-			if ($node->tw == $orgTw) { //we only have the parent.
-				$ref = $node->newQuery()->index($node->pa,['nc']); //now we have the parent's nc.
+			if (($node->tw == $orgTw) || (is_null($node->tw))) { //we only have the parent.
+				$ref = $node->index($node->pa,['nc']); //now we have the parent's nc.
 				$node->tw = $ref->nc;
 			} else { //moving by tw. if tw is same then we need to see if it's pa
-				$ref = $node->newQuery()->index($node->tw,['pa']);
+				$ref = $node->index($node->tw,['pa']);
 				$node->pa = $ref->pa;
 			}
 			//now both the tw and pa are ready. Let's check that they have actually changed after all.
@@ -46,7 +47,7 @@ class TreeObserver {
 					//send branch to heaven.
 					Schema::disableForeignKeyConstraints();
 					//The branch root's parent is different = it's the node->pa + heaven.
-					$orig->newQuery()->descendants(true)->update(['tw' => DB::raw("tw $twAdj"),'pa' => DB::raw("if(pa < $orgTw,$paAdj,pa $twAdj)")]);
+					$orig->descendants(true)->update(['tw' => DB::raw("tw $twAdj"),'pa' => DB::raw("if(pa < $orgTw,$paAdj,pa $twAdj)")]);
 					Schema::enableForeignKeyConstraints();
 
 					$this->adjustTree($orig,false); //downsize the tree (the branch has gone to heaven).

@@ -48,11 +48,32 @@ trait TreeTrait {
 		return reset($nodes)->children;
 	}
 	//returns an id,name list of descendants ordered by tw.
+
 	public static function options(string $reference) {
 		$table = $table = with(new static)->getTable();
 		return DB::table("$table as r")->join("$table as d",function ($join) {
 			$join->on('d.tw','<','r.nc')->on('d.tw','>','r.tw');
 		})->where('r.name', '=', $reference)->orderBy('d.tw','asc')->pluck('d.name','d.id');
+	}
+
+
+	public function createNode(int $parentId = null, string $name) : TreeInterface {
+		$fields = ['name'=> $name];
+		if(!is_null($parentId)) {
+			$fields['pa'] = $this->find($parentId)->tw;
+		}
+		return  $this->create($fields);
+	}
+
+	public function moveNode(int $parentId = null,int $indexReplace = null) {
+		$fields = [];
+		if(!is_null($indexReplace)) {
+			$fields['tw'] = $this->find($indexReplace)->tw;
+		}
+		if(!is_null($parentId)) {
+			$fields['pa'] = $this->find($parentId)->tw;
+		}
+		return  $this->update($fields);
 	}
 
 //Note that (annoyingly?) scopes are meant to return a Builder, not a query result!

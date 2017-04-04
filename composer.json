@@ -7,11 +7,11 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/Users/Shared/nview"
+            "url": "/Users/Shared/form"
         },
         {
             "type": "path",
-            "url": "/Users/Shared/form"
+            "url": "/Users/Shared/nview"
         }
     ],
     "require": {
