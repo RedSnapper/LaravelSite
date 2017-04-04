@@ -71,7 +71,7 @@ $factory->define(Address::class, function (Faker\Generator $faker) {
 
 $factory->define(Category::class, function (Faker\Generator $faker) {
 	return [
-		'name' => $faker->unique()->firstNameFemale,'pa' => 1
+		'name' => $faker->unique()->firstNameFemale,'parent' => 1
 	];
 });
 

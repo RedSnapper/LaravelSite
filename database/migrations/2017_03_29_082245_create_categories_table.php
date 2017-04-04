@@ -9,15 +9,15 @@ class CreateCategoriesTable extends Migration {
 		Schema::create('categories', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name',32)->index(); //this should really be a binary field - but 'binary' returns a blob.
-			$table->integer('tw')->unsigned()->index();
-			$table->integer('pa')->unsigned()->index()->nullable();
-			$table->integer('sz')->unsigned()->nullable();
-			$table->integer('nc')->storedAs("tw+sz")->index();
+			$table->integer('index')->unsigned()->index();
+			$table->integer('parent')->unsigned()->index()->nullable();
+			$table->integer('size')->unsigned()->nullable();
+			$table->integer('nextchild')->storedAs("`index`+size")->index();
 		});
 
 		Schema::table('categories', function (Blueprint $table) {
-			$table->foreign('pa')
-				->references('tw')
+			$table->foreign('parent')
+				->references('index')
 				->on('categories')
 				->onDelete('cascade'); //onUpdate('cascade') will not work for innodb tables
 		});
@@ -62,7 +62,7 @@ class CreateCategoriesTable extends Migration {
 
 		//Self table dependencies
 		Schema::table('categories', function (Blueprint $table) {
-			$table->dropForeign('categories_pa_foreign');
+			$table->dropForeign('categories_parent_foreign');
 		});
 
 		Schema::dropIfExists('categories');
