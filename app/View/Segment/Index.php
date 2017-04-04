@@ -10,7 +10,7 @@ class Index extends ViewController {
 
 	public function render(Document $view,array $data): Document {
 
-		$category = $data['category'];
+		$category = @$data['category'];
 
 		if($category){
 			$view->set("//*[@data-v.xp='tree']/@data-selected",$category->id);
