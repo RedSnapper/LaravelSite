@@ -47,7 +47,7 @@ class CategoriesTableSeeder extends Seeder  {
 			$model = new $modelClass;
 			$records = $model->get();
 			foreach ($records as $record) {
-				$record->category_id = $tree->index(mt_rand($branchRoot+1,$this->nodeCount))->id;
+				$record->category_id = $tree->index(mt_rand($branchRoot+1,$this->nodeCount))->first()->id;
 				$record->save();
 			}
 		}

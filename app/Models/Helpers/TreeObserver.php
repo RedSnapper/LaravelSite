@@ -29,11 +29,9 @@ class TreeObserver {
 			$earthSize = $treeSize - $nodeSize;
 			$heaven = $treeSize + 1000;
 			if (($node->tw == $orgTw) || (is_null($node->tw))) { //we only have the parent.
-				$ref = $node->index($node->pa,['nc']); //now we have the parent's nc.
-				$node->tw = $ref->nc;
+				$node->tw = $node->index($node->pa)->first()->nc; //now we have the parent's nc.
 			} else { //moving by tw. if tw is same then we need to see if it's pa
-				$ref = $node->index($node->tw,['pa']);
-				$node->pa = $ref->pa;
+				$node->pa = $node->index($node->tw)->first()->pa;
 			}
 			//now both the tw and pa are ready. Let's check that they have actually changed after all.
 			if ($node->tw != $orgTw || $node->pa != $orig->pa) {   //drop through to new position
@@ -80,19 +78,19 @@ class TreeObserver {
 		 * (2) a treewalk. It will inherit the current tw position and nodes to it's right will be shifted.
 		 */
 		$node->sz = 1; //The size of a new node is always going to be 1. so the nc will be tw+1;
-		$root = $node->index(1,['tw','nc']);
+		$root = $node->index(1)->first();
 		if(isset($root->tw)) {
 			if(!isset($node->tw) || ($node->tw > $root->nc) || ($node->tw < 1)) {
 				if(!isset($node->pa)) {
 					$parent = $root;
 				} else {
-					$parent = $node->index($node->pa,['tw','nc']);
+					$parent = $node->index($node->pa)->first();
 				}
 				$node->pa = $parent->tw;
 				$node->tw = $parent->nc;
 			} else {
 				//new tree.
-				$curr = $node->index($node->tw,['pa','tw']);
+				$curr = $node->index($node->tw)->first();
 				$node->pa = $curr->pa;
 				$node->tw = $curr->tw;
 			}

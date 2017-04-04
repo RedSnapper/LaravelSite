@@ -20,18 +20,6 @@ trait TreeTrait {
 		}
 	}
 
-	/*
-	 * The following attempt to supply a result..
-	 * */
-	public static function id(int $index, $columns = ['*']){
-		return with(new static)->newQuery()->where('id', '=', $index)->first($columns);
-	}
-	public static function index(int $index, $columns = ['*']){
-		return with(new static)->newQuery()->where('tw', '=', $index)->first($columns);
-	}
-	public static function reference(string $name, $columns = ['*']){
-		return with(new static)->newQuery()->where('name', '=', $name)->first($columns);
-	}
 
 	public static function nodeBranch($name='ROOT') : array {
 		$table = with(new static)->getTable();
@@ -80,7 +68,7 @@ trait TreeTrait {
 
 	public function moveAfter(int $sibling) {
 		$siblingLeft = $this->find($sibling);
-		$siblingRight = $this->index($siblingLeft->nc);
+		$siblingRight = $this->index($siblingLeft->nc)->first();
 		if(is_null($siblingRight) || ($siblingRight->pa != $siblingLeft->pa)) {
 			return  $this->update(['tw' => null, 'pa'=> $siblingLeft->pa ] );
 		} else {
@@ -96,7 +84,9 @@ trait TreeTrait {
 		return  $this->update(['pa' => $this->find($parentId)->tw ]);
 	}
 
-//Note that (annoyingly?) scopes are meant to return a Builder, not a query result!
+	public function scopeIndex(Builder $query,int $index){
+		return $query->where('tw', '=', $index);
+	}
 
 	public function scopeParent(Builder $query, $columns = ['*']){
 		return $query->where('pa', '=', $this->tw)->first($columns);

@@ -8,11 +8,6 @@ namespace App\Models\Helpers;
 use Illuminate\Database\Eloquent\Builder;
 
 interface TreeInterface {
-	public static function id(int $index, $columns = ['*']);
-
-	public static function index(int $index, $columns = ['*']);
-
-	public static function reference(string $name, $columns = ['*']);
 
 	public static function nodeBranch($name = 'ROOT'): array;
 
@@ -35,6 +30,8 @@ interface TreeInterface {
 	public function moveBefore(int $sibling);
 
 	public function moveInto(int $parent);
+
+	public function scopeIndex(Builder $query, int $index);
 
 	public function scopeDescendants(Builder $query, bool $self = false);
 
