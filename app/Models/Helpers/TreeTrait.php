@@ -26,9 +26,9 @@ trait TreeTrait {
 		$items = $node->descendants(true)->get();
 		$nodes = [];
 		foreach($items as $item) {
-			$nodes[$item->index] = new Node($item->id,$item->name);
+			$nodes[$item->idx] = new Node($item->id,$item->name);
 			if($item->name != $name) {
-				$nodes[$item->parent]->addChild($nodes[$item->index]);
+				$nodes[$item->parent]->addChild($nodes[$item->idx]);
 			}
 		}
 		return reset($nodes)->children;
@@ -42,7 +42,7 @@ trait TreeTrait {
 	public function createNode(int $parentId = null, string $name) : TreeInterface {
 		$fields = ['name'=> $name];
 		if(!is_null($parentId)) {
-			$fields['parent'] = $this->find($parentId)->index;
+			$fields['parent'] = $this->find($parentId)->idx;
 		}
 		return  $this->create($fields);
 	}
@@ -50,12 +50,12 @@ trait TreeTrait {
 	public function moveTo(int $parentId = null,int $indexReplace = null) {
 		$fields = [];
 		if(!is_null($indexReplace)) {
-			$fields['index'] = $this->find($indexReplace)->index;
+			$fields['idx'] = $this->find($indexReplace)->idx;
 		} elseif (is_null($parentId)) {
 			return;
 		}
 		if(!is_null($parentId)) {
-			$fields['parent'] = $this->find($parentId)->index;
+			$fields['parent'] = $this->find($parentId)->idx;
 		}
 		return  $this->update($fields);
 	}
@@ -64,22 +64,22 @@ trait TreeTrait {
 		$siblingLeft = $this->find($sibling);
 		$siblingRight = $this->index($siblingLeft->nextchild)->first();
 		if(is_null($siblingRight) || ($siblingRight->parent != $siblingLeft->parent)) {
-			return  $this->update(['index' => null, 'parent'=> $siblingLeft->parent ] );
+			return  $this->update(['idx' => null, 'parent'=> $siblingLeft->parent ] );
 		} else {
-			return  $this->update(['index' => $siblingLeft->nextchild,'parent'=> $siblingLeft->parent  ] );
+			return  $this->update(['idx' => $siblingLeft->nextchild,'parent'=> $siblingLeft->parent  ] );
 		}
 	}
 
 	public function moveBefore(int $sibling) {
-		return  $this->update(['index' => $this->find($sibling)->index ]);
+		return  $this->update(['idx' => $this->find($sibling)->idx ]);
 	}
 
 	public function moveInto(int $parentId) {
-		return  $this->update(['parent' => $this->find($parentId)->index ]);
+		return  $this->update(['parent' => $this->find($parentId)->idx ]);
 	}
 
 	public function scopeIndex(Builder $query,int $index){
-		return $query->where('index', '=', $index);
+		return $query->where('idx', '=', $index);
 	}
 
 	public function scopeReference(Builder $query,string $reference){
@@ -87,33 +87,33 @@ trait TreeTrait {
 	}
 
 	public function scopeParent(Builder $query){
-		return $query->where('parent', '=', $this->index);
+		return $query->where('parent', '=', $this->idx);
 	}
 
 	public function scopeAncestors(Builder $query,bool $self = false){
-		$plus = $self ? [$this->parent,$this->index] : [$this->parent];
-		return $query->where(function($node) {$node->where('nextchild', '>=', $this->index)->where('index','<',$this->parent);})->orWhereIn('index',$plus)->ordered();
+		$plus = $self ? [$this->parent,$this->idx] : [$this->parent];
+		return $query->where(function($node) {$node->where('nextchild', '>=', $this->idx)->where('idx','<',$this->parent);})->orWhereIn('idx',$plus)->ordered();
 	}
 	public function scopeSiblings(Builder $query,bool $self = true){
 		if($self) {
 			return $query->where('parent', '=', $this->parent)->ordered();
 		} else {
-			return $query->where('parent', '=', $this->parent)->where('index', '!=',$this->index)->ordered();
+			return $query->where('parent', '=', $this->parent)->where('idx', '!=',$this->idx)->ordered();
 		}
 	}
 
 	public function scopeChildren(Builder $query){
-		return $query->where('parent', '=', $this->index)->ordered();
+		return $query->where('parent', '=', $this->idx)->ordered();
 	}
 	public function scopeDescendants(Builder $query,bool $self = false){
 		$alsoSelf = $self ? '>=' : '>';
-		return $query->where("index","<", $this->nextchild)->where("index", $alsoSelf, $this->index)->ordered();
+		return $query->where("idx","<", $this->nextchild)->where("idx", $alsoSelf, $this->idx)->ordered();
 	}
 	public function scopeTier(Builder $query,$columns = ['aggregate']){
-		return $query->where('nextchild', '>', $this->index)->where('index', '<',$this->index)->count('*',$columns);
+		return $query->where('nextchild', '>', $this->idx)->where('idx', '<',$this->idx)->count('*',$columns);
 	}
 	public function scopeOrdered(Builder $query) {
-		return $query->orderBy('index','asc');
+		return $query->orderBy('idx','asc');
 	}
 	public function checkIntegrity() : array {
 		$result = [];
@@ -131,33 +131,33 @@ trait TreeTrait {
 			})->get();
 		if($bad_nodes->count() > 0) {$result['invalid nextchild boundary nodes'] = $bad_nodes->all(); }
 
-		//select * from node n left join node m on m.index = if((n.index-1) = 0,n.nextchild-1,n.index-1) where n.index is null;
+		//select * from node n left join node m on m.idx = if((n.idx-1) = 0,n.nextchild-1,n.idx-1) where n.idx is null;
 		$bad_nodes =  DB::table("$table as n")->leftJoin("$table as m",function ($join) {
-			$join->on('m.index', '=', DB::Raw("if((n.index-1) = 0,n.nextchild-1,n.index-1)"));
-		})->whereNull('n.index')->get();
+			$join->on('m.idx', '=', DB::Raw("if((n.idx-1) = 0,n.nextchild-1,n.idx-1)"));
+		})->whereNull('n.idx')->get();
 		if($bad_nodes->count() > 0) {$result['invalid index ordinal'] = $bad_nodes->all(); }
 
-		//select * from node p,node n where p.id=n.p and not(p.index < n.index and p.nextchild > n.index)";
+		//select * from node p,node n where p.id=n.p and not(p.idx < n.idx and p.nextchild > n.idx)";
 		$bad_nodes =  DB::table("$table as m")->join("$table as d",function ($join) {
-			$join->on('d.index','<',DB::Raw("m.nextchild and d.index > m.index and not(d.parent >= m.index or d.nextchild <= m.nextchild or d.parent < m.nextchild)"));
+			$join->on('d.idx','<',DB::Raw("m.nextchild and d.idx > m.idx and not(d.parent >= m.idx or d.nextchild <= m.nextchild or d.parent < m.nextchild)"));
 		})->get();
 		if($bad_nodes->count() > 0) {$result['greedy descendants'] = $bad_nodes->all(); }
 
-		//select m.* from `node` as `m` left join `node` as `d` on `d`.`index` < m.nextchild and d.index > m.index and d.parent >= m.index and d.nextchild <= m.nextchild and d.parent < m.nextchild group by m.id having m.size!=count(d.id)+1
+		//select m.* from `node` as `m` left join `node` as `d` on `d`.`idx` < m.nextchild and d.idx > m.idx and d.parent >= m.idx and d.nextchild <= m.nextchild and d.parent < m.nextchild group by m.id having m.size!=count(d.id)+1
 		$bad_nodes =  DB::table("$table as m")->select(DB::Raw('m.*'))->leftJoin("$table as d",function ($join) {
-			$join->on('d.index', '<', DB::Raw("m.nextchild and d.index > m.index and d.parent >= m.index and d.nextchild <= m.nextchild and d.parent < m.nextchild"));
+			$join->on('d.idx', '<', DB::Raw("m.nextchild and d.idx > m.idx and d.parent >= m.idx and d.nextchild <= m.nextchild and d.parent < m.nextchild"));
 		})->groupBy('m.id')->havingRaw("m.size!=count(d.id)+1")->get();
 		if($bad_nodes->count() > 0) {$result['descendants not well-formed'] = $bad_nodes->all(); }
 
-		//select * from node p,node n where p.id=n.p and not(p.index < n.index and p.nextchild > n.index)";
+		//select * from node p,node n where p.id=n.p and not(p.idx < n.idx and p.nextchild > n.idx)";
 		$bad_nodes =  DB::table("$table as p")->join("$table as n",function ($join) {
-			$join->on('p.index', '=',DB::Raw("n.parent and not(p.index < n.index and p.nextchild > n.index)"));
+			$join->on('p.idx', '=',DB::Raw("n.parent and not(p.idx < n.idx and p.nextchild > n.idx)"));
 		})->get();
 		if($bad_nodes->count() > 0) {$result['self-descendant parents'] = $bad_nodes->all(); }
 
-		//select * from node as n inner join `node` as m on (m.index=n.nextchild and n.size != m.index-n.index)
+		//select * from node as n inner join `node` as m on (m.idx=n.nextchild and n.size != m.idx-n.idx)
 		$bad_nodes =  DB::table("$table as n")->join("$table as m",function ($join) {
-			$join->on('m.index', '=',DB::Raw("n.nextchild and n.size != m.index-n.index"));
+			$join->on('m.idx', '=',DB::Raw("n.nextchild and n.size != m.idx-n.idx"));
 		})->get();
 		if($bad_nodes->count() > 0) {$result['bad branch sizes'] = $bad_nodes->all(); }
 

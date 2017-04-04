@@ -19,7 +19,7 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->faker = Faker\Factory::create();
 
 		//Do ROOT node first.
-		factory(Category::class,1)->create(['id'=>1,'index'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT']);
+		factory(Category::class,1)->create(['id'=>1,'idx'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT']);
 		$this->addGroup('ROLES',Role::class,12);
 		$this->addGroup('SEGMENTS',Segment::class,12);
 		$this->addGroup('LAYOUTS',Layout::class,12);

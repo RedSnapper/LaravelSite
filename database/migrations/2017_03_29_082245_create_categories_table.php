@@ -9,15 +9,15 @@ class CreateCategoriesTable extends Migration {
 		Schema::create('categories', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name',32)->index(); //this should really be a binary field - but 'binary' returns a blob.
-			$table->integer('index')->unsigned()->index();
+			$table->integer('idx')->unsigned()->index();
 			$table->integer('parent')->unsigned()->index()->nullable();
 			$table->integer('size')->unsigned()->nullable();
-			$table->integer('nextchild')->storedAs("`index`+size")->index();
+			$table->integer('nextchild')->storedAs("`idx`+size")->index();
 		});
 
 		Schema::table('categories', function (Blueprint $table) {
 			$table->foreign('parent')
-				->references('index')
+				->references('idx')
 				->on('categories')
 				->onDelete('cascade'); //onUpdate('cascade') will not work for innodb tables
 		});
