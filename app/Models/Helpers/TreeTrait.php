@@ -22,10 +22,8 @@ trait TreeTrait {
 
 
 	public static function nodeBranch($name='ROOT') : array {
-		$table = with(new static)->getTable();
-		$items = DB::table("$table as r")->join("$table as d",function ($join) {
-			$join->on('d.tw','<','r.nc')->on('d.tw','>=','r.tw');
-		})->where('r.name', '=',$name)->orderBy('d.tw','asc')->get(['d.id','d.tw','d.pa','d.name']);
+		$node  = with(new static)->reference($name)->first();
+		$items = $node->descendants(true)->get();
 		$nodes = [];
 		foreach($items as $item) {
 			$nodes[$item->tw] = new Node($item->id,$item->name);
@@ -35,15 +33,11 @@ trait TreeTrait {
 		}
 		return reset($nodes)->children;
 	}
-	//returns an id,name list of descendants ordered by tw.
 
 	public static function options(string $reference) {
-		$table = $table = with(new static)->getTable();
-		return DB::table("$table as r")->join("$table as d",function ($join) {
-			$join->on('d.tw','<','r.nc')->on('d.tw','>','r.tw');
-		})->where('r.name', '=', $reference)->orderBy('d.tw','asc')->pluck('d.name','d.id');
+		$node  = with(new static)->reference($reference)->first();
+		return $node->descendants(false)->pluck('name','id');
 	}
-
 
 	public function createNode(int $parentId = null, string $name) : TreeInterface {
 		$fields = ['name'=> $name];
@@ -88,8 +82,12 @@ trait TreeTrait {
 		return $query->where('tw', '=', $index);
 	}
 
-	public function scopeParent(Builder $query, $columns = ['*']){
-		return $query->where('pa', '=', $this->tw)->first($columns);
+	public function scopeReference(Builder $query,string $reference){
+		return $query->where('name', '=', $reference);
+	}
+
+	public function scopeParent(Builder $query){
+		return $query->where('pa', '=', $this->tw);
 	}
 
 	public function scopeAncestors(Builder $query,bool $self = false){

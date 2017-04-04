@@ -13,7 +13,7 @@ interface TreeInterface {
 
 	public static function options(string $reference);
 
-	public function scopeParent(Builder $query, $columns = ['*']);
+	public function scopeParent(Builder $query);
 
 	public function scopeAncestors(Builder $query, bool $self = false);
 
@@ -32,6 +32,8 @@ interface TreeInterface {
 	public function moveInto(int $parent);
 
 	public function scopeIndex(Builder $query, int $index);
+
+	public function scopeReference(Builder $query,string $reference);
 
 	public function scopeDescendants(Builder $query, bool $self = false);
 
