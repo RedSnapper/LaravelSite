@@ -2,6 +2,8 @@
 
 namespace App\Http\Formlets;
 
+use App\Models\Category;
+use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use App\Models\Layout;
@@ -21,7 +23,12 @@ class LayoutFormlet  extends Formlet {
 		$this->add(
 			$field->setLabel('Name')
 		);
-
+		$field = new Select('category_id',Category::options('LAYOUTS'));
+		$this->add(
+			$field->setLabel("Category")
+				->setPlaceholder("Please select a category")
+				->setDefault($this->getData('category'))
+		);
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
 
 	}

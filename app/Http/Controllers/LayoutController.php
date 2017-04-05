@@ -23,9 +23,16 @@ class LayoutController extends Controller  {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Layout $layout) {
-		$layouts = $layout->orderBy('name')->paginate(10);
-		return view("layout.index", compact('layouts'));
+	public function index(Request $request) {
+		$category = $request->get('category');
+		$data = [];
+
+		if($category){
+			$category = Category::findOrFail($category);
+			$layouts = $category->layouts()->orderBy('name')->paginate(10);
+			$data = compact('layouts','category');
+		}
+		return view("layout.index",$data);
 	}
 
 

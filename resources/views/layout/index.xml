@@ -1,6 +1,5 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
-
     <div class="row">
         <div class="col-md-3">
             <h1>Layouts</h1>
@@ -24,7 +23,7 @@
     </div>
 
     <div class="well text-right">
-        <a data-v.url="/segment/create/?layout={category.id}" class="btn btn-primary">New Layouts</a>
+        <a data-v.url="/segment/create/?layout={category.id}" class="btn btn-primary">New Layout</a>
     </div>
 
 </div>

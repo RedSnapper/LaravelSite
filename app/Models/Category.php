@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model implements TreeInterface {
 	use TreeTrait;
-	protected $guarded  = ['id','size','nextchild'];
+	protected $guarded  = ['id','size','nextchild','section'];
 	public $timestamps = false;
 	protected $table="categories";
 

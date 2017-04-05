@@ -72,7 +72,7 @@ $factory->define(Segment::class, function (Faker\Generator $faker) {
 
 $factory->define(Layout::class, function (Faker\Generator $faker) {
 	$category_id = Category::reference('LAYOUTS')->first()->descendants(false,false)->inRandomOrder()->first()->id;
-		return [
+	return [
 			'name' => $faker->unique()->lastName,
 			'category_id' => $category_id
 		];
@@ -89,7 +89,7 @@ $factory->define(Address::class, function (Faker\Generator $faker) {
 
 $factory->define(Category::class, function (Faker\Generator $faker) {
 	return [
-		'name' => $faker->unique()->firstNameFemale,'parent' => 1
+		'name' => $faker->unique()->firstNameFemale,'parent' => 1,'section'=>false
 	];
 });
 

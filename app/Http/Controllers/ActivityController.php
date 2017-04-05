@@ -16,6 +16,7 @@ class ActivityController extends Controller {
 	private $form;
 
 	public function __construct(ActivityFormlet $form) {
+		$this->middleware('can:ACTIVITY_NAV');
 		$this->form = $form;
 	}
 
@@ -25,6 +26,7 @@ class ActivityController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Request $request) {
+		$this->authorize('ACTIVITY_INDEX');
 		$category = $request->get('category');
 		$data = [];
 

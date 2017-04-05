@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Activity;
+use App\Models\Category;
 
 /**
  * Part of form
@@ -10,9 +11,12 @@ use App\Models\Activity;
  */
 class ActivitiesTableSeeder extends Seeder {
 	public function run() {
-		factory(Activity::class,1)->create([]);
-		factory(Activity::class,40)->create();
-
+		$devCategory = Category::reference('Activities',false)->first()->id;
+		factory(Activity::class,1)->create(['name'=>'LAYOUT_NAV','label'=>'Layouts navigation','category_id'=> $devCategory]);
+		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $devCategory]);
+		factory(Activity::class,1)->create(['name'=>'ACTIVITY_NAV','label'=>'Activities navigation','category_id'=> $devCategory]);
+		factory(Activity::class,1)->create(['name'=>'ACTIVITY_INDEX','label'=>'Activities index access','category_id'=> $devCategory]);
+		factory(Activity::class,50)->create();
 	}
 
 }

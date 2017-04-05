@@ -82,8 +82,8 @@ trait TreeTrait {
 		return $query->where('idx', '=', $index);
 	}
 
-	public function scopeReference(Builder $query,string $reference){
-		return $query->where('name', '=', $reference);
+	public function scopeReference(Builder $query,string $reference,bool $isSection = true){
+		return $query->where('name', '=', $reference)->where('section','=',$isSection);
 	}
 
 	public function scopeParent(Builder $query){

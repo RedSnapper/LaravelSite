@@ -12,10 +12,9 @@ class LayoutsTableSeeder extends Seeder {
 	 */
 	public function run() {
 		$faker = Faker\Factory::create();
-		factory(Layout::class,5)->create()->each(function ($u) use ($faker) {
-			factory(Segment::class,4)->create()->each(function ($v) use ($faker,$u)  {
-				$u->mm()->save($v,['syntax'=>$faker->colorName]);
-			});
+
+		factory(Layout::class,25)->create()->each(function ($u) use ($faker) {
+			$u->segments()->attach(Segment::inRandomOrder()->limit(5)->pluck('id'));
 		});
 	}
 }
