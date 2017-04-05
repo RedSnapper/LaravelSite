@@ -49,7 +49,8 @@ $factory->define(Role::class, function (Faker\Generator $faker) {
 $factory->define(Segment::class, function (Faker\Generator $faker) {
 	return [
 		'name' => $faker->unique()->firstName,
-		'docs' => $faker->catchPhrase
+		'docs' => $faker->catchPhrase,
+		'syntax' => strtoupper($faker->fileExtension)
 	];
 });
 
