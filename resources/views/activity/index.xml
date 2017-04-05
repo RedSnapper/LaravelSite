@@ -1,0 +1,31 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Activities</h1>
+            <div id="tree" data-v.xp="tree" data-url="/api/activities"/>
+            <div data-v.include="layouts.treemenu"/>
+        </div>
+
+        <div class="col-md-6">
+            <h2 data-v.child="category.name"/>
+            <ul data-v.foreach="activities" data-v.name="activity" class="list-group">
+                <li class="list-group-item">
+                    <a data-v.url="/activity/{activity.id}/edit">
+                        <span data-v.replace="activity.label"/>
+                    </a>
+                </li>
+            </ul>
+
+            <div data-v.pagination="layouts.pagination" data-v.name="activities"/>
+
+        </div>
+    </div>
+
+    <div class="well text-right">
+        <a data-v.url="/activity/create/?category={category.id}" class="btn btn-primary">New Activity</a>
+    </div>
+
+
+</div>
