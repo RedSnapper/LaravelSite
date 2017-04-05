@@ -28,6 +28,9 @@
                         <a data-v.url="/role">Roles</a>
                     </li>
                     <li>
+                        <a data-v.url="/activity">Activities</a>
+                    </li>
+                    <li>
                         <a data-v.url="/layout">Layouts</a>
                     </li>
                     <li>

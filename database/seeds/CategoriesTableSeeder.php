@@ -5,6 +5,7 @@ use App\Models\Category;
 use App\Models\Layout;
 use App\Models\Role;
 use App\Models\Segment;
+use App\Models\Activity;
 
 /**
  * Part of form
@@ -23,6 +24,7 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('ROLES',Role::class,12);
 		$this->addGroup('SEGMENTS',Segment::class,12);
 		$this->addGroup('LAYOUTS',Layout::class,12);
+		$this->addGroup('ACTIVITIES',Activity::class,12);
 	}
 
 	private function addGroup($name,$modelClass = null,$size = 3) {

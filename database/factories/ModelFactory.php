@@ -17,6 +17,7 @@ use App\Models\Role;
 use App\Models\Segment;
 use App\Models\Layout;
 use App\Models\Category;
+use App\Models\Activity;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(User::class, function (Faker\Generator $faker) {
@@ -46,6 +47,14 @@ $factory->define(Role::class, function (Faker\Generator $faker) {
 	];
 });
 
+$factory->define(Activity::class, function (Faker\Generator $faker) {
+	$name = $faker->unique()->firstNameFemale;
+	return [
+		'name' => strtoupper($name),
+		'label' => $name,
+	];
+});
+
 $factory->define(Segment::class, function (Faker\Generator $faker) {
 	return [
 		'name' => $faker->unique()->firstName,
@@ -59,7 +68,6 @@ $factory->define(Layout::class, function (Faker\Generator $faker) {
 			'name' => $faker->unique()->lastName
 		];
 });
-
 
 
 $factory->define(Address::class, function (Faker\Generator $faker) {

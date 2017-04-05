@@ -17,6 +17,11 @@ Route::get('/home', 'HomeController@index');
 
 Route::resource('/user','UserController');
 
+//Activities
+Route::get('/layout/activities','ActivityController@categories');
+Route::resource('/activity','ActivityController', ['except' => 'update']);
+Route::put('/activity/{activity}','ActivityController@update')->name('activity.update');
+
 //Route::resource('/layout','LayoutController');
 //Layouts
 Route::get('/layout/categories','LayoutController@categories');

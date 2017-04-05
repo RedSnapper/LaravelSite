@@ -12,6 +12,9 @@ class Category extends Model implements TreeInterface {
 	public $timestamps = false;
 	protected $table="categories";
 
+	public function activities(){
+		return $this->hasMany(Activity::class);
+	}
 	public function segments(){
 		return $this->hasMany(Segment::class);
 	}
