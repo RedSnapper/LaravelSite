@@ -17,6 +17,18 @@
                 </tbody>
             </table>
 
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Used</th>
+                    </tr>
+                </thead>
+                <tbody data-v.foreach="form.categories" data-v.name="category">
+                    <tr data-v.replace="category"/>
+                </tbody>
+            </table>
+
 
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>

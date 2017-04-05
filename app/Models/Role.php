@@ -26,6 +26,10 @@ class Role extends Model
 		return $this->belongsToMany(Activity::class);
 	}
 
+	public function categories() {
+		return $this->belongsToMany(Category::class);
+	}
+
 	public function givePermissionTo(Activity $activity){
 		return $this->activities()->save($activity);
 	}

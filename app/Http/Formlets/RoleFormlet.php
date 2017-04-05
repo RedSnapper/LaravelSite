@@ -32,6 +32,8 @@ class RoleFormlet extends Formlet {
 
 		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
 
+		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories());
+
 	}
 
 	public function rules(): array {
@@ -46,6 +48,8 @@ class RoleFormlet extends Formlet {
 		$role = parent::edit();
 
 		$role->activities()->sync($this->getSubscriberFields('activities'));
+
+		$role->categories()->sync($this->getSubscriberFields('categories'));
 
 		return $role;
 	}
