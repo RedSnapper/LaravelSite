@@ -65,16 +65,14 @@ class LayoutController extends Controller  {
 		return redirect()->route('layout.edit',$layout->id);
 	}
 
+
 	public function cats() {
 		return view("layout.cats");
 	}
-	/**
-	 * @return json (this is an api call)
-	 */
-	public function branch(Request $request) {
-		return Category::nodeBranch('LAYOUTS'); //1024 is maximum ancestry.
-	}
 
+	public function branch() {
+		return Category::nodeBranch('LAYOUTS');
+	}
 
 
 	/**

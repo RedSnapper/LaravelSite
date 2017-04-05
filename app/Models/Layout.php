@@ -15,10 +15,13 @@ class Layout extends Model
 	}
 
 	public function category() {
-		return $this->hasOne(Category::class);
+//	HasOne for 1:1 relation .
+//	BelongsTo for 1:* relation
+		return $this->belongsTo(Category::class);
 	}
 
 	public function segments() {
 		return $this->belongsToMany(Segment::class)->withPivot('syntax');
 	}
+
 }

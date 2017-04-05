@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::get('/segments','SegmentController@branch');
+Route::get('/layouts','LayoutController@branch');
+Route::get('/roles','RoleController@branch');
 
 Route::resource('/categories','CategoriesController',['except'=>['create','edit']]);
 

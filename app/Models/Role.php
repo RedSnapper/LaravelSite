@@ -10,9 +10,8 @@ class Role extends Model
 		'name','category_id'
 	];
 
-
 	public function category() {
-		return $this->hasOne(Category::class);
+		return $this->belongsTo(Category::class);
 	}
 
 	public function mm() {

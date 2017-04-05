@@ -17,10 +17,19 @@ Route::get('/home', 'HomeController@index');
 
 Route::resource('/user','UserController');
 
-Route::resource('/layout','LayoutController');
+//Route::resource('/layout','LayoutController');
+//Layouts
+Route::get('/layout/categories','LayoutController@categories');
+Route::resource('/layout','LayoutController', ['except' => 'update']);
+Route::put('/layout/{layout}','LayoutController@update')->name('layout.update');
 
-Route::resource('/role','RoleController');
+//Route::resource('/role','RoleController');
+//Roles
+Route::get('/role/categories','RoleController@categories');
+Route::resource('/role','RoleController', ['except' => 'update']);
+Route::put('/role/{role}','RoleController@update')->name('role.update');
 
+//Segments
 Route::get('/segment/categories','SegmentController@categories');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');

@@ -97,7 +97,10 @@ $tree.bind(
     }
 );
 
-$tree.bind('tree.click', e => window.location.href = `/segment?category=${e.node.id}`);
+//TODO: use querystring merge rather than replace
+$tree.bind('tree.click', e => {
+    window.location.search = `?category=${e.node.id}`;
+});
 
 $tree.bind('tree.init',init);
 

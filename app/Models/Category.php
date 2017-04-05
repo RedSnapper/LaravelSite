@@ -8,11 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model implements TreeInterface {
 	use TreeTrait;
-	protected $guarded  = ['id','sz','nc'];
+	protected $guarded  = ['id','size','nextchild'];
 	public $timestamps = false;
 	protected $table="categories";
 
 	public function segments(){
 		return $this->hasMany(Segment::class);
 	}
+	public function layouts(){
+		return $this->hasMany(Layout::class);
+	}
+	public function roles(){
+		return $this->hasMany(roles::class);
+	}
+
 }

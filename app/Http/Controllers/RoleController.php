@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\RoleComposite;
+use App\Models\Category;
 use App\Models\Role;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -23,9 +24,16 @@ class RoleController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Role $role) {
-		$roles = $role->orderBy('name')->paginate(10);
-		return view("role.index", compact('roles'));
+	public function index(Request $request) {
+		$category = $request->get('category');
+		$data = [];
+
+		if($category){
+			$category = Category::findOrFail($category);
+			$roles = $category->roles()->orderBy('name')->paginate(10);
+			$data = compact('roles','category');
+		}
+		return view("role.index",$data);
 	}
 
 
@@ -60,6 +68,16 @@ class RoleController extends Controller {
 			'method' => 'PATCH'
 		])->with('title',"Edit Role: {$this->form->getModel('role')->name}");
 	}
+
+	public function branch() {
+		return Category::nodeBranch('ROLES');
+	}
+
+	public function categories(Category $thing) {
+		$integrity = $thing->checkIntegrity();
+		return view("role.categories",compact("integrity"));
+	}
+
 
 	public function update($id) {
 		$this->form->setKey($id);

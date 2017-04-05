@@ -1,12 +1,11 @@
 <?php
 
-namespace App\View\Segment;
+namespace App\View\Helpers;
 
 use RS\NView\Document;
 use RS\NView\ViewController;
 
-class Index extends ViewController {
-
+class Category extends ViewController {
 
 	public function render(Document $view,array $data): Document {
 
@@ -15,8 +14,6 @@ class Index extends ViewController {
 		if($category){
 			$view->set("//*[@data-v.xp='tree']/@data-selected",$category->id);
 		}
-
-
 
 		return $view;
 	}
