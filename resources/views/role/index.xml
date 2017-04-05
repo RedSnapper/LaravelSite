@@ -24,7 +24,7 @@
     </div>
 
     <div class="well text-right">
-        <a data-v.url="/segment/create/?role={category.id}" class="btn btn-primary">New Role</a>
+        <a data-v.url="/role/create/?category={category.id}" class="btn btn-primary">New Role</a>
     </div>
 
 </div>

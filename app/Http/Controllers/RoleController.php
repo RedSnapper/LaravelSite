@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Formlets\RoleComposite;
+use App\Http\Formlets\RoleFormlet;
 use App\Models\Category;
 use App\Models\Role;
 use Illuminate\Contracts\View\View;
@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class RoleController extends Controller {
 
 	/**
-	 * @var RoleComposite
+	 * @var RoleFormlet
 	 */
 	private $form;
 
-	public function __construct(RoleComposite $form) {
+	public function __construct(RoleFormlet $form) {
 		$this->form = $form;
 	}
 
@@ -42,9 +42,11 @@ class RoleController extends Controller {
 	 *
 	 * @return View
 	 */
-	public function create(Role $role) {
-		return $this->form->renderWith(['route' => 'role.store'])
-		  ->with('title','New Role');
+	public function create(Request $request) {
+		$category = $request->get('category','');
+		$form =  $this->form->create(['route' => 'role.store']);
+		$form->with('category',$category);
+		return $form->render()->with('title','New Role');
 	}
 
 	/**
