@@ -11,7 +11,7 @@ use App\Models\Category;
  */
 class ActivitiesTableSeeder extends Seeder {
 	public function run() {
-		$devCategory = Category::reference('Activities',false)->first()->id;
+		$devCategory = Category::reference('Activities')->first()->id;
 		factory(Activity::class,1)->create(['name'=>'LAYOUT_NAV','label'=>'Layouts navigation','category_id'=> $devCategory]);
 		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $devCategory]);
 		factory(Activity::class,1)->create(['name'=>'ACTIVITY_NAV','label'=>'Activities navigation','category_id'=> $devCategory]);

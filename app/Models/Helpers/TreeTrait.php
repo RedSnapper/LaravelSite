@@ -22,7 +22,7 @@ trait TreeTrait {
 
 
 	public static function nodeBranch($name='ROOT') : array {
-		$node  = with(new static)->reference($name)->first();
+		$node  = with(new static)->section($name)->first();
 		$items = $node->descendants(true)->get();
 		$nodes = [];
 		foreach($items as $item) {
@@ -35,7 +35,7 @@ trait TreeTrait {
 	}
 
 	public static function options(string $reference) {
-		$node  = with(new static)->reference($reference)->first();
+		$node  = with(new static)->section($reference)->first();
 		return $node->descendants(false)->pluck('name','id');
 	}
 
@@ -82,8 +82,12 @@ trait TreeTrait {
 		return $query->where('idx', '=', $index);
 	}
 
-	public function scopeReference(Builder $query,string $reference,bool $isSection = true){
-		return $query->where('name', '=', $reference)->where('section','=',$isSection);
+	public function scopeReference(Builder $query,string $reference){
+		return $query->where('name', '=', $reference)->where('section','=',false);
+	}
+
+	public function scopeSection(Builder $query,string $reference){
+		return $query->where('name', '=', $reference)->where('section','=',true);
 	}
 
 	public function scopeParent(Builder $query){

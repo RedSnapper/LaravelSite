@@ -13,8 +13,8 @@ class RolesTableSeeder extends Seeder {
 	 * @return void
 	 */
 	public function run() {
-		$devCategory = Category::reference('Roles',false)->first()->id;
-		$this->withJoins(1,45,['name'=>'SuperUser','category_id'=> $devCategory]);
+		$devCategory = Category::reference('Roles')->first()->id;
+		$this->withJoins(1,54,['name'=>'SuperUser','category_id'=> $devCategory]);
 		$this->withJoins(1,15,['name'=>'Editor','category_id'=> $devCategory]);
 		$this->withJoins(15,6);
 	}
