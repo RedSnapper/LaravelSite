@@ -65,7 +65,7 @@ class RoleController extends Controller {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
 			'route'  => ['role.update', $id],
-			'method' => 'PATCH'
+			'method' => 'PUT'
 		])->with('title',"Edit Role: {$this->form->getModel('role')->name}");
 	}
 
@@ -84,6 +84,7 @@ class RoleController extends Controller {
 		$role = $this->form->update();
 		return redirect()->route('role.edit',$role->id);
 	}
+
 
 	/**
 	 * Remove the specified resource from storage.

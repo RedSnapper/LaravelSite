@@ -55,7 +55,7 @@ class LayoutController extends Controller  {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
 			'route'  => ['layout.update', $id],
-			'method' => 'PATCH'
+			'method' => 'PUT'
 		])->with('title',"Edit Layout: {$this->form->getModel()->name}");
 	}
 
