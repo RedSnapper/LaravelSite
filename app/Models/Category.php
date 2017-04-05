@@ -19,7 +19,7 @@ class Category extends Model implements TreeInterface {
 		return $this->hasMany(Layout::class);
 	}
 	public function roles(){
-		return $this->hasMany(roles::class);
+		return $this->hasMany(Role::class);
 	}
 
 }
