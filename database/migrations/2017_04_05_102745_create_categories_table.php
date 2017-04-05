@@ -38,6 +38,11 @@ class CreateCategoriesTable extends Migration {
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('set null');
 		});
+		Schema::table('activities', function (Blueprint $table) {
+			$table->integer('category_id')->unsigned()->nullable();
+			$table->foreign('category_id')->references('id')->on('categories')
+				->onDelete('set null');
+		});
 	}
 
 	/**
@@ -57,6 +62,10 @@ class CreateCategoriesTable extends Migration {
 		});
 		Schema::table('segments', function (Blueprint $table) {
 			$table->dropForeign('segments_category_id_foreign');
+			$table->dropColumn(['category_id']);
+		});
+		Schema::table('activities', function (Blueprint $table) {
+			$table->dropForeign('activities_category_id_foreign');
 			$table->dropColumn(['category_id']);
 		});
 
