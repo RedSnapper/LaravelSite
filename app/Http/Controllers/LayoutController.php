@@ -7,12 +7,13 @@ use App\Models\Category;
 use App\Models\Layout;
 use Illuminate\Http\Request;
 
-class LayoutController extends Controller  {
+class LayoutController extends Controller {
 
 	/**
 	 * @var LayoutFormlet
 	 */
 	private $form;
+
 	public function __construct(LayoutFormlet $form) {
 		$this->form = $form;
 		$this->middleware('auth');
@@ -27,24 +28,23 @@ class LayoutController extends Controller  {
 		$category = $request->get('category');
 		$data = [];
 
-		if($category){
+		if ($category) {
 			$category = Category::findOrFail($category);
 			$layouts = $category->layouts()->orderBy('name')->paginate(10);
-			$data = compact('layouts','category');
+			$data = compact('layouts', 'category');
 		}
-		return view("layout.index",$data);
+		return view("layout.index", $data);
 	}
-
 
 	/**
 	 * Show the form for creating a new resource.
 	 */
 	public function create(Request $request) {
 
-		$category = $request->get('category','');
-		$form =  $this->form->create(['route' => 'layout.store']);
-		$form->with('category',$category);
-		return $form->render()->with('title','New Layout');
+		$category = $request->get('category', '');
+		$form = $this->form->create(['route' => 'layout.store']);
+		$form->with('category', $category);
+		return $form->render()->with('title', 'New Layout');
 	}
 
 	/**
@@ -64,21 +64,16 @@ class LayoutController extends Controller  {
 	public function edit($id) {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
-			'route'  => ['layout.update', $id],
-			'method' => 'PUT'
-		])->with('title',"Edit Layout: {$this->form->getModel()->name}");
+		  'route'  => ['layout.update', $id],
+		  'method' => 'PUT'
+		])->with('title', "Edit Layout: {$this->form->getModel()->name}");
 	}
 
 	public function update($id) {
 		$this->form->setKey($id);
 		$layout = $this->form->update();
-		return redirect()->route('layout.edit',$layout->id);
+		return redirect()->route('layout.edit', $layout->id);
 	}
-
-	public function branch() {
-		return Category::nodeBranch('LAYOUTS');
-	}
-
 
 	/**
 	 * Remove the specified resource from storage.

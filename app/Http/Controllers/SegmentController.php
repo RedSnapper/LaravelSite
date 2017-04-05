@@ -8,13 +8,13 @@ use App\Models\Segment;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class SegmentController extends Controller
-{
+class SegmentController extends Controller {
 
 	/**
 	 * @var SegmentFormlet
 	 */
 	private $form;
+
 	public function __construct(SegmentFormlet $form) {
 		$this->form = $form;
 		$this->middleware('auth');
@@ -30,13 +30,13 @@ class SegmentController extends Controller
 		$category = $request->get('category');
 		$data = [];
 
-		if($category){
+		if ($category) {
 			$category = Category::findOrFail($category);
 			$segments = $category->segments()->orderBy('name')->paginate(10);
-			$data = compact('segments','category');
+			$data = compact('segments', 'category');
 		}
 
-		return view("segment.index",$data);
+		return view("segment.index", $data);
 	}
 
 	/**
@@ -46,10 +46,10 @@ class SegmentController extends Controller
 	 */
 	public function create(Request $request) {
 
-		$category = $request->get('category','');
-		$form =  $this->form->create(['route' => 'segment.store']);
-		$form->with('category',$category);
-		return $form->render()->with('title','New Segment');
+		$category = $request->get('category', '');
+		$form = $this->form->create(['route' => 'segment.store']);
+		$form->with('category', $category);
+		return $form->render()->with('title', 'New Segment');
 	}
 
 	/**
@@ -69,24 +69,15 @@ class SegmentController extends Controller
 	public function edit($id) {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
-			'route'  => ['segment.update', $id],
-			'method' => 'PUT'
-		])->with('title',"Edit Segment: {$this->form->getModel()->name}");
+		  'route'  => ['segment.update', $id],
+		  'method' => 'PUT'
+		])->with('title', "Edit Segment: {$this->form->getModel()->name}");
 	}
-
-	/**
-	 * @return array (this is an api call)
-	 */
-	public function branch() {
-		return Category::nodeBranch('SEGMENTS');
-	}
-
-
-
+	
 	public function update($id) {
 		$this->form->setKey($id);
 		$segment = $this->form->update();
-		return redirect()->route('segment.edit',$segment->id);
+		return redirect()->route('segment.edit', $segment->id);
 	}
 
 	/**

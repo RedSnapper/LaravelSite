@@ -28,14 +28,13 @@ class RoleController extends Controller {
 		$category = $request->get('category');
 		$data = [];
 
-		if($category){
+		if ($category) {
 			$category = Category::findOrFail($category);
 			$roles = $category->roles()->orderBy('name')->paginate(10);
-			$data = compact('roles','category');
+			$data = compact('roles', 'category');
 		}
-		return view("role.index",$data);
+		return view("role.index", $data);
 	}
-
 
 	/**
 	 * Show the form for creating a new resource.
@@ -43,10 +42,10 @@ class RoleController extends Controller {
 	 * @return View
 	 */
 	public function create(Request $request) {
-		$category = $request->get('category','');
-		$form =  $this->form->create(['route' => 'role.store']);
-		$form->with('category',$category);
-		return $form->render()->with('title','New Role');
+		$category = $request->get('category', '');
+		$form = $this->form->create(['route' => 'role.store']);
+		$form->with('category', $category);
+		return $form->render()->with('title', 'New Role');
 	}
 
 	/**
@@ -66,22 +65,16 @@ class RoleController extends Controller {
 	public function edit($id) {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
-			'route'  => ['role.update', $id],
-			'method' => 'PUT'
-		])->with('title',"Edit Role: {$this->form->getModel('role')->name}");
+		  'route'  => ['role.update', $id],
+		  'method' => 'PUT'
+		])->with('title', "Edit Role: {$this->form->getModel('role')->name}");
 	}
-
-	public function branch() {
-		return Category::nodeBranch('ROLES');
-	}
-
 
 	public function update($id) {
 		$this->form->setKey($id);
 		$role = $this->form->update();
-		return redirect()->route('role.edit',$role->id);
+		return redirect()->route('role.edit', $role->id);
 	}
-
 
 	/**
 	 * Remove the specified resource from storage.

@@ -28,10 +28,10 @@ class CategoriesController extends ApiController
 		$this->category = $category;
 	}
 
-	public function index(){
-		$categories =  Category::all();
+	public function index(Request $request){
 
-		return $this->respondWithCollection($categories);
+		$section = $request->get('section');
+		return Category::nodeBranch($section);
 	}
 
 	public function show($id){

@@ -71,10 +71,6 @@ class ActivityController extends Controller {
 		])->with('title',"Edit Activity: {$this->form->getModel('activity')->name}");
 	}
 
-	public function branch() {
-		return Category::nodeBranch('ACTIVITIES');
-	}
-
 	public function update($id) {
 		$this->form->setKey($id);
 		$activity = $this->form->update();
