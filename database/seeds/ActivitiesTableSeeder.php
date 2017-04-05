@@ -10,7 +10,9 @@ use App\Models\Activity;
  */
 class ActivitiesTableSeeder extends Seeder {
 	public function run() {
+		factory(Activity::class,1)->create([]);
 		factory(Activity::class,40)->create();
+
 	}
 
 }

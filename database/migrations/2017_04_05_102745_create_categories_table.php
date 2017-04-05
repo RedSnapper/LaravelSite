@@ -22,7 +22,7 @@ class CreateCategoriesTable extends Migration {
 				->onDelete('cascade'); //onUpdate('cascade') will not work for innodb tables
 		});
 
-		//Other table dependencies.
+//		Other table dependencies.
 		Schema::table('roles', function (Blueprint $table) {
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')

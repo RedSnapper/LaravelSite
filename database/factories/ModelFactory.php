@@ -42,30 +42,39 @@ $factory->define(UserProfile::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(Role::class, function (Faker\Generator $faker) {
+	$category_id = Category::reference('ROLES')->first()->descendants(false,false)->inRandomOrder()->first()->id;
 	return [
-		'name' => $faker->unique()->jobTitle
+		'name' => $faker->unique()->jobTitle,
+		'category_id' => $category_id
 	];
 });
 
 $factory->define(Activity::class, function (Faker\Generator $faker) {
 	$name = $faker->unique()->firstNameFemale;
+  $category_id = Category::reference('ACTIVITIES')->first()->descendants(false,false)->inRandomOrder()->first()->id;
 	return [
 		'name' => strtoupper($name),
 		'label' => $name,
+		'category_id' => $category_id
 	];
+
 });
 
 $factory->define(Segment::class, function (Faker\Generator $faker) {
+	$category_id = Category::reference('SEGMENTS')->first()->descendants(false,false)->inRandomOrder()->first()->id;
 	return [
 		'name' => $faker->unique()->firstName,
 		'docs' => $faker->catchPhrase,
-		'syntax' => strtoupper($faker->fileExtension)
+		'syntax' => strtoupper($faker->fileExtension),
+		'category_id' => $category_id
 	];
 });
 
 $factory->define(Layout::class, function (Faker\Generator $faker) {
+	$category_id = Category::reference('LAYOUTS')->first()->descendants(false,false)->inRandomOrder()->first()->id;
 		return [
-			'name' => $faker->unique()->lastName
+			'name' => $faker->unique()->lastName,
+			'category_id' => $category_id
 		];
 });
 

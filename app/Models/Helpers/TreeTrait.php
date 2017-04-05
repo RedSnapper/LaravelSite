@@ -105,10 +105,15 @@ trait TreeTrait {
 	public function scopeChildren(Builder $query){
 		return $query->where('parent', '=', $this->idx)->ordered();
 	}
-	public function scopeDescendants(Builder $query,bool $self = false){
+	public function scopeDescendants(Builder $query,bool $self = false,bool $ordered = true){
 		$alsoSelf = $self ? '>=' : '>';
-		return $query->where("idx","<", $this->nextchild)->where("idx", $alsoSelf, $this->idx)->ordered();
+		$result = $query->where("idx","<", $this->nextchild)->where("idx", $alsoSelf, $this->idx);
+		if($ordered) {
+			$result = $result->ordered();
+		}
+		return $result;
 	}
+
 	public function scopeTier(Builder $query,$columns = ['aggregate']){
 		return $query->where('nextchild', '>', $this->idx)->where('idx', '<',$this->idx)->count('*',$columns);
 	}

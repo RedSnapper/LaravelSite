@@ -24,11 +24,11 @@ class DatabaseSeeder extends Seeder {
 
 		Schema::enableForeignKeyConstraints();
 
-		$this->call(ActivitiesTableSeeder::class);
 		$this->call(UsersTableSeeder::class);
+		$this->call(CategoriesTableSeeder::class);
+		$this->call(ActivitiesTableSeeder::class);
 		$this->call(RolesTableSeeder::class);
 		$this->call(LayoutsTableSeeder::class);
-		$this->call(CategoriesTableSeeder::class);
 
 	}
 }
