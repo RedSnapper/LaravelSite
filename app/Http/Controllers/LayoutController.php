@@ -39,9 +39,12 @@ class LayoutController extends Controller  {
 	/**
 	 * Show the form for creating a new resource.
 	 */
-	public function create(Layout $layout) {
-		return $this->form->renderWith(['route' => 'layout.store'])
-		  ->with('title','New Layout');
+	public function create(Request $request) {
+
+		$category = $request->get('category','');
+		$form =  $this->form->create(['route' => 'layout.store']);
+		$form->with('category',$category);
+		return $form->render()->with('title','New Layout');
 	}
 
 	/**

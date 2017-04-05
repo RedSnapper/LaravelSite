@@ -23,7 +23,7 @@
     </div>
 
     <div class="well text-right">
-        <a data-v.url="/segment/create/?layout={category.id}" class="btn btn-primary">New Layout</a>
+        <a data-v.url="/layout/create/?category={category.id}" class="btn btn-primary">New Layout</a>
     </div>
 
 </div>
