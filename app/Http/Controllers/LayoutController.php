@@ -65,13 +65,13 @@ class LayoutController extends Controller  {
 		return redirect()->route('layout.edit',$layout->id);
 	}
 
-
-	public function cats() {
-		return view("layout.cats");
-	}
-
 	public function branch() {
 		return Category::nodeBranch('LAYOUTS');
+	}
+
+	public function categories(Category $thing) {
+		$integrity = $thing->checkIntegrity();
+		return view("layout.categories",compact("integrity"));
 	}
 
 

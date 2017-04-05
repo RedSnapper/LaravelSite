@@ -1,18 +1,30 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
 
-    <h1>Layouts</h1>
-    <a href="/layout/cats">Category Editor</a>
-    <ul data-v.foreach="layouts" data-v.name="layout" class="list-group">
-        <li class="list-group-item">
-            <a data-v.url="/layout/{layout.id}/edit"><span data-v.replace="layout.name"/></a>
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Layouts</h1>
+            <div id="tree" data-v.xp="tree" data-url="/api/layouts"/>
+            <div data-v.include="layouts.treemenu"/>
+        </div>
 
-    <div data-v.pagination="layouts.pagination" data-v.name="layouts"/>
+        <div class="col-md-6">
+            <h2 data-v.child="category.name"/>
+            <ul data-v.foreach="layouts" data-v.name="layout" class="list-group">
+                <li class="list-group-item">
+                    <a data-v.url="/layout/{layout.id}/edit">
+                        <span data-v.replace="layout.name"/>
+                    </a>
+                </li>
+            </ul>
+
+            <div data-v.pagination="layouts.pagination" data-v.name="layouts"/>
+
+        </div>
+    </div>
 
     <div class="well text-right">
-        <a href="/layout/create" class="btn btn-primary">New Layout</a>
+        <a data-v.url="/segment/create/?layout={category.id}" class="btn btn-primary">New Layouts</a>
     </div>
 
 </div>
