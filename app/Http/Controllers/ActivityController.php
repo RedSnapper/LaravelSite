@@ -73,12 +73,6 @@ class ActivityController extends Controller {
 		return Category::nodeBranch('ACTIVITIES');
 	}
 
-	public function categories(Category $thing) {
-		$integrity = $thing->checkIntegrity();
-		return view("activity.categories",compact("integrity"));
-	}
-
-
 	public function update($id) {
 		$this->form->setKey($id);
 		$activity = $this->form->update();

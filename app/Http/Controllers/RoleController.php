@@ -73,11 +73,6 @@ class RoleController extends Controller {
 		return Category::nodeBranch('ROLES');
 	}
 
-	public function categories(Category $thing) {
-		$integrity = $thing->checkIntegrity();
-		return view("role.categories",compact("integrity"));
-	}
-
 
 	public function update($id) {
 		$this->form->setKey($id);

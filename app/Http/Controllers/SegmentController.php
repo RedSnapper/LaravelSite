@@ -81,11 +81,6 @@ class SegmentController extends Controller
 		return Category::nodeBranch('SEGMENTS');
 	}
 
-	public function categories(Category $thing) {
-
-		$integrity = $thing->checkIntegrity();
-		return view("segment.categories",compact("integrity"));
-	}
 
 
 	public function update($id) {

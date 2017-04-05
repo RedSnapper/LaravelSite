@@ -69,11 +69,6 @@ class LayoutController extends Controller  {
 		return Category::nodeBranch('LAYOUTS');
 	}
 
-	public function categories(Category $thing) {
-		$integrity = $thing->checkIntegrity();
-		return view("layout.categories",compact("integrity"));
-	}
-
 
 	/**
 	 * Remove the specified resource from storage.
