@@ -23,7 +23,7 @@ interface TreeInterface {
 
 	public function createNode(int $parent = null, string $name) : TreeInterface;
 
-	public function moveTo(int $parentId = null,int $indexReplace = null);
+	//public function moveTo(int $parentId = null,int $indexReplace = null);
 
 	public function moveAfter(int $sibling);
 

@@ -53,55 +53,53 @@ trait TreeTrait {
 		return  $this->create($fields);
 	}
 
-	public function moveTo(int $parentId = null,int $indexReplace = null) {
-		$fields = [];
-		if(!is_null($indexReplace)) {
-			$fields['idx'] = $this->find($indexReplace)->idx;
-		} elseif (is_null($parentId)) {
-			return;
-		}
-		if(!is_null($parentId)) {
-			$fields['parent'] = $this->find($parentId)->idx;
-		}
-		return  $this->update($fields);
-	}
+	//public function moveTo(int $parentId = null,int $indexReplace = null) {
+	//	$fields = [];
+	//	if(!is_null($indexReplace)) {
+	//		$fields['idx'] = $this->find($indexReplace)->idx;
+	//	} elseif (is_null($parentId)) {
+	//		return;
+	//	}
+	//	if(!is_null($parentId)) {
+	//		$fields['parent'] = $this->find($parentId)->idx;
+	//	}
+	//	return  $this->update($fields);
+	//}
 
-	public function moveAfter(int $sibling,\Closure $closure = null) {
+	public function moveAfter(int $sibling):bool {
 		$siblingLeft = $this->find($sibling);
 		$siblingRight = $this->index($siblingLeft->nextchild)->first();
 		$parent = $siblingLeft->parent()->first();
-		if(static::allowed($closure,$parent)) {
+		if($this->canEdit($parent)) {
 			if(is_null($siblingRight) || ($siblingRight->parent != $siblingLeft->parent)) {
-//				return true;
 				return  $this->update(['idx' => null, 'parent'=> $siblingLeft->parent ] );
 			} else {
-//				return true;
 				return  $this->update(['idx' => $siblingLeft->nextchild,'parent'=> $siblingLeft->parent  ] );
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 
-	public function moveBefore(int $sibling,\Closure $closure = null) {
+	public function moveBefore(int $sibling):bool {
 		$sibling = $this->find($sibling);
 		$parent = $sibling->parent()->first();
-		if(static::allowed($closure,$parent)) {
-//			return true;
+		if($this->canEdit($parent)) {
 			return  $this->update(['idx' => $sibling->idx,'parent' => $parent->idx]);
-		} else {
-			return false;
 		}
+		return false;
 	}
 
-	public function moveInto(int $parentId,\Closure $closure = null) {
+	public function moveInto(int $parentId) {
 		$parent = $this->find($parentId);
-		if(static::allowed($closure,$parent)) {
-//			return true;
+		if($this->canEdit($parent)) {
 			return $this->update(['parent' => $parent->idx]);
 		} else {
 			return false;
 		}
+	}
+
+	protected function canEdit(TreeInterface $node){
+		return true;
 	}
 
 	public function scopeIndex(Builder $query,int $index){
