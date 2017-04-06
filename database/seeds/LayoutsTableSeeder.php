@@ -13,7 +13,7 @@ class LayoutsTableSeeder extends Seeder {
 	public function run() {
 		$faker = Faker\Factory::create();
 
-		factory(Layout::class,25)->create()->each(function ($u) use ($faker) {
+		factory(Layout::class,5)->create()->each(function ($u) use ($faker) {
 			$u->segments()->attach(Segment::inRandomOrder()->limit(5)->pluck('id'));
 		});
 	}

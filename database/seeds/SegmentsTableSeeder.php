@@ -15,7 +15,7 @@ class SegmentsTableSeeder extends Seeder {
 	 * @return void
 	 */
 	public function run() {
-		factory(Segment::class,15)->create();
+		factory(Segment::class,5)->create();
 	}
 
 }

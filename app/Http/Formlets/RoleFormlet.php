@@ -32,7 +32,7 @@ class RoleFormlet extends Formlet {
 
 		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
 
-		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories());
+		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories(),Category::ordered()->get());
 
 	}
 

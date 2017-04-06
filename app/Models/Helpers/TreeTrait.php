@@ -10,7 +10,6 @@ namespace App\Models\Helpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-
 trait TreeTrait {
 
 	protected static function boot() {
@@ -20,15 +19,22 @@ trait TreeTrait {
 		}
 	}
 
-
-	public static function nodeBranch($name='ROOT') : array {
-		$node  = with(new static)->section($name)->first();
+	public static function nodeBranch($name = 'ROOT', \Closure $closure = null): array {
+		$node = with(new static)->section($name)->first();
 		$items = $node->descendants(true)->get();
+		$objects = [];
 		$nodes = [];
-		foreach($items as $item) {
-			$nodes[$item->idx] = new Node($item->id,$item->name);
-			if($item->name != $name) {
-				$nodes[$item->parent]->addChild($nodes[$item->idx]);
+		foreach ($items as $item) {
+			$objects[$item->idx] = $item; //so we can get parent from object.
+			$nodes[$item->idx] = new Node($item->id, $item->name);
+			if ($item->name != $name) {
+				if (static::allowed($closure,$item)) {
+					if (static::allowed($closure,$objects[$item->parent])) {
+						$nodes[$item->parent]->addChild($nodes[$item->idx]);
+					} else {
+						$nodes[$node->idx]->addChild($nodes[$item->idx]);
+					}
+				}
 			}
 		}
 		return reset($nodes)->children;
@@ -60,22 +66,42 @@ trait TreeTrait {
 		return  $this->update($fields);
 	}
 
-	public function moveAfter(int $sibling) {
+	public function moveAfter(int $sibling,\Closure $closure = null) {
 		$siblingLeft = $this->find($sibling);
 		$siblingRight = $this->index($siblingLeft->nextchild)->first();
-		if(is_null($siblingRight) || ($siblingRight->parent != $siblingLeft->parent)) {
-			return  $this->update(['idx' => null, 'parent'=> $siblingLeft->parent ] );
+		$parent = $siblingLeft->parent()->first();
+		if(static::allowed($closure,$parent)) {
+			if(is_null($siblingRight) || ($siblingRight->parent != $siblingLeft->parent)) {
+//				return true;
+				return  $this->update(['idx' => null, 'parent'=> $siblingLeft->parent ] );
+			} else {
+//				return true;
+				return  $this->update(['idx' => $siblingLeft->nextchild,'parent'=> $siblingLeft->parent  ] );
+			}
 		} else {
-			return  $this->update(['idx' => $siblingLeft->nextchild,'parent'=> $siblingLeft->parent  ] );
+			return false;
 		}
 	}
 
-	public function moveBefore(int $sibling) {
-		return  $this->update(['idx' => $this->find($sibling)->idx ]);
+	public function moveBefore(int $sibling,\Closure $closure = null) {
+		$sibling = $this->find($sibling);
+		$parent = $sibling->parent()->first();
+		if(static::allowed($closure,$parent)) {
+//			return true;
+			return  $this->update(['idx' => $sibling->idx,'parent' => $parent->idx]);
+		} else {
+			return false;
+		}
 	}
 
-	public function moveInto(int $parentId) {
-		return  $this->update(['parent' => $this->find($parentId)->idx ]);
+	public function moveInto(int $parentId,\Closure $closure = null) {
+		$parent = $this->find($parentId);
+		if(static::allowed($closure,$parent)) {
+//			return true;
+			return $this->update(['parent' => $parent->idx]);
+		} else {
+			return false;
+		}
 	}
 
 	public function scopeIndex(Builder $query,int $index){
@@ -118,9 +144,6 @@ trait TreeTrait {
 		return $result;
 	}
 
-	public function scopeTier(Builder $query,$columns = ['aggregate']){
-		return $query->where('nextchild', '>', $this->idx)->where('idx', '<',$this->idx)->count('*',$columns);
-	}
 	public function scopeOrdered(Builder $query) {
 		return $query->orderBy('idx','asc');
 	}
@@ -158,6 +181,14 @@ trait TreeTrait {
 		})->groupBy('m.id')->havingRaw("m.size!=count(d.id)+1")->get();
 		if($bad_nodes->count() > 0) {$result['descendants not well-formed'] = $bad_nodes->all(); }
 
+		$bad_nodes =  collect(DB::select(DB::Raw("select m.*,1+count(a.id) as tier from $table as m,$table as a 
+		where a.nextchild > m.idx and a.idx < m.idx group by m.id having m.depth != tier")));
+		if($bad_nodes->count() > 0) {$result['incorrect depths'] = $bad_nodes->all(); }
+
+		//select * from node where parent >= n.idx";
+		$bad_nodes = $this->newQuery()->whereColumn('parent','>=','idx')->get();
+		if($bad_nodes->count() > 0) {$result['badly ordered parent'] = $bad_nodes->all(); }
+
 		//select * from node p,node n where p.id=n.p and not(p.idx < n.idx and p.nextchild > n.idx)";
 		$bad_nodes =  DB::table("$table as p")->join("$table as n",function ($join) {
 			$join->on('p.idx', '=',DB::Raw("n.parent and not(p.idx < n.idx and p.nextchild > n.idx)"));
@@ -171,6 +202,10 @@ trait TreeTrait {
 		if($bad_nodes->count() > 0) {$result['bad branch sizes'] = $bad_nodes->all(); }
 
 		return $result;
+	}
+
+	private static function allowed(\Closure $closure,TreeInterface $node) : bool {
+		return is_null($closure) || $closure($node);
 	}
 
 }

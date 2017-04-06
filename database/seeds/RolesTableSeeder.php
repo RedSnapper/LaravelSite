@@ -12,11 +12,12 @@ class RolesTableSeeder extends Seeder {
 	 *
 	 * @return void
 	 */
+	//TODO:: add fix for superuser to have root access to categories.
 	public function run() {
 		$devCategory = Category::reference('Roles')->first()->id;
-		$this->withJoins(1,54,['name'=>'SuperUser','category_id'=> $devCategory]);
-		$this->withJoins(1,15,['name'=>'Editor','category_id'=> $devCategory]);
-		$this->withJoins(15,6);
+		$this->withJoins(1,7,['name'=>'SuperUser','category_id'=> $devCategory]);
+		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $devCategory]);
+		$this->withJoins(3,6);
 	}
 
 	private function withJoins($count,$activities = 5,$values = []) {

@@ -29,9 +29,7 @@ class CategoriesController extends ApiController
 	}
 
 	public function index(Request $request){
-
-		$section = $request->get('section');
-		return Category::nodeBranch($section);
+		return Category::branch($request->get('section',"ROOT"));
 	}
 
 	public function show($id){
@@ -80,18 +78,18 @@ class CategoriesController extends ApiController
 	}
 
 	public function moveInto(Category $category,Request $request){
-		$category->moveInto($request->get('node'));
-		return $this->respondWithItem($category);
+		return $this->respondWithArray([$category->moveInto($request->get('node'))]);
+//		return $this->respondWithItem($category);
 	}
 
 	public function moveBefore(Category $category,Request $request){
-		$category->moveBefore($request->get('node'));
-		return $this->respondWithItem($category);
+		return $this->respondWithArray([$category->moveBefore($request->get('node'))]);
+//		return $this->respondWithItem($category);
 	}
 
 	public function moveAfter(Category $category,Request $request){
-		$category->moveAfter($request->get('node'));
-		return $this->respondWithItem($category);
+		return $this->respondWithArray([$category->moveAfter($request->get('node'))]);
+//		return $this->respondWithItem($category);
 	}
 
 	public function destroy($id){

@@ -26,6 +26,5 @@
     <div class="well text-right">
         <a data-v.url="/segment/create/?category={category.id}" class="btn btn-primary">New Segment</a>
     </div>
-
-
+    <div data-v.include="layouts.integrity" />
 </div>

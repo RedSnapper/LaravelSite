@@ -21,13 +21,14 @@ class CategoriesTableSeeder extends Seeder  {
 
 		//Do ROOT node first.
 		factory(Category::class,1)->create(['id'=>1,'idx'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT','section'=>true]);
-		$this->addGroup('ROLES',Role::class,6);
-		$this->addGroup('SEGMENTS',Segment::class,6);
-		$this->addGroup('LAYOUTS',Layout::class,12);
-		$this->addGroup('ACTIVITIES',Activity::class,12);
+		$this->addGroup('ROLES',3);
+		$this->addGroup('SEGMENTS',6);
+		$this->addGroup('LAYOUTS',4);
+		$this->addGroup('ACTIVITIES',6);
+		$this->addGroup('MEDIA',4);
 	}
 
-	private function addGroup($name,$modelClass = null,$size = 3) {
+	private function addGroup($name,$size = 3) {
 		factory(Category::class,1)->create(['parent'=>1,'name'=>$name,'section'=>true]);
 		$this->nodeCount++;
 		$branchRoot = $this->nodeCount;

@@ -37,8 +37,6 @@ interface TreeInterface {
 
 	public function scopeDescendants(Builder $query, bool $self = false);
 
-	public function scopeTier(Builder $query, $columns = ['aggregate']);
-
 	public function scopeOrdered(Builder $query);
 
 	public function checkIntegrity(): array;

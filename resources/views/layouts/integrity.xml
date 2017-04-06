@@ -1,0 +1,30 @@
+<!DOCTYPE div>
+<div data-v.foreach="integrity" data-v.name="item" xmlns="http://www.w3.org/1999/xhtml">
+    <div>
+        <h4 data-v.child="#key"/>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>parent</th>
+                    <th>index</th>
+                    <th>size</th>
+                    <th>depth</th>
+                    <th>nextchild</th>
+                </tr>
+            </thead>
+            <tbody data-v.foreach="item" data-v.name="node">
+                <tr>
+                    <td data-v.child="node.id"/>
+                    <td data-v.child="node.name"/>
+                    <td data-v.child="node.parent"/>
+                    <td data-v.child="node.idx"/>
+                    <td data-v.child="node.size"/>
+                    <td data-v.child="node.depth"/>
+                    <td data-v.child="node.nextchild"/>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
