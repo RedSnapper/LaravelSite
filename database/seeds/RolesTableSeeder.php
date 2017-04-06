@@ -18,16 +18,24 @@ class RolesTableSeeder extends Seeder {
 		$this->withJoins(1,7,['name'=>'SuperUser','category_id'=> $devCategory]);
 		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $devCategory]);
 		$this->withJoins(3,6);
+
+		$this->giveAccessToAllCategories();
+
 	}
 
 	private function withJoins($count,$activities = 5,$values = []) {
 		factory(Role::class,$count)->create($values)->each(function ($role) use($activities) {
 			$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
 			$role->users()->attach([1,2]); //Ben n Param
-			$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(5)->pluck('id'));
+			$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(1)->pluck('id'));
 		});
 
 	}
 
+	//Give superuser access to all categories
+	protected function giveAccessToAllCategories(){
+		$category = Category::section('ROOT')->first();
+		Role::first()->givePermissionToCategory($category);
+	}
 
 }

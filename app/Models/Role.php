@@ -34,4 +34,8 @@ class Role extends Model
 		return $this->activities()->save($activity);
 	}
 
+	public function givePermissionToCategory(Category $category){
+		return $this->categories()->save($category);
+	}
+
 }
