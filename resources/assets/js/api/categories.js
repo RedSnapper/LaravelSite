@@ -22,12 +22,6 @@ export const renameCategory = (id,name)=>{
     });
 };
 
-// export const moveTo = (id,parent = null,index = null)=>{
-//     return api.put(`/categories/${id}/moveTo`,{
-//         parent,index
-//     });
-// };
-
 export const moveInto = (id,node)=>{
     return api.put(`/categories/${id}/moveInto`,{
         node
@@ -35,14 +29,12 @@ export const moveInto = (id,node)=>{
 };
 
 export const moveBefore = (id,node)=>{
-    console.log('moveBefore',node);
     return api.put(`/categories/${id}/moveBefore`,{
         node
     });
 };
 
 export const moveAfter = (id,node)=>{
-    console.log('moveAfter',node);
     return api.put(`/categories/${id}/moveAfter`,{
         node
     });

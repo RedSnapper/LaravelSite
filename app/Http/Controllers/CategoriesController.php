@@ -70,23 +70,37 @@ class CategoriesController extends ApiController
 		return $this->respondWithItem($category);
 	}
 
-	public function moveTo(Category $category,Request $request){
-
-		$category->moveTo($request->get('parent'),$request->get('index'));
-
-		return $this->respondWithItem($category);
-	}
+	//public function moveTo(Category $category,Request $request){
+	//
+	//	$category->moveTo($request->get('parent'),$request->get('index'));
+	//	return $this->respondWithItem($category);
+	//}
 
 	public function moveInto(Category $category,Request $request){
-		return $this->respondWithArray([$category->moveInto($request->get('node'))]);
+
+		if($category->moveInto($request->get('node'))){
+			return $this->respondWithNoContent();
+		}
+
+		return $this->respondForbidden();
 	}
 
 	public function moveBefore(Category $category,Request $request){
-		return $this->respondWithArray([$category->moveBefore($request->get('node'))]);
+
+		if($category->moveBefore($request->get('node'))){
+			return $this->respondWithNoContent();
+		}
+
+		return $this->respondForbidden();
+
 	}
 
 	public function moveAfter(Category $category,Request $request){
-		return $this->respondWithArray([$category->moveAfter($request->get('node'))]);
+		if($category->moveAfter($request->get('node'))){
+			return $this->respondWithNoContent();
+		}
+
+		return $this->respondForbidden();
 	}
 
 	public function destroy($id){

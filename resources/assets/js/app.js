@@ -46,6 +46,38 @@ const renameNode = node=> {
         });
 };
 
+const moveNode = (moveInfo)=>{
+
+    const movedNode = moveInfo.moved_node;
+    const targetNode = moveInfo.target_node;
+
+    switch(moveInfo.position) {
+        case 'before': {
+            return api.moveBefore(movedNode.id,targetNode.id);
+        } break;
+        case 'after': {
+            return api.moveAfter(movedNode.id,targetNode.id);
+        } break;
+        case 'inside': {
+            return moveToFirstChild(movedNode,targetNode);
+        } break;
+    }
+
+    return new Promise();
+};
+
+const moveToFirstChild = (node,parent)=> {
+
+    //We have the parent (in target).
+    //If the parent has any children, we need to change the index to the id of the first child.
+    //Otherwise we keep the parent, and have no index.
+    if(parent.children.length) {
+        return api.moveBefore(node.id,parent.children[0].id);
+    } else {
+        return api.moveInto(node.id,parent.id);
+    }
+};
+
 const getAncestors  = (node,ancestors=[])=>{
     return !node.id ? ancestors : getAncestors(node.parent,ancestors.concat(node.id));
 };
@@ -65,35 +97,17 @@ const init = _=>{
 };
 
 
-const moveToFirstChild = (node,parent)=> {
-
-    //We have the parent (in target).
-    //If the parent has any children, we need to change the index to the id of the first child.
-    //Otherwise we keep the parent, and have no index.
-    if(parent.children.length) {
-        api.moveBefore(node.id,parent.children[0].id);
-    } else {
-        api.moveInto(node.id,parent.id);
-    }
-};
 
 $tree.bind(
     'tree.move',(e)=>{
-        const moveInfo = e.move_info;
-        const movedNode = moveInfo.moved_node;
-        const targetNode = moveInfo.target_node;
 
-        switch(moveInfo.position) {
-            case 'before': {
-                api.moveBefore(movedNode.id,targetNode.id);
-            } break;
-            case 'after': {
-                api.moveAfter(movedNode.id,targetNode.id);
-            } break;
-            case 'inside': {
-                moveToFirstChild(movedNode,targetNode);
-            } break;
-        }
+        e.preventDefault();
+
+        const moveInfo = e.move_info;
+
+        moveNode(moveInfo).then(response=>{
+            e.move_info.do_move();
+        });
     }
 );
 

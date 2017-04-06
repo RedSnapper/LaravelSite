@@ -59,6 +59,23 @@ class ApiController extends Controller {
 		return $this->setStatusCode(SymfonyResponse::HTTP_NOT_FOUND)->respondWithError($message);
 	}
 
+	/**
+	 * @param string $message
+	 * @return mixed
+	 */
+	public function respondWithNoContent() {
+		$this->setStatusCode(SymfonyResponse::HTTP_NO_CONTENT);
+		return response()->make('', $this->getStatusCode());
+	}
+
+	/**
+	 * @param string $message
+	 * @return mixed
+	 */
+	public function respondForbidden($message = "Forbidden") {
+		return $this->setStatusCode(SymfonyResponse::HTTP_FORBIDDEN)->respondWithError($message);
+	}
+
 	public function respondDeleted($message = "Not Found") {
 		return $this->setStatusCode(SymfonyResponse::HTTP_NOT_FOUND)->respondWithError($message);
 	}
