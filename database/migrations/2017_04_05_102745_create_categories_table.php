@@ -14,6 +14,7 @@ class CreateCategoriesTable extends Migration {
 			$table->integer('parent')->unsigned()->index()->nullable();
 			$table->integer('size')->unsigned()->nullable();
 			$table->integer('nextchild')->storedAs("`idx`+size")->index();
+			$table->integer('depth')->unsigned()->nullable();
 		});
 
 		Schema::table('categories', function (Blueprint $table) {

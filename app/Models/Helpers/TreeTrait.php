@@ -79,19 +79,19 @@ trait TreeTrait {
 	}
 
 	public function scopeIndex(Builder $query,int $index){
-		return $query->where('idx', '=', $index);
+		return $query->where('idx', $index);
 	}
 
 	public function scopeReference(Builder $query,string $reference){
-		return $query->where('name', '=', $reference)->where('section','=',false);
+		return $query->where('name',$reference)->where('section',false);
 	}
 
 	public function scopeSection(Builder $query,string $reference){
-		return $query->where('name', '=', $reference)->where('section','=',true);
+		return $query->where('name',$reference)->where('section',true);
 	}
 
 	public function scopeParent(Builder $query){
-		return $query->where('parent', '=', $this->idx);
+		return $query->where('idx', $this->parent);
 	}
 
 	public function scopeAncestors(Builder $query,bool $self = false){
@@ -100,9 +100,9 @@ trait TreeTrait {
 	}
 	public function scopeSiblings(Builder $query,bool $self = true){
 		if($self) {
-			return $query->where('parent', '=', $this->parent)->ordered();
+			return $query->where('parent', $this->parent)->ordered();
 		} else {
-			return $query->where('parent', '=', $this->parent)->where('idx', '!=',$this->idx)->ordered();
+			return $query->where('parent', $this->parent)->where('idx', '!=',$this->idx)->ordered();
 		}
 	}
 

@@ -17,9 +17,12 @@ class TreeObserver {
 	 */
 
 	public function updating(TreeInterface $node) {
-		$org = $node->getOriginal(); //Get the original values of the node.
+		$org = $node->getOriginal(); 		 //Get the original values of the node.
 		$node->size = $org['size'];			 //Set the node to it's original size.
+		$curDepth = $org['depth'];		   //get hold of the current depth.
+
 		if($node->idx != $org['idx'] || ($node->parent != $org['parent'] && !is_null($node->parent)) ) {
+			$parent = null; 	//we only need to get this once..
 			$nodeClass = get_class($node);
 			$orig = new $nodeClass; //This will be the mirror of the original.
 			$orig->setRawAttributes($org);
@@ -29,12 +32,21 @@ class TreeObserver {
 			$earthSize = $treeSize - $nodeSize;
 			$heaven = $treeSize + 1000;
 			if (($node->idx == $originalIndex) || (is_null($node->idx))) { //we only have the parent.
-				$node->idx = $node->index($node->parent)->first()->nextchild; //now we have the parent's nextChild.
-			} else { //moving by index. if index is same then we need to see if it's parent
+				$parent = $node->parent()->first();
+				$node->idx = $parent->nextchild; //now we have the parent's nextChild.
+			} elseif( is_null($node->parent) ) { //moving by index. if index is same then we need to see if it's parent
 				$node->parent = $node->index($node->idx)->first()->parent;
+			} else {
+				//we have both node and parent. we need to check that the parent's nc >= our idx.
+				$parent = $node->parent()->first();
+				if($parent->nextchild < $node->idx) {
+					$node->idx = $parent->nextchild;
+				}
 			}
 			//now both the index and parent are ready. Let's check that they have actually changed after all.
 			if ($node->idx != $originalIndex || $node->parent != $orig->parent) {   //drop through to new position
+				$parent = $parent ?? $node->parent()->first(); //we need to do this before adjusting for heaven and earth.
+				$newDepth = $parent->depth + 1;
 				$node->idx = $node->idx > $originalIndex ? $node->idx - $nodeSize : $node->idx; //while in heaven, we will change the size of earth.
 				$node->parent = $node->parent > $originalIndex ? $node->parent - $nodeSize : $node->parent; //so our own reference points must be adjusted.
 				if($node->idx <= ($earthSize+1) && $node->parent <= $earthSize) { //when going right to the end of the tree, earthsize +1 is legal.
@@ -45,7 +57,10 @@ class TreeObserver {
 					//send branch to heaven.
 					Schema::disableForeignKeyConstraints();
 					//The branch root's parent is different = it's the node->parent + heaven.
-					$orig->descendants(true)->update(['idx' => DB::raw("`idx` $indexAdj"),'parent' => DB::raw("if(parent < $originalIndex,$parentAdj,parent $indexAdj)")]);
+					$orig->descendants(true)->update([
+						'idx' => DB::raw("`idx` $indexAdj"),
+						'depth' => DB::raw("`depth` + ($newDepth - $curDepth)"),
+						'parent' => DB::raw("if(parent < $originalIndex,$parentAdj,parent $indexAdj)")]);
 					Schema::enableForeignKeyConstraints();
 
 					$this->adjustTree($orig,false); //downsize the tree (the branch has gone to heaven).
@@ -56,7 +71,10 @@ class TreeObserver {
 					$node->newQuery()
 						->where('idx', '>=', $heaven + $node->idx)
 						->where('idx', '<', $heaven + $node->idx + $nodeSize)
-						->update(['idx' => DB::raw("`idx` - $heaven"),'parent' => DB::raw("parent - $heaven")]);
+						->update([
+							'idx' => DB::raw("`idx` - $heaven"),
+							'parent' => DB::raw("parent - $heaven")
+						]);
 					Schema::enableForeignKeyConstraints();
 				} else {
 					$node->idx = $originalIndex;
@@ -88,16 +106,19 @@ class TreeObserver {
 				}
 				$node->parent = $parent->idx;
 				$node->idx = $parent->nextchild;
+				$node->depth = $parent->depth+1;
 			} else {
 				//new tree.
 				$curr = $node->index($node->idx)->first();
 				$node->parent = $curr->parent;
 				$node->idx = $curr->idx;
+				$node->depth = $curr->depth;
 			}
 			$this->adjustTree($node,true); //inserting
 		} else {
 			$node->idx = 1;
 			$node->parent = null;
+			$node->depth = 1;
 		}
 		return true;
 	}
