@@ -18,6 +18,7 @@ class CreateMediaTable extends Migration
 			$table->string('name')->unique();
 			$table->string('path');
 			$table->string('mime');
+			$table->string('filename');
 			$table->integer('size');
             $table->timestamps();
         });
