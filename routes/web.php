@@ -35,6 +35,9 @@ Route::put('/role/{role}','RoleController@update')->name('role.update');
 Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
 
+//Media
+Route::resource('/media','MediaController');
+
 Auth::routes();
 
 
