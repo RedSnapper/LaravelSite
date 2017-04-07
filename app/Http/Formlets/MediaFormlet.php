@@ -29,4 +29,10 @@ class MediaFormlet extends Formlet{
 		return new Category();
 	}
 
+	public function rules(): array {
+		return [
+		  'media'=> 'required|mimes:jpeg,bmp,png'
+		];
+	}
+
 }
