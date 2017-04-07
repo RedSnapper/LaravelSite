@@ -3,7 +3,7 @@ import './bootstrap';
 import 'jqtree';
 import './jqTreeContextMenu';
 
-import * as api from './api/categories';
+import * as api from './api/category';
 
 
 const $tree = $('#tree');

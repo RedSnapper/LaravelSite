@@ -6,36 +6,36 @@ const api = axios.create({
 
 export const addCategory = (parent,name)=>{
 
-    return api.post(`/categories`,{
+    return api.post(`/category`,{
         parent,
         name
     });
 };
 
 export const removeCategory = (id)=>{
-    return api.delete(`/categories/${id}`);
+    return api.delete(`/category/${id}`);
 };
 
 export const renameCategory = (id,name)=>{
-    return api.put(`/categories/${id}`,{
+    return api.put(`/category/${id}`,{
         name
     });
 };
 
 export const moveInto = (id,node)=>{
-    return api.put(`/categories/${id}/moveInto`,{
+    return api.put(`/category/${id}/moveInto`,{
         node
     });
 };
 
 export const moveBefore = (id,node)=>{
-    return api.put(`/categories/${id}/moveBefore`,{
+    return api.put(`/category/${id}/moveBefore`,{
         node
     });
 };
 
 export const moveAfter = (id,node)=>{
-    return api.put(`/categories/${id}/moveAfter`,{
+    return api.put(`/category/${id}/moveAfter`,{
         node
     });
 };

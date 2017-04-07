@@ -6,7 +6,7 @@ use App\Http\Transformers\CategoryTransformer;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoriesController extends ApiController
+class CategoryController extends ApiController
 {
 
 	protected $transformer;
@@ -17,7 +17,7 @@ class CategoriesController extends ApiController
 	private $category;
 
 	/**
-	 * CategoriesController constructor.
+	 * CategoryController constructor.
 	 *
 	 * @param Category            $category
 	 * @param CategoryTransformer $transformer

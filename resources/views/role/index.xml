@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-3">
             <h1>Roles</h1>
-            <div id="tree" data-v.xp="tree" data-url="/api/categories?section=ROLES"/>
+            <div id="tree" data-v.xp="tree" data-url="/api/category?section=ROLES"/>
             <div data-v.include="layouts.treemenu"/>
         </div>
 

@@ -12178,7 +12178,7 @@ process.umask = function() { return 0; };
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jqtree___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jqtree__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_categories__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_category__ = __webpack_require__(56);
 
 
 
@@ -12190,7 +12190,7 @@ var $tree = $('#tree');
 
 var deleteNode = function deleteNode(node) {
 
-    __WEBPACK_IMPORTED_MODULE_3__api_categories__["a" /* removeCategory */](node.id);
+    __WEBPACK_IMPORTED_MODULE_3__api_category__["a" /* removeCategory */](node.id);
 
     $tree.tree('removeNode', node);
 };
@@ -12199,7 +12199,7 @@ var addNode = function addNode(node) {
 
     var name = prompt("Name of category?");
 
-    __WEBPACK_IMPORTED_MODULE_3__api_categories__["b" /* addCategory */](node.id, name).then(function (response) {
+    __WEBPACK_IMPORTED_MODULE_3__api_category__["b" /* addCategory */](node.id, name).then(function (response) {
 
         var data = response.data.data;
 
@@ -12216,7 +12216,7 @@ var renameNode = function renameNode(node) {
 
     var name = prompt("New name", node.name);
 
-    __WEBPACK_IMPORTED_MODULE_3__api_categories__["c" /* renameCategory */](node.id, name).then(function (response) {
+    __WEBPACK_IMPORTED_MODULE_3__api_category__["c" /* renameCategory */](node.id, name).then(function (response) {
 
         var data = response.data.data;
         $tree.tree('updateNode', node, data.name);
@@ -12231,11 +12231,11 @@ var moveNode = function moveNode(moveInfo) {
     switch (moveInfo.position) {
         case 'before':
             {
-                return __WEBPACK_IMPORTED_MODULE_3__api_categories__["d" /* moveBefore */](movedNode.id, targetNode.id);
+                return __WEBPACK_IMPORTED_MODULE_3__api_category__["d" /* moveBefore */](movedNode.id, targetNode.id);
             }break;
         case 'after':
             {
-                return __WEBPACK_IMPORTED_MODULE_3__api_categories__["e" /* moveAfter */](movedNode.id, targetNode.id);
+                return __WEBPACK_IMPORTED_MODULE_3__api_category__["e" /* moveAfter */](movedNode.id, targetNode.id);
             }break;
         case 'inside':
             {
@@ -12252,9 +12252,9 @@ var moveToFirstChild = function moveToFirstChild(node, parent) {
     //If the parent has any children, we need to change the index to the id of the first child.
     //Otherwise we keep the parent, and have no index.
     if (parent.children.length) {
-        return __WEBPACK_IMPORTED_MODULE_3__api_categories__["d" /* moveBefore */](node.id, parent.children[0].id);
+        return __WEBPACK_IMPORTED_MODULE_3__api_category__["d" /* moveBefore */](node.id, parent.children[0].id);
     } else {
-        return __WEBPACK_IMPORTED_MODULE_3__api_categories__["f" /* moveInto */](node.id, parent.id);
+        return __WEBPACK_IMPORTED_MODULE_3__api_category__["f" /* moveInto */](node.id, parent.id);
     }
 };
 
@@ -13151,61 +13151,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return addCategory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return removeCategory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return renameCategory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return moveInto; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return moveBefore; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return moveAfter; });
-
-
-var api = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
-    baseURL: '/api'
-});
-
-var addCategory = function addCategory(parent, name) {
-
-    return api.post('/categories', {
-        parent: parent,
-        name: name
-    });
-};
-
-var removeCategory = function removeCategory(id) {
-    return api.delete('/categories/' + id);
-};
-
-var renameCategory = function renameCategory(id, name) {
-    return api.put('/categories/' + id, {
-        name: name
-    });
-};
-
-var moveInto = function moveInto(id, node) {
-    return api.put('/categories/' + id + '/moveInto', {
-        node: node
-    });
-};
-
-var moveBefore = function moveBefore(id, node) {
-    return api.put('/categories/' + id + '/moveBefore', {
-        node: node
-    });
-};
-
-var moveAfter = function moveAfter(id, node) {
-    return api.put('/categories/' + id + '/moveAfter', {
-        node: node
-    });
-};
-
-/***/ }),
+/* 33 */,
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18491,6 +18437,70 @@ module.exports = '1.3.7';
 __webpack_require__(13);
 module.exports = __webpack_require__(14);
 
+
+/***/ }),
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return addCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return removeCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return renameCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return moveInto; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return moveBefore; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return moveAfter; });
+
+
+var api = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
+    baseURL: '/api'
+});
+
+var addCategory = function addCategory(parent, name) {
+
+    return api.post('/category', {
+        parent: parent,
+        name: name
+    });
+};
+
+var removeCategory = function removeCategory(id) {
+    return api.delete('/category/' + id);
+};
+
+var renameCategory = function renameCategory(id, name) {
+    return api.put('/category/' + id, {
+        name: name
+    });
+};
+
+var moveInto = function moveInto(id, node) {
+    return api.put('/category/' + id + '/moveInto', {
+        node: node
+    });
+};
+
+var moveBefore = function moveBefore(id, node) {
+    return api.put('/category/' + id + '/moveBefore', {
+        node: node
+    });
+};
+
+var moveAfter = function moveAfter(id, node) {
+    return api.put('/category/' + id + '/moveAfter', {
+        node: node
+    });
+};
 
 /***/ })
 /******/ ]);

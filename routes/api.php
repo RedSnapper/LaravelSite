@@ -17,11 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::resource('/category','CategoryController',['except'=>['create','edit']]);
 
-Route::resource('/categories','CategoriesController',['except'=>['create','edit']]);
-
-Route::put('/categories/{category}/moveTo','CategoriesController@moveTo');
-
-Route::put('/categories/{category}/moveInto','CategoriesController@moveInto');
-Route::put('/categories/{category}/moveBefore','CategoriesController@moveBefore');
-Route::put('/categories/{category}/moveAfter','CategoriesController@moveAfter');
+Route::put('/category/{category}/moveInto','CategoryController@moveInto');
+Route::put('/category/{category}/moveBefore','CategoryController@moveBefore');
+Route::put('/category/{category}/moveAfter','CategoryController@moveAfter');
