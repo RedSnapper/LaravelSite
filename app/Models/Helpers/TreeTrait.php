@@ -70,7 +70,7 @@ trait TreeTrait {
 		$siblingLeft = $this->find($sibling);
 		$siblingRight = $this->index($siblingLeft->nextchild)->first();
 		$parent = $siblingLeft->parent()->first();
-		if($this->canEdit($parent)) {
+		if($this->canUpdate($parent)) {
 			if(is_null($siblingRight) || ($siblingRight->parent != $siblingLeft->parent)) {
 				return  $this->update(['idx' => null, 'parent'=> $siblingLeft->parent ] );
 			} else {
@@ -83,7 +83,7 @@ trait TreeTrait {
 	public function moveBefore(int $sibling):bool {
 		$sibling = $this->find($sibling);
 		$parent = $sibling->parent()->first();
-		if($this->canEdit($parent)) {
+		if($this->canUpdate($parent)) {
 			return  $this->update(['idx' => $sibling->idx,'parent' => $parent->idx]);
 		}
 		return false;
@@ -91,14 +91,14 @@ trait TreeTrait {
 
 	public function moveInto(int $parentId) {
 		$parent = $this->find($parentId);
-		if($this->canEdit($parent)) {
+		if($this->canUpdate($parent)) {
 			return $this->update(['parent' => $parent->idx]);
 		} else {
 			return false;
 		}
 	}
 
-	protected function canEdit(TreeInterface $node){
+	protected function canUpdate(TreeInterface $node){
 		return true;
 	}
 

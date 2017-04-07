@@ -17,12 +17,12 @@ class Category extends Model implements TreeInterface {
 
 	public static function branch(string $section = "ROOT") {
 		return static::nodeBranch($section, function (Category $category) {
-			return Gate::allows('category', $category);
+			return Gate::allows('view', $category);
 		});
 	}
 
-	protected function canEdit(TreeInterface $category){
-		return Gate::allows('category', $category);
+	protected function canUpdate(Category $category){
+		return Gate::allows('update', $category);
 	}
 
 	public function activities() {
