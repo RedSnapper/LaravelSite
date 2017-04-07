@@ -1,6 +1,7 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-    <h1 data-v.child="title"/>
+    <h1 data-v.child="media.name">Edit Media <span data-replace="media.id"/></h1>
+    <span data-v.include="helpers.media"/>
     <div class="row" data-v.container="form.form">
         <div class="col-md-8">
             <div data-v.replace="form"/>

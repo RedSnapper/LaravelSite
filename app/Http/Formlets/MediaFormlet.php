@@ -3,9 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Models\Media;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;
 use RS\Form\Formlet;
 

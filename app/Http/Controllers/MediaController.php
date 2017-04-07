@@ -61,7 +61,8 @@ class MediaController extends Controller
 		return $form->renderWith([
 		  'route'  => ['media.update', $id],
 		  'method' => 'PUT'
-		])->with('title', "Edit Media: {$form->getModel()->name}");
+		])->with('media', $form->getModel());
+
 	}
 
 	public function update($id,MediaEditFormlet $form) {

@@ -41,7 +41,8 @@ class MediaEditFormlet extends Formlet{
 
 		$rules = [
 		  'media' => ['mimes:jpeg,bmp,png'],
-		  'name' => ['required','max:255',Rule::unique('media')->ignore($key)]
+		  'name' => ['required','max:255',Rule::unique('media')->ignore($key)],
+		  'filename' => ['required','max:255']
 		];
 
 		return $rules;
