@@ -30,8 +30,7 @@ class ImageController extends Controller {
 	 * @return mixed
 	 */
 	public function show(Media $media) {
-		$path = $media->path;
-		return $this->server->getImageResponse($path,[]);
+		return $this->getResponse($media,[]);
 	}
 
 	/**
@@ -39,9 +38,16 @@ class ImageController extends Controller {
 	 * @return mixed
 	 */
 	public function thumbnail(Media $media) {
-		$path = $media->path;
-		dd($this->server->getImageResponse($path,['h'=>100,'w'=>100,'fit'=>'crop']));
-		return $this->server->getImageResponse($path,['h'=>100,'w'=>100,'fit'=>'crop']);
+		return $this->getResponse($media,['h'=>100,'w'=>100,'fit'=>'crop']);
+	}
+
+	protected function getResponse(Media $media,array $params){
+
+		$response =  $this->server->getImageResponse($media->path,$params);
+		
+		$response->headers->set('Content-Disposition',"filename={$media->filename}");
+
+		return $response;
 	}
 
 }
