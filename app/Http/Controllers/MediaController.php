@@ -21,17 +21,26 @@ class MediaController extends Controller
 	}
 
 
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index() {
+		$medias = Media::orderBy('name')->paginate(10);
+		return view("media.index",compact('medias'));
+	}
+
+
 	public function show(Media $medium) {
-
-		$file = Storage::get("{$medium->path}");
-
-		$response = response()->make($file, 200,[
-		  'Content-Type'=>$medium->mime,
-		  'Content-Disposition'=>"filename={$medium->filename}"
-		]);
-
-		return $response;
-
+		//$file = Storage::get("{$medium->path}");
+		//
+		//$response = response()->make($file, 200,[
+		//  'Content-Type'=>$medium->mime,
+		//  'Content-Disposition'=>"filename={$medium->filename}"
+		//]);
+		//
+		//return $response;
 	}
 
 	/**

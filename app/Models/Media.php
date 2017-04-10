@@ -11,13 +11,13 @@ class Media extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name','filename'];
+	protected $fillable = ['name', 'filename'];
 
-	public function saveMedia(array $fields,UploadedFile $file=null):Media{
+	public function saveMedia(array $fields, UploadedFile $file = null): Media {
 
 		$this->fill($fields);
 
-		if($file){
+		if ($file) {
 			$path = $file->store('/media');
 			$this->path = $path;
 			$this->mime = $file->getMimeType();
@@ -28,4 +28,24 @@ class Media extends Model {
 
 		return $this;
 	}
+
+	public function getThumbnailPath() {
+		return route("img.thumbnail", $this->getMediaParameters());
+	}
+
+	public function getPath() {
+		return route("img.show", $this->getMediaParameters());
+	}
+
+	/**
+	 * Get parameters for media
+	 * @return array
+	 */
+	protected function getMediaParameters(): array {
+		return [
+		  'id' => $this->id,
+		  'ts' => $this->updated_at->timestamp
+		];
+	}
+
 }

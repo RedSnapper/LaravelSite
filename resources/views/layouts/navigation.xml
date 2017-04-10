@@ -36,6 +36,9 @@
                     <li>
                         <a data-v.url="/segment">Segments</a>
                     </li>
+                    <li>
+                        <a data-v.url="/media">Media</a>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

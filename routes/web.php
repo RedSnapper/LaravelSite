@@ -38,6 +38,9 @@ Route::put('/segment/{segment}','SegmentController@update')->name('segment.updat
 //Media
 Route::resource('/media','MediaController');
 
+Route::get('/img/{media}','ImageController@show')->name('img.show');
+Route::get('/img/{media}/thumbnail','ImageController@thumbnail')->name('img.thumbnail');
+
 Auth::routes();
 
 

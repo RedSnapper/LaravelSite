@@ -1,0 +1,25 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+    <div class="row">
+        <h1>Media</h1>
+
+        <ul data-v.foreach="medias" data-v.name="media" class="list-group">
+            <li class="list-group-item">
+                <a data-v.url="/media/{media.id}/edit">
+                    <span data-v.include="helpers.thumbnail"/>
+                    <span data-v.replace="media.name"/>
+                </a>
+            </li>
+        </ul>
+
+        <div data-v.pagination="layouts.pagination" data-v.name="layouts"/>
+
+        <div class="well text-right">
+            <a data-v.url="/media/create" class="btn btn-primary">New Media</a>
+        </div>
+
+    </div>
+
+
+
+</div>
