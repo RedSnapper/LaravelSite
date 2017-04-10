@@ -167,6 +167,7 @@ return [
 		\RS\NView\NViewServiceProvider::class,
 		\RS\Form\FormServiceProvider::class,
 		\App\Providers\FractalServiceProvider::class,
+		Laravel\Scout\ScoutServiceProvider::class,
 
 		/*
          * Package Service Providers...

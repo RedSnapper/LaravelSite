@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Laravel\Scout\Searchable;
 
 class Media extends Model {
+
+	use Searchable;
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -39,12 +43,20 @@ class Media extends Model {
 
 	/**
 	 * Get parameters for media
+	 *
 	 * @return array
 	 */
 	protected function getMediaParameters(): array {
 		return [
 		  'id' => $this->id,
 		  'ts' => $this->updated_at->timestamp
+		];
+	}
+
+	public function toSearchableArray() {
+		return [
+		  'name'     => $this->name,
+		  'filename' => $this->filename
 		];
 	}
 

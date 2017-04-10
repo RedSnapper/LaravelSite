@@ -86,4 +86,8 @@ class MediaController extends Controller
 		return redirect()->route('media.edit', $media->id);
 	}
 
+	public function search($query){
+		return Media::search($query)->get();
+	}
+
 }
