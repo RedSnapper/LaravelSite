@@ -53,11 +53,11 @@ class Media extends Model {
 		];
 	}
 
-	public function toSearchableArray() {
-		return [
-		  'name'     => $this->name,
-		  'filename' => $this->filename
-		];
-	}
+	//public function toSearchableArray() {
+	//	return [
+	//	  'name'     => $this->name,
+	//	  'filename' => $this->filename
+	//	];
+	//}
 
 }

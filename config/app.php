@@ -168,6 +168,7 @@ return [
 		\RS\Form\FormServiceProvider::class,
 		\App\Providers\FractalServiceProvider::class,
 		Laravel\Scout\ScoutServiceProvider::class,
+		ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
 
 		/*
          * Package Service Providers...
