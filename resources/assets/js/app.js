@@ -113,7 +113,16 @@ $tree.bind(
 
 //TODO: use querystring merge rather than replace
 $tree.bind('tree.click', e => {
-    window.location.search = `?category=${e.node.id}`;
+
+    const path = window.location.pathname;
+    let parts = path.split('/');
+    if(parts.length > 2){
+        parts[parts.length-1] = e.node.id;
+    }else{
+        parts = parts.concat(e.node.id);
+    }
+
+    window.location.pathname = parts.join('/');
 });
 
 $tree.bind('tree.init',init);

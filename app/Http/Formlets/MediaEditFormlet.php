@@ -2,10 +2,12 @@
 
 namespace App\Http\Formlets;
 
+use App\Models\Category;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;
+use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
 class MediaEditFormlet extends Formlet{
@@ -25,6 +27,13 @@ class MediaEditFormlet extends Formlet{
 	   $field = new Input('text', 'name');
 	   $this->add($field->setLabel("Name")->setRequired(true));
 
+	   $field = new Select('category_id',Category::options('MEDIA'));
+	   $this->add(
+		 $field->setLabel("Category")
+		   	->setPlaceholder("Please select a category")
+	   		->setDefault($this->getData('category'))
+	   );
+
 	   $field = new Input('file', 'media');
 	   $this->add($field->setLabel("Media"));
 
@@ -42,7 +51,8 @@ class MediaEditFormlet extends Formlet{
 		$rules = [
 		  'media' => ['mimes:jpeg,bmp,png'],
 		  'name' => ['required','max:255',Rule::unique('media')->ignore($key)],
-		  'filename' => ['required','max:255']
+		  'filename' => ['required','max:255'],
+		  'category_id' => 'required|exists:categories,id'
 		];
 
 		return $rules;

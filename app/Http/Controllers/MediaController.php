@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Formlets\MediaEditFormlet;
 use App\Http\Formlets\MediaFormlet;
+use App\Models\Category;
 use App\Models\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
@@ -26,9 +26,15 @@ class MediaController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		$medias = Media::orderBy('name')->paginate(10);
-		return view("media.index",compact('medias'));
+	public function index(Category $category) {
+
+		$medias = Media::orderBy('name');
+		if ($category->exists) {
+			$medias->where('category_id', $category->id);
+		}
+		$medias =  $medias->paginate(10);
+
+		return view("media.index",compact('medias','category'));
 	}
 
 

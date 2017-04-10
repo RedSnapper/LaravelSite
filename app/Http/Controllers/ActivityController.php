@@ -25,17 +25,15 @@ class ActivityController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request) {
+	public function index(Category $category) {
 		$this->authorize('ACTIVITY_INDEX');
-		$category = $request->get('category');
-		$data = [];
-
-		if($category){
-			$category = Category::findOrFail($category);
-			$activities = $category->activities()->orderBy('name')->paginate(10);
-			$data = compact('activities','category');
+		$activities = Activity::orderBy('name');
+		if ($category->exists) {
+			$activities->where('category_id', $category->id);
 		}
-		return view("activity.index",$data);
+		$activities =  $activities->paginate(10);
+
+		return view("activity.index",compact('activities','category'));
 	}
 
 
@@ -44,7 +42,7 @@ class ActivityController extends Controller {
 	 *
 	 * @return View
 	 */
-	public function create(Activity $activity) {
+	public function create() {
 		return $this->form->renderWith(['route' => 'activity.store'])
 			->with('title','New Activity');
 	}

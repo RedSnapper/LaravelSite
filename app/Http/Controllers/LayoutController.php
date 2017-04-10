@@ -24,16 +24,14 @@ class LayoutController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request) {
-		$category = $request->get('category');
-		$data = [];
-
-		if ($category) {
-			$category = Category::findOrFail($category);
-			$layouts = $category->layouts()->orderBy('name')->paginate(10);
-			$data = compact('layouts', 'category');
+	public function index(Category $category) {
+		$layouts = Layout::orderBy('name');
+		if ($category->exists) {
+			$layouts->where('category_id', $category->id);
 		}
-		return view("layout.index", $data);
+		$layouts =  $layouts->paginate(10);
+
+		return view("layout.index",compact('layouts','category'));
 	}
 
 	/**
@@ -41,7 +39,7 @@ class LayoutController extends Controller {
 	 */
 	public function create(Request $request) {
 
-		$category = $request->get('category', '');
+		$category = $request->get('category');
 		$form = $this->form->create(['route' => 'layout.store']);
 		$form->with('category', $category);
 		return $form->render()->with('title', 'New Layout');

@@ -15,13 +15,18 @@ class CreateMediaTable extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->increments('id');
+			$table->integer('category_id')->unsigned();
 			$table->string('name')->unique();
 			$table->string('path');
 			$table->string('mime');
 			$table->string('filename');
 			$table->integer('size');
             $table->timestamps();
+
+			$table->foreign('category_id')->references('id')->on('categories')
+			  ->onDelete('cascade');
         });
+
     }
 
     /**
@@ -31,6 +36,12 @@ class CreateMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+
+    	Schema::table('media', function (Blueprint $table) {
+			$table->dropForeign('media_category_id_foreign');
+		});
+
+    	Schema::dropIfExists('media');
+
     }
 }

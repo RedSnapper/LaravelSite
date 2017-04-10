@@ -32,7 +32,7 @@ class ActivityFormlet extends Formlet {
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")
-				->setDefault($this->getData('category'))
+				->setDefault($this->request->get('category'))
 		);
 
 		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles());

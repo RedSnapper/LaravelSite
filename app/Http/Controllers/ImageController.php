@@ -40,6 +40,7 @@ class ImageController extends Controller {
 	 */
 	public function thumbnail(Media $media) {
 		$path = $media->path;
+		dd($this->server->getImageResponse($path,['h'=>100,'w'=>100,'fit'=>'crop']));
 		return $this->server->getImageResponse($path,['h'=>100,'w'=>100,'fit'=>'crop']);
 	}
 

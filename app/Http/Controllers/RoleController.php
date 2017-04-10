@@ -24,16 +24,14 @@ class RoleController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request) {
-		$category = $request->get('category');
-		$data = [];
-
-		if ($category) {
-			$category = Category::findOrFail($category);
-			$roles = $category->roles()->orderBy('name')->paginate(10);
-			$data = compact('roles', 'category');
+	public function index(Category $category) {
+		$roles = Role::orderBy('name');
+		if ($category->exists) {
+			$roles->where('category_id', $category->id);
 		}
-		return view("role.index", $data);
+		$roles =  $roles->paginate(10);
+
+		return view("role.index",compact('roles','category'));
 	}
 
 	/**
