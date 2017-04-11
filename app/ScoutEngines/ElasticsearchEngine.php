@@ -121,13 +121,13 @@ class ElasticsearchEngine extends Engine {
 		  'body'  => [
 			'query' => [
 			  'bool' => [
-				'must' => [
+				'must' => [[
 				  "multi_match" => [
 					"query"     => $builder->query,
 					'fields'    => '_all',
 					'fuzziness' => 'auto'
 				  ]
-				]
+				]]
 			  ]
 			]
 		  ]
@@ -146,8 +146,7 @@ class ElasticsearchEngine extends Engine {
 		}
 
 		if (isset($options['numericFilters']) && count($options['numericFilters'])) {
-			$params['body']['query']['bool']['must'] = array_merge($params['body']['query']['bool']['must'],
-			  $options['numericFilters']);
+			$params['body']['query']['bool']['filter'] = $options['numericFilters'];
 		}
 
 		return $this->elastic->search($params);
@@ -161,7 +160,7 @@ class ElasticsearchEngine extends Engine {
 	 */
 	protected function filters(Builder $builder) {
 		return collect($builder->wheres)->map(function ($value, $key) {
-			return ['match_phrase' => [$key => $value]];
+			return ['term' => [$key => $value]];
 		})->values()->all();
 	}
 

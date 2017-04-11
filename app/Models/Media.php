@@ -41,6 +41,10 @@ class Media extends Model {
 		return route("img.show", $this->getMediaParameters());
 	}
 
+	public function category(){
+		return $this->belongsTo(Category::class);
+	}
+
 	/**
 	 * Get parameters for media
 	 *
@@ -53,11 +57,14 @@ class Media extends Model {
 		];
 	}
 
-	//public function toSearchableArray() {
-	//	return [
-	//	  'name'     => $this->name,
-	//	  'filename' => $this->filename
-	//	];
-	//}
+	public function toSearchableArray() {
+		return [
+		  'name'     => $this->name,
+		  'filename' => $this->filename,
+		  'category' => $this->category->name,
+		  'created_at'=> $this->created_at->toDateTimeString(),
+		  'updated_at'=> $this->updated_at->toDateTimeString()
+		];
+	}
 
 }
