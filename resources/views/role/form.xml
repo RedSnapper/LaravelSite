@@ -16,8 +16,8 @@
                     <tr data-v.replace="activity"/>
                 </tbody>
             </table>
-
-            <table class="table">
+            <h4>Cascading Access</h4>
+            <table class="table table-condensed table-hover">
                 <thead>
                     <tr>
                         <th>Category</th>
@@ -28,8 +28,6 @@
                     <tr data-v.replace="category"/>
                 </tbody>
             </table>
-
-
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>

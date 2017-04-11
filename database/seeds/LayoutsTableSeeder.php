@@ -14,7 +14,7 @@ class LayoutsTableSeeder extends Seeder {
 		$faker = Faker\Factory::create();
 
 		factory(Layout::class,5)->create()->each(function ($u) use ($faker) {
-			$u->segments()->attach(Segment::inRandomOrder()->limit(5)->pluck('id'));
+			$u->segments()->attach(Segment::inRandomOrder()->limit(3)->pluck('id'));
 		});
 	}
 }

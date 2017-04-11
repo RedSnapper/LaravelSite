@@ -21,12 +21,10 @@ Route::resource('/user','UserController');
 Route::resource('/activity','ActivityController', ['except' => 'update']);
 Route::put('/activity/{activity}','ActivityController@update')->name('activity.update');
 
-//Route::resource('/layout','LayoutController');
 //Layouts
 Route::resource('/layout','LayoutController', ['except' => 'update']);
 Route::put('/layout/{layout}','LayoutController@update')->name('layout.update');
 
-//Route::resource('/role','RoleController');
 //Roles;
 Route::resource('/role','RoleController', ['except' => 'update']);
 Route::put('/role/{role}','RoleController@update')->name('role.update');
@@ -34,6 +32,10 @@ Route::put('/role/{role}','RoleController@update')->name('role.update');
 //Segments
 Route::resource('/segment','SegmentController', ['except' => 'update']);
 Route::put('/segment/{segment}','SegmentController@update')->name('segment.update');
+
+//Media
+//Route::resource('/media','MediaController', ['except' => 'update']);
+//Route::put('/segment/{segment}','MediaController@update')->name('media.update');
 
 Auth::routes();
 
