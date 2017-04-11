@@ -35,8 +35,9 @@ Route::get('segment/{category}', 'SegmentController@index')->name('segment.index
 
 //Media
 Route::resource('/media','MediaController',['except'=>'show']);
+Route::get('/media/search','MediaController@search');
 Route::get('media/{category}', 'MediaController@index')->name('media.index');
-Route::get('/media/search/{query}','MediaController@search');
+
 
 Route::get('/img/{media}','ImageController@show')->name('img.show');
 Route::get('/img/{media}/thumbnail','ImageController@thumbnail')->name('img.thumbnail');
