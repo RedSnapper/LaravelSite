@@ -10,7 +10,7 @@ $panel-default-border: $laravel-border-color;
 $panel-inner-border: $laravel-border-color;
 
 // Brands
-$brand-primary: #3097D1;
+$brand-primary: #3097C1;
 $brand-info: #8eb4cb;
 $brand-success: #2ab27b;
 $brand-warning: #cbb956;
@@ -33,6 +33,16 @@ $btn-default-color: $text-color;
 $input-border: lighten($text-color, 40%);
 $input-border-focus: lighten($brand-primary, 25%);
 $input-color-placeholder: lighten($text-color, 30%);
+
+//Ben put this here because it was too spaced out.
+td > div.form-group > div { margin: 0; }
+td > div.form-group { margin: 0;}
+
+//Ben doesn't really understand anything. of course.
+$indent: 3em;
+@for $i from 1 through 20 {
+  .tier-#{$i} { padding-left: $indent * $i !important;}
+}
 
 // Panels
 $panel-default-heading-bg: #fff;

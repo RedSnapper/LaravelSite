@@ -16,7 +16,7 @@ class ActivitiesTableSeeder extends Seeder {
 		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $devCategory]);
 		factory(Activity::class,1)->create(['name'=>'ACTIVITY_NAV','label'=>'Activities navigation','category_id'=> $devCategory]);
 		factory(Activity::class,1)->create(['name'=>'ACTIVITY_INDEX','label'=>'Activities index access','category_id'=> $devCategory]);
-		factory(Activity::class,3)->create();
+//		factory(Activity::class,3)->create();
 	}
 
 }

@@ -41,6 +41,10 @@ Route::get('/media/search/{query}','MediaController@search');
 Route::get('/img/{media}','ImageController@show')->name('img.show');
 Route::get('/img/{media}/thumbnail','ImageController@thumbnail')->name('img.thumbnail');
 
+//Media
+//Route::resource('/media','MediaController', ['except' => 'update']);
+//Route::put('/segment/{segment}','MediaController@update')->name('media.update');
+
 Auth::routes();
 
 
