@@ -23,8 +23,7 @@
         "league/fractal": "^0.15.0",
         "league/glide-laravel": "^1.0",
         "rs/form-laravel": "dev-master",
-        "rs/nview-laravel": "dev-master",
-        "tamayo/laravel-scout-elastic": "^3.0"
+        "rs/nview-laravel": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
