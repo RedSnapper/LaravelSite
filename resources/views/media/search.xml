@@ -9,7 +9,7 @@
             <form class="form-inline">
                 <div class="form-group">
                     <label class="sr-only" for="query">Search</label>
-                    <input type="search" name="query" class="form-control" id="query" data-v.attribute="value,{query}" />
+                    <input type="search" name="query" class="form-control" id="query" data-v.attr.value="{query}" />
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>

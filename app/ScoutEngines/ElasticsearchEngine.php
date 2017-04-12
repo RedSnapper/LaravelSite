@@ -160,7 +160,8 @@ class ElasticsearchEngine extends Engine {
 	 */
 	protected function filters(Builder $builder) {
 		return collect($builder->wheres)->map(function ($value, $key) {
-			return ['term' => [$key => $value]];
+			$term = is_array($value) ? "terms" : "term";
+			return [$term => [$key => $value]];
 		})->values()->all();
 	}
 

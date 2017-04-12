@@ -93,7 +93,7 @@ class MediaController extends Controller
 		$medias = [];
 
 		if($query){
-			$medias =  Media::search($query)->paginate(10);
+			$medias =  Media::search($query)->where('category_id',[27,28])->paginate(10);
 		}
 
 		return view("media.search",compact('medias','query'));
