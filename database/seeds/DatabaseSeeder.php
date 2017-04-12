@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder {
 	  'activities',
 	  'activity_role',
 	  'category_role',
-	  'role_team_user'
+	  'role_user'
 	];
 
 	/**

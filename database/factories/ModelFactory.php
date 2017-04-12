@@ -16,6 +16,7 @@ use App\Models\Address;
 use App\Models\Role;
 use App\Models\Segment;
 use App\Models\Layout;
+use App\Models\Team;
 use App\Models\Category;
 use App\Models\Activity;
 

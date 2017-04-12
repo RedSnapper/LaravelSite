@@ -50,25 +50,31 @@ class User extends Authenticatable {
 		return $this->roles();
 	}
 
-	public function roles(int $team = 0) {
-		return $this->belongsToMany(Role::class,'role_team_user','role_id','user_id')->withPivot('team_id',$team);
+	public function roles() {
+		return $this->belongsToMany(Role::class);
 	}
 
-	public function teams(int $role = null) {
-		return $this->belongsToMany(Team::class,'role_team_user','team_id','user_id')->withPivot('role_id',$role);
+	//public function teamRoles() {
+	//	return $this->belongsToMany(TeamRole::class,'role_team_user','user_id','role_id')->withPivot('team_id');
+	//}
+
+	//->withPivot('team_id')
+
+	//public function teams() {
+	//	return $this->belongsToMany(Team::class,'role_team_user','user_id','team_id')->withPivot('role_id');
+	//}
+
+	public function hasRole($role,$team = null) {
+		if (is_string($role)) {
+			return $this->roles->contains('name', $role);
+		}
+		return !!$role->intersect($this->roles)->count();
 	}
 
-	//public function hasRole($role,$team = null) {
-	//	if (is_string($role)) {
-	//		return $this->roles->contains('name', $role);
-	//	}
-	//	return !!$role->intersect($this->roles)->count();
-	//}
-
-	//public function assignRole($role) {
-	//	return $this->roles()->save(
-	//		Role::whereName($role)->firstOrFail()
-	//	);
-	//}
+	public function assignRole($role) {
+		return $this->roles()->save(
+			Role::whereName($role)->firstOrFail()
+		);
+	}
 
 }

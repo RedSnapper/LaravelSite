@@ -14,12 +14,12 @@ class Team extends Model {
 		return $this->belongsTo(Category::class);
 	}
 
-	public function users(int $role = null) {
-		return $this->belongsToMany(User::class,'role_team_user','user_id','team_id')->withPivot('role_id',$role);
+	public function users() {
+		return $this->belongsToMany(User::class,'role_team_user','team_id','user_id')->withPivot('role_id');
 	}
 
-	public function roles(int $user = null) {
-		return $this->belongsToMany(Role::class,'role_team_user','role_id','team_id')->withPivot('user_id',$user);
+	public function roles() {
+		return $this->belongsToMany(Role::class,'role_team_user','team_id','role_id')->withPivot('user_id');
 	}
 
 

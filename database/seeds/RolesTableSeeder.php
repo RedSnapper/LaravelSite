@@ -5,7 +5,6 @@ use App\Models\Role;
 use App\Models\Category;
 use App\Models\Activity;
 use App\Models\User;
-use App\Models\Team;
 
 class RolesTableSeeder extends Seeder {
 	/**
@@ -15,6 +14,7 @@ class RolesTableSeeder extends Seeder {
 	 */
 	//TODO:: add fix for superuser to have root access to categories.
 	public function run() {
+
 		$devCategory = Category::reference('Roles')->first()->id;
 		$this->withJoins(1,7,['name'=>'SuperUser','category_id'=> $devCategory]);
 		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $devCategory]);
@@ -27,10 +27,8 @@ class RolesTableSeeder extends Seeder {
 	private function withJoins($count,$activities = 5,$values = []) {
 		factory(Role::class,$count)->create($values)->each(function ($role) use($activities) {
 			$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
-			$team = Team::inRandomOrder()->limit($activities)->pluck('id');
-
-			$role->users($team)->attach([1,2]); //Ben n Param
-			$role->users($team)->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(1)->pluck('id'));
+				$role->users()->attach([1,2]); //Ben n Param
+				$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(1)->pluck('id'));
 		});
 
 	}

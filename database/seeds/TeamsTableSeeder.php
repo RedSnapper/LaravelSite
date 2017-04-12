@@ -16,6 +16,7 @@ class TeamsTableSeeder extends Seeder {
 		$devCategory = Category::reference('Teams')->first()->id;
 		factory(Team::class,1,['name'=>'Pre-Production','category_id'=> $devCategory])->create();
 		factory(Team::class,1,['name'=>'Post-Production','category_id'=> $devCategory])->create();
+		factory(Team::class,5)->create();
 	}
 
 }
