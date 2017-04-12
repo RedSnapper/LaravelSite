@@ -15,6 +15,9 @@ class CreateSegmentsTable extends Migration {
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->string('syntax')->nullable();
+			$table->integer('category_id')->unsigned()->nullable();
+			$table->foreign('category_id')->references('id')->on('categories')
+				->onDelete('set null');
 			$table->text('docs');
 			$table->timestamps();
 		});
@@ -26,6 +29,13 @@ class CreateSegmentsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
+		Schema::table('segments', function (Blueprint $table) {
+			$table->dropForeign('segments_category_id_foreign');
+			$table->dropColumn(['category_id']);
+		});
 		Schema::dropIfExists('segments');
 	}
 }
+
+
+

@@ -1,19 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateLayoutsTable extends Migration {
+class CreateActivitiesTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('layouts', function (Blueprint $table) {
+		Schema::create('activities', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name')->unique();
+			$table->string('label')->nullable();
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('set null');
@@ -28,14 +29,12 @@ class CreateLayoutsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::table('layouts', function (Blueprint $table) {
-			$table->dropForeign('layouts_category_id_foreign');
+
+		Schema::table('activities', function (Blueprint $table) {
+			$table->dropForeign('activities_category_id_foreign');
 			$table->dropColumn(['category_id']);
 		});
-		Schema::dropIfExists('layouts');
+
+		Schema::dropIfExists('activities');
 	}
 }
-
-
-
-

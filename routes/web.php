@@ -17,6 +17,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/user','UserController');
 
+//Teams
+Route::resource('/team','TeamController', ['except' => 'show']);
+Route::get('team/{category}', 'TeamController@index')->name('team.index');
+
 //Activities
 Route::resource('/activity','ActivityController', ['except' => 'show']);
 Route::get('activity/{category?}', 'ActivityController@index')->name('activity.index');

@@ -49,6 +49,16 @@ $factory->define(Role::class, function (Faker\Generator $faker) {
 	];
 });
 
+
+$factory->define(Team::class, function (Faker\Generator $faker) {
+	$category_id = Category::section('TEAMS')->first()->descendants(false,false)->inRandomOrder()->first()->id;
+	return [
+		'name' => $faker->unique()->userName,
+		'category_id' => $category_id
+	];
+});
+
+
 $factory->define(Activity::class, function (Faker\Generator $faker) {
 	$name = $faker->unique()->firstNameFemale;
   $category_id = Category::section('ACTIVITIES')->first()->descendants(false,false)->inRandomOrder()->first()->id;

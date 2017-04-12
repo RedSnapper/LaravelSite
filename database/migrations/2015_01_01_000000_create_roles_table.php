@@ -14,6 +14,11 @@ class CreateRolesTable extends Migration {
 		Schema::create('roles', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
+
+			$table->integer('category_id')->unsigned()->nullable();
+			$table->foreign('category_id')->references('id')->on('categories')
+				->onDelete('set null');
+
 			$table->timestamps();
 		});
 	}
@@ -24,6 +29,10 @@ class CreateRolesTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
+		Schema::table('roles', function (Blueprint $table) {
+			$table->dropForeign('roles_category_id_foreign');
+			$table->dropColumn(['category_id']);
+		});
 		Schema::dropIfExists('roles');
 	}
 }

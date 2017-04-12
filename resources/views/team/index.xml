@@ -1,0 +1,30 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Teams</h1>
+            <div id="tree" data-v.xp="tree" data-url="/api/category?section=TEAMS"/>
+            <div data-v.include="layouts.treemenu"/>
+        </div>
+
+        <div class="col-md-6">
+            <h2 data-v.child="category.name"/>
+            <ul data-v.foreach="teams" data-v.name="team" class="list-group">
+                <li class="list-group-item">
+                    <a data-v.url="/team/{team.id}/edit">
+                        <span data-v.replace="team.name"/>
+                    </a>
+                </li>
+            </ul>
+
+            <div data-v.pagination="layouts.pagination" data-v.name="teams"/>
+
+        </div>
+    </div>
+
+    <div class="well text-right">
+        <a data-v.url="/team/create/?category={category.id}" class="btn btn-primary">New Team</a>
+    </div>
+
+</div>

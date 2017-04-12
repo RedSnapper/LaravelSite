@@ -14,16 +14,21 @@ class Role extends Model
 		return $this->belongsTo(Category::class);
 	}
 
-	public function mm() {
-		return $this->belongsToMany(User::class);
+	public function mm(int $team=null) {
+		return $this->users($team);
 	}
 
-	public function users() {
-		return $this->belongsToMany(User::class);
-	}
 
 	public function activities() {
 		return $this->belongsToMany(Activity::class);
+	}
+
+	public function users(int $team=0) {
+		return $this->belongsToMany(User::class,'role_team_user','user_id','role_id')->withPivot('team_id',$team);
+	}
+
+	public function teams(int $user=null) {
+		return $this->belongsToMany(Team::class,'role_team_user','team_id','role_id')->withPivot('user_id',$user);
 	}
 
 	public function categories() {
