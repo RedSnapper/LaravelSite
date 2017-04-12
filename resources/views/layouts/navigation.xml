@@ -15,40 +15,41 @@
                 </button>
 
                 <!-- Branding Image -->
-                <a data-v.xp="app" class="navbar-brand" data-v.url="/"/>
+                <a data-v.xp="app" class="navbar-brand" data-v.route="home"/>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav" data-v.auth="true">
+
                     <li>
-                        <a data-v.url="/user">Users</a>
+                        <a data-v.route="media.index">Media</a>
                     </li>
-                    <li>
-                        <a data-v.url="/role">Roles</a>
-                    </li>
-                    <li>
-                        <a data-v.url="/activity">Activities</a>
-                    </li>
-                    <li>
-                        <a data-v.url="/layout">Layouts</a>
-                    </li>
-                    <li>
-                        <a data-v.url="/segment">Segments</a>
-                    </li>
-                    <li>
-                        <a data-v.url="/media">Media</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users <span class="caret"/></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a data-v.route="user.index">Users</a>
+                            </li>
+                            <li>
+                                <a data-v.route="role.index">Roles</a>
+                            </li>
+                            <li>
+                                <a data-v.route="activity.index">Activities</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
+
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
 
                     <li data-v.auth="false">
-                        <a data-v.url="/login">Login</a>
+                        <a data-v.route="login">Login</a>
                     </li>
                     <li data-v.auth="false">
-                        <a data-v.url="/register">Register</a>
+                        <a data-v.route="register">Register</a>
                     </li>
 
                     <li class="dropdown" data-v.auth="true">
@@ -65,6 +66,13 @@
                     </li>
 
                 </ul>
+
+                <form class="navbar-form navbar-right" action="/media/search" data-v.auth="true">
+                    <div class="form-group">
+                        <input placeholder="Search" type="search" name="query" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
             </div>
         </div>
     </nav>

@@ -13,30 +13,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'HomeController@index');
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/user','UserController');
 
 //Activities
 Route::resource('/activity','ActivityController', ['except' => 'show']);
-Route::get('activity/{category}', 'ActivityController@index')->name('activity.index');
+Route::get('activity/{category?}', 'ActivityController@index')->name('activity.index');
 
 //Layouts
 Route::resource('/layout','LayoutController', ['except' => 'show']);
-Route::get('layout/{category}', 'LayoutController@index')->name('layout.index');
+Route::get('layout/{category?}', 'LayoutController@index')->name('layout.index');
 
 //Roles;
 Route::resource('/role','RoleController', ['except' => 'show']);
-Route::get('role/{category}', 'RoleController@index')->name('role.index');
+Route::get('role/{category?}', 'RoleController@index')->name('role.index');
 
 //Segments
 Route::resource('/segment','SegmentController', ['except' => 'show']);
-Route::get('segment/{category}', 'SegmentController@index')->name('segment.index');
+Route::get('segment/{category?}', 'SegmentController@index')->name('segment.index');
 
 //Media
 Route::resource('/media','MediaController',['except'=>'show']);
 Route::get('/media/search','MediaController@search');
-Route::get('media/{category}', 'MediaController@index')->name('media.index');
+Route::get('media/{category?}', 'MediaController@index')->name('media.index');
 
 
 Route::get('/img/{media}','ImageController@show')->name('img.show');
