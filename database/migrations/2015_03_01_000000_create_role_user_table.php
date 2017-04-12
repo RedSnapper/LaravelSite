@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRoleTeamUserTable extends Migration {
+class CreateRoleUserTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
@@ -13,8 +13,8 @@ class CreateRoleTeamUserTable extends Migration {
 	public function up() {
 		Schema::create('role_team_user', function (Blueprint $table) {
 			$table->integer('role_id')->unsigned()->index();
-			$table->integer('team_id')->unsigned()->index()->default(0);
 			$table->integer('user_id')->unsigned()->index();
+			$table->integer('team_id')->unsigned()->nullable();
 
 			$table->foreign('user_id')
 			  ->references('id')
@@ -31,12 +31,12 @@ class CreateRoleTeamUserTable extends Migration {
 			  ->on('roles')
 			  ->onDelete('cascade');
 
-			$table->primary(['role_id','team_id','user_id']);
+//			$table->primary(['role_id','user_id']);
+			$table->unique(['role_id','team_id','user_id']);
 
 		});
 
 	}
-
 
 
 	/**
