@@ -26,7 +26,7 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('LAYOUTS',4);
 		$this->addGroup('ACTIVITIES',2);
 		$this->addGroup('MEDIA',4);
-		$this->addGroup('TEAMS',4);
+		$this->addGroup('TEAMS',9);
 	}
 
 	private function addGroup($name,$size = 3) {

@@ -4,6 +4,8 @@
  * for JavaScript based Bootstrap features such as modals and tabs. This
  * code may be modified to fit the specific needs of your application.
  */
+require('bootstrap-sass');
+require('chosen-js');
 
 window.$ = window.jQuery = require('jquery');
 
@@ -13,4 +15,4 @@ $.ajaxSetup({
     }
 });
 
-require('bootstrap-sass');
+$("select[multiple]").chosen();

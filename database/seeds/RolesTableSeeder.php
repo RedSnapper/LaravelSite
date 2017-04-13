@@ -18,7 +18,7 @@ class RolesTableSeeder extends Seeder {
 		$devCategory = Category::reference('Roles')->first()->id;
 		$this->withJoins(1,7,['name'=>'SuperUser','category_id'=> $devCategory]);
 		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $devCategory]);
-		$this->withJoins(3,6);
+		$this->withJoins(3,9);
 
 		$this->giveAccessToAllCategories();
 
@@ -28,7 +28,7 @@ class RolesTableSeeder extends Seeder {
 		factory(Role::class,$count)->create($values)->each(function ($role) use($activities) {
 			$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
 				$role->users()->attach([1,2]); //Ben n Param
-				$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(1)->pluck('id'));
+				$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id'));
 		});
 
 	}

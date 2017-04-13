@@ -38,14 +38,14 @@ class DatabaseSeeder extends Seeder {
 
 		$this->call(CategoriesTableSeeder::class);
 
+		$this->call(ActivitiesTableSeeder::class);
 		$this->call(UsersTableSeeder::class);
+		$this->call(RolesTableSeeder::class);
+		$this->call(TeamsTableSeeder::class);
 
 		$this->call(SegmentsTableSeeder::class);
 		$this->call(LayoutsTableSeeder::class);
 
-		$this->call(TeamsTableSeeder::class);
-		$this->call(ActivitiesTableSeeder::class);
 
-		$this->call(RolesTableSeeder::class);
 	}
 }

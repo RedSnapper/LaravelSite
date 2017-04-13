@@ -4,30 +4,11 @@
     <div class="row" data-v.container="form.form">
         <div class="col-md-8">
             <div data-v.replace="form.base"/>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Activity</th>
-                        <th>Used</th>
-                    </tr>
-                </thead>
-                <tbody data-v.foreach="form.activities" data-v.name="activity">
-                    <tr data-v.replace="activity"/>
-                </tbody>
-            </table>
-            <h4>Cascading Access</h4>
-            <table class="table table-condensed table-hover">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Used</th>
-                    </tr>
-                </thead>
-                <tbody data-v.foreach="form.categories" data-v.name="category">
-                    <tr data-v.replace="category"/>
-                </tbody>
-            </table>
+            <div data-v.foreach="form.users" data-v.name="user">
+                <div>
+                     <form data-v.replace="user" />
+                </div>
+             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>

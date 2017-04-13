@@ -3,7 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Team;
-
+use App\Models\Role;
+use App\Models\User;
 
 class TeamsTableSeeder extends Seeder {
 	/**
@@ -14,9 +15,21 @@ class TeamsTableSeeder extends Seeder {
 
 	public function run() {
 		$devCategory = Category::reference('Teams')->first()->id;
-		factory(Team::class,1,['name'=>'Pre-Production','category_id'=> $devCategory])->create();
-		factory(Team::class,1,['name'=>'Post-Production','category_id'=> $devCategory])->create();
-		factory(Team::class,5)->create();
+		$this->withJoins(1,3,['name'=>'Pre-Production','category_id'=> $devCategory]);
+		$this->withJoins(1,3,['name'=>'Post-Production','category_id'=> $devCategory]);
+		$this->withJoins(16,1);
 	}
+
+	private function withJoins($count,$roles = 5,$values = []) {
+		factory(Team::class,$count)->create($values)->each(function ($team) use($roles) {
+			$roles = Role::inRandomOrder()->limit($roles)->pluck('id');
+			foreach($roles as $role) {
+				$team->attachRoleUsers($role,[1,2]);
+				$team->attachRoleUsers($role,User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id'));
+			}
+		});
+
+	}
+
 
 }

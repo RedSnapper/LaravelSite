@@ -2,15 +2,15 @@
 
 namespace App\Http\Formlets;
 
+use App\Models\Category;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
-use App\Models\Category;
+use RS\Form\Formlet;
 
 class TeamFormlet extends Formlet {
-
 	public $formView = "team.form";
 
 	public function __construct(Team $team) {
@@ -30,32 +30,38 @@ class TeamFormlet extends Formlet {
 				->setDefault($this->getData('category'))
 		);
 
-//		$this->addSubscribers('activities', TeamActivityFormlet::class, $this->model->activities());
+		$team = $this->getModel()->getKey();
 
-//		$this->addSubscribers('categories', TeamCategoryFormlet::class, $this->model->categories(),Category::ordered()->get());
+		$users = User::with([
+			'teamRoles' => function ($query) use ($team) {
+				$query->wherePivot('team_id', $team);
+			}
+		])->get();
 
+		foreach ($users as $user) {
+			$this->addFormlets("users", TeamUserFormlet::class)
+				->setKey($user->getKey())
+				->setModel($user);
+		}
 	}
 
 	public function rules(): array {
 		return [
-			'name' => 'required|max:255',
+			'name'        => 'required|max:255',
 			'category_id' => 'required'
 		];
 	}
 
 	public function edit(): Model {
-
 		$team = parent::edit();
-
-//		$team->activities()->sync($this->getSubscriberFields('activities'));
-
-//		$team->categories()->sync($this->getSubscriberFields('categories'));
-
+		$userRoles = $this->fields('users.role');
+		foreach($userRoles as $user => $roles) {
+			$team->syncUserRoles($user,$roles);
+		}
 		return $team;
 	}
 
 	public function persist(): Model {
 		return $this->edit();
 	}
-
 }

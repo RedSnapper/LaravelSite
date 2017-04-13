@@ -27,9 +27,14 @@ class Role extends Model
 		return $this->belongsToMany(User::class);
 	}
 
-	//public function teams() {
-	//	return $this->belongsToMany(Team::class,'role_team_user','role_id','team_id')
-	//}
+
+	public function teamUsers(int $team) {
+		return $this->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
+	}
+
+	public function userTeams(int $user) {
+		return $this->belongsToMany(Team::class, 'role_team_user', 'role_id', 'team_id')->wherePivot('user_id','=',$user);
+	}
 
 	public function categories() {
 		return $this->belongsToMany(Category::class);
@@ -42,5 +47,10 @@ class Role extends Model
 	public function givePermissionToCategory(Category $category){
 		return $this->categories()->save($category);
 	}
+
+	public static function options() {
+		return with(new static)->all()->pluck('name','id');
+	}
+
 
 }
