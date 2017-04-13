@@ -60,10 +60,26 @@ return [
 	],
 
 	'elasticsearch' => [
-	  'index' => env('ELASTICSEARCH_INDEX', 'laravel'),
+
+	  'default' => env('ES_CONNECTION', 'local'),
+
+	  'index' => env('ES_INDEX', 'laravel'),
+
 	  'hosts' => [
-		env('ELASTICSEARCH_HOST', 'http://localhost'),
+		env('ES_HOST', 'localhost'),
 	  ],
+
+	  'connections' => [
+
+		'local' => [],
+
+		'aws' => [
+		  'key'    => env('AWS_ES_KEY'),
+		  'secret' => env('AWS_ES_SECRET'),
+		  'region' => env('AWS_ES_REGION'),
+		]
+
+	  ]
 	],
 
 ];

@@ -46,7 +46,7 @@ class MediaFormlet extends Formlet {
 	public function rules():array{
 
 		return [
-		  'media' => 'required|mimes:jpeg,bmp,png',
+		  'media' => 'required|image',
 		  'name' => 'required|max:255|unique:media',
 		  'category_id' => 'required|exists:categories,id'
 		];

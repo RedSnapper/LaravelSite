@@ -21,7 +21,7 @@
             <ul data-v.foreach="medias" data-v.name="media" class="list-group">
                 <li class="list-group-item">
                     <a data-v.url="/media/{media.id}/edit">
-                        <span data-v.include="helpers.thumbnail"/>
+                        <img data-v.attr.src="{media.thumbnail}" />
                         <span data-v.replace="media.name"/>
                     </a>
                 </li>
