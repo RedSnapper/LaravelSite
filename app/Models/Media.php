@@ -15,7 +15,7 @@ class Media extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'filename','category_id'];
+	protected $fillable = ['name', 'filename', 'category_id'];
 
 	public function saveMedia(array $fields, UploadedFile $file = null): Media {
 
@@ -33,15 +33,25 @@ class Media extends Model {
 		return $this;
 	}
 
-	public function getThumbnailPath() {
+	/**
+	 * Get the thumbnail path
+	 *
+	 * @return string
+	 */
+	public function getThumbnailAttribute() {
 		return route("img.thumbnail", $this->getMediaParameters());
 	}
 
-	public function getPath() {
+	/**
+	 * Get the image path
+	 *
+	 * @return string
+	 */
+	public function getImagePathAttribute() {
 		return route("img.show", $this->getMediaParameters());
 	}
 
-	public function category(){
+	public function category() {
 		return $this->belongsTo(Category::class);
 	}
 
@@ -59,11 +69,11 @@ class Media extends Model {
 
 	public function toSearchableArray() {
 		return [
-		  'name'     => $this->name,
-		  'filename' => $this->filename,
-		  'category' => $this->category->name,
-		  'created_at'=> $this->created_at->toDateTimeString(),
-		  'updated_at'=> $this->updated_at->toDateTimeString()
+		  'name'       => $this->name,
+		  'filename'   => $this->filename,
+		  'category'   => $this->category->name,
+		  'created_at' => $this->created_at->toDateTimeString(),
+		  'updated_at' => $this->updated_at->toDateTimeString()
 		];
 	}
 

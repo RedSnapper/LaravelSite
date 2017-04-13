@@ -54,6 +54,10 @@ class MediaController extends Controller
 	 */
 	public function create(Request $request) {
 		$form = $this->form->create(['route' => 'media.store']);
+
+		$category = $request->get('category');
+		$form->with('category', $category);
+
 		return $form->render()->with('title', 'New Media');
 	}
 
