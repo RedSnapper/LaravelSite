@@ -11,8 +11,8 @@ use App\Models\Role;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
-class TeamUserFormlet extends Formlet {
-	public $formletView = "team.user";
+class TeamRolesFormlet extends Formlet {
+	public $formletView = "team.role";
 
 	/**
 	 * Prepare the form with fields
@@ -23,7 +23,7 @@ class TeamUserFormlet extends Formlet {
 		$field = new Select('role[]',Role::options());
 		$this->add(
 			$field->setMultiple(true)
-				->setValue($this->model->teamRoles->pluck('id')->all())
+				->setValue($this->model->userRoles->pluck('id')->all())
 		);
 	}
 

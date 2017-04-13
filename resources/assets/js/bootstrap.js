@@ -5,7 +5,7 @@
  * code may be modified to fit the specific needs of your application.
  */
 require('bootstrap-sass');
-require('chosen-js');
+require('selectize');
 
 window.$ = window.jQuery = require('jquery');
 
@@ -15,4 +15,4 @@ $.ajaxSetup({
     }
 });
 
-$("select[multiple]").chosen();
+$("select").selectize();

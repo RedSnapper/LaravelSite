@@ -9,6 +9,11 @@
     <div data-v.replace="formlets.delivery"/>
     <h4>Roles</h4>
     <div data-v.replace="formlets.roles"/>
-
+    <h4>Teams</h4>
+    <div data-v.foreach="formlets.teams" data-v.name="team">
+        <div>
+            <form data-v.replace="team" />
+        </div>
+    </div>
 </div>
 

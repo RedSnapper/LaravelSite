@@ -26,7 +26,7 @@
                         <a data-v.route="media.index">Media</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users <span class="caret"/></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Access Control <span class="caret"/></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a data-v.route="user.index">Users</a>

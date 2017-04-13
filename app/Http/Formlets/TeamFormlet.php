@@ -30,19 +30,19 @@ class TeamFormlet extends Formlet {
 				->setDefault($this->getData('category'))
 		);
 
+		//Set UserTeamRoles
 		$team = $this->getModel()->getKey();
-
 		$users = User::with([
 			'teamRoles' => function ($query) use ($team) {
 				$query->wherePivot('team_id', $team);
 			}
 		])->get();
-
 		foreach ($users as $user) {
 			$this->addFormlets("users", TeamUserFormlet::class)
 				->setKey($user->getKey())
 				->setModel($user);
 		}
+
 	}
 
 	public function rules(): array {
@@ -54,9 +54,12 @@ class TeamFormlet extends Formlet {
 
 	public function edit(): Model {
 		$team = parent::edit();
-		$userRoles = $this->fields('users.role');
-		foreach($userRoles as $user => $roles) {
-			$team->syncUserRoles($user,$roles);
+		$users = User::get();
+		//we need all users so that we can delete those which are set to empty.
+		foreach($users as $userModel) {
+			$user = $userModel->id;
+			$roles = $this->fields("users.role.$user");
+			$team->syncUserRoles($user, $roles);
 		}
 		return $team;
 	}
