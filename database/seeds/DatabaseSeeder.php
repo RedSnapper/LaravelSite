@@ -7,18 +7,20 @@ use Illuminate\Support\Facades\Schema;
 class DatabaseSeeder extends Seeder {
 
 	protected $toTruncate = [
-	  'users',
-	  'user_profiles',
-	  'roles',
-	  'addresses',
-	  'layouts',
-	  'segments',
-	  'layout_segment',
-	  'categories',
-	  'activities',
-	  'activity_role',
-	  'category_role',
-	  'role_user'
+		'users',
+		'user_profiles',
+		'roles',
+		'addresses',
+		'layouts',
+		'segments',
+		'layout_segment',
+		'categories',
+		'activities',
+		'activity_role',
+		'category_role',
+		'role_user',
+		'role_team_user',
+		'teams'
 	];
 
 	/**
@@ -45,7 +47,6 @@ class DatabaseSeeder extends Seeder {
 
 		$this->call(SegmentsTableSeeder::class);
 		$this->call(LayoutsTableSeeder::class);
-
 
 	}
 }

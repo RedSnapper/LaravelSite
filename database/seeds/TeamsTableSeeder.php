@@ -17,7 +17,7 @@ class TeamsTableSeeder extends Seeder {
 		$devCategory = Category::reference('Teams')->first()->id;
 		$this->withJoins(1,3,['name'=>'Pre-Production','category_id'=> $devCategory]);
 		$this->withJoins(1,3,['name'=>'Post-Production','category_id'=> $devCategory]);
-		$this->withJoins(16,1);
+		$this->withJoins(5,1);
 	}
 
 	private function withJoins($count,$roles = 5,$values = []) {
@@ -25,7 +25,7 @@ class TeamsTableSeeder extends Seeder {
 			$roles = Role::inRandomOrder()->limit($roles)->pluck('id');
 			foreach($roles as $role) {
 				$team->attachRoleUsers($role,[1,2]);
-				$team->attachRoleUsers($role,User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id'));
+				$team->attachRoleUsers($role,User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id')->all());
 			}
 		});
 
