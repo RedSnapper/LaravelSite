@@ -80,6 +80,7 @@ class LayoutController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
+		$this->form->delete($id);
 		return redirect()->back();
 	}
 }

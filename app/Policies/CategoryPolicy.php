@@ -32,8 +32,8 @@ class CategoryPolicy
 		$this->connection = $connection;
 	}
 
-	public function view(User $user, Category $category){
-		return $this->isCategoryAvailable($user,$category);
+	public function view(User $user, Team $team, Activity $activity){
+		return $this->isTeamActivityAvailable($user,$team,$activity);
 	}
 
 	public function update(User $user, Category $category){

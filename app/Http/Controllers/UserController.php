@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\UserComposite;
-use App\Http\Formlets\UserEmailFormlet;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Contracts\View\View;
@@ -27,6 +27,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(User $user) {
+//		$this->authorize('LAYOUT_NAV',Team::first());
 		$users = $user->orderBy('email')->paginate(10);
 		return view("user.index", compact('users'));
 	}
@@ -99,6 +100,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
+		$this->form->delete($id);
 		return redirect()->back();
 	}
 }
