@@ -28,7 +28,6 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(User $user) {
-		$this->authorize('Category',[Team::first(),Category::find(13)]);
 		$users = $user->orderBy('email')->paginate(10);
 		return view("user.index", compact('users'));
 	}

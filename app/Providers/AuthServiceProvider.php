@@ -6,7 +6,7 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Team;
 use App\Policies\CategoryPolicy;
-use App\Policies\Helpers\PolicyData;
+use App\Policies\Helpers\UserPolicy;
 use App\Policies\TeamPolicy;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Database\Connection;
@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider {
 	 */
 	protected $policies = [
 	  Category::class => CategoryPolicy::class,
-		Team::class => TeamPolicy::class
+	  Team::class     => TeamPolicy::class
 	];
 
 	/**
@@ -35,8 +35,8 @@ class AuthServiceProvider extends ServiceProvider {
 			$this->registerGates($gate);
 		}
 
-		$this->app->singleton(PolicyData::class, function ($app) {
-			return new PolicyData($app->make(Connection::class));
+		$this->app->singleton(UserPolicy::class, function ($app) {
+			return new UserPolicy($app->make(Connection::class));
 		});
 	}
 

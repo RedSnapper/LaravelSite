@@ -27,40 +27,23 @@ class MediaController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Category $category) {
-		$medias = Media::orderBy('name');
+
 		if ($category->exists) {
-			$team = Team::find(13);
-			$this->authorize('MODIA_INDEX',[$team,$category]);
-			if (Gate::allows('MEDIA_INDEX',[$category,$team])) {
-				if(Gate::allows('view',$team)) {
-					$medias->where('category_id', $category->id);
-					$medias = $medias->paginate(10);
-					return view("media.index", compact('medias', 'category'));
-				}
-			}
-		} else {
-			if (Gate::allows('MEDIA_INDEX')) {
-				return view("media.index");
-			}
+
+			$this->authorize('MEDIA_INDEX',$category);
+
+			$medias = Media::orderBy('name');
+			$medias->where('category_id', $category->id);
+			$medias = $medias->paginate(10);
+
+			return view("media.index", compact('medias', 'category'));
 		}
+
+		$this->authorize('MEDIA_INDEX');
+
+		return view("media.index");
 	}
 
-	//public function index(Category $category) {
-	//	if ($category->exists) {
-	//		if (Gate::allows('LAYOUT_INDEX',$category)) {
-	//			$layouts = Layout::orderBy('name');
-	//			if ($category->exists) {
-	//				$layouts->where('category_id', $category->id);
-	//			}
-	//			$layouts = []; //$layouts->paginate(10);
-	//		}
-	//	} else {
-	//		if (Gate::allows('LAYOUT_INDEX')) {
-	//			$layouts = []; //$layouts->paginate(10);
-	//		}
-	//	}
-	//	return view("layout.index", compact('layouts', 'category'));
-	//}
 
 	public function show(Media $medium) {
 		//$file = Storage::get("{$medium->path}");
