@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\UserComposite;
+use App\Models\Category;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -27,7 +28,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(User $user) {
-//		$this->authorize('LAYOUT_NAV',Team::first());
+		$this->authorize('Category',[Team::first(),Category::find(13)]);
 		$users = $user->orderBy('email')->paginate(10);
 		return view("user.index", compact('users'));
 	}

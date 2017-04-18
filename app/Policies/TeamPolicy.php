@@ -2,8 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Category;
 use App\Models\Team;
 use App\Models\User;
+use App\Policies\Helpers\PolicyData;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Collection;
@@ -11,13 +14,9 @@ use Illuminate\Support\Collection;
 class TeamPolicy {
 	use HandlesAuthorization;
 	/**
-	 * @var Collection
+	 * @var PolicyData
 	 */
-	private $teams;
-	/**
-	 * @var Connection
-	 */
-	private $connection;
+	private $data;
 
 	/**
 	 * TeamPolicy constructor.
@@ -25,32 +24,31 @@ class TeamPolicy {
 	 * @param Collection $teams
 	 * @param Connection $connection
 	 */
-	public function __construct(Collection $teams, Connection $connection) {
-		$this->teams = $teams;
-		$this->connection = $connection;
+	public function __construct(PolicyData $data) {
+		$this->data = $data;
 	}
 
-	protected function hasUserTeamActivity(User $user, Team $team,string $activity) : bool {
-		if (!$this->teams->has($user->id)) {
-			$this->teams->put($user->id, $this->getAvailableTeams($user->id));
-		}
-		if($this->teams->get($user->id)->has($team->id)) {
-			$userTeam = $this->teams->get($user->id)->get($team->id);
-			return $userTeam->contains('activity',$activity);
-		}
-		return false;
+	public function view(User $user, Team $team){
+		return $this->data->hasUserTeamActivity($user,$team);
+	}
+
+	public function update(User $user, Team $team){
+		return $this->data->hasUserTeamActivity($user,$team);
 	}
 
 	public function __call($activity, $arguments) {
-		list($user,$team) = $arguments;
-		return $this->hasUserTeamActivity($user,$team,$activity);
+		switch(count($arguments)) {
+			case 2:
+				list($user,$team) = $arguments;
+				return $this->data->hasUserTeamActivity($user,$team,$activity);
+			break;
+			case 3:
+				list($user,$team,$category) = $arguments;
+				$category = is_a($category,Category::class) ? $category->id : (int) $category;
+				return Gate::allows($activity,$team->id) && $this->data->hasUserTeamCategory($user,$team,$category->id);
+			break;
+			default: return false;
+		}
 	}
 
-	protected function getAvailableTeams(int $user): Collection {
-		$query = $this->connection->table('role_team_user as rtu')->select(['rtu.team_id as team','a.name as activity'])
-		  ->join('activity_role as ar','ar.role_id','rtu.role_id')
-			->join('activities as a','a.id','ar.activity_id')
-		  ->where('rtu.user_id',$user);
-		return collect($query->get())->groupBy('team');
-	}
 }

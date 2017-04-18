@@ -75,7 +75,10 @@ class User extends Authenticatable {
 			}
 			return !!$role->intersect($this->roles)->count();
 		} else {
-//			return $this->teamRoles->contains('name', $role)->;
+			if (is_string($role)) {
+				return $this->teamRoles->wherePivot('team_id',$team)->contains('name', $role);
+			}
+			return !!$role->intersect($this->teamRoles->wherePivot('team_id',$team))->count();
 		}
 	}
 

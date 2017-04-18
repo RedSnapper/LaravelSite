@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Formlets\LayoutFormlet;
 use App\Models\Category;
 use App\Models\Layout;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class LayoutController extends Controller {
-
 	/**
 	 * @var LayoutFormlet
 	 */
@@ -25,13 +26,20 @@ class LayoutController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Category $category) {
-		$layouts = Layout::orderBy('name');
 		if ($category->exists) {
-			$layouts->where('category_id', $category->id);
+			if (Gate::allows('LAYOUT_INDEX',$category)) {
+				$layouts = Layout::orderBy('name');
+				if ($category->exists) {
+					$layouts->where('category_id', $category->id);
+				}
+				$layouts = []; //$layouts->paginate(10);
+			}
+		} else {
+			if (Gate::allows('LAYOUT_INDEX')) {
+				$layouts = []; //$layouts->paginate(10);
+			}
 		}
-		$layouts =  $layouts->paginate(10);
-
-		return view("layout.index",compact('layouts','category'));
+		return view("layout.index", compact('layouts', 'category'));
 	}
 
 	/**
@@ -62,8 +70,8 @@ class LayoutController extends Controller {
 	public function edit($id) {
 		$this->form->setKey($id);
 		return $this->form->renderWith([
-		  'route'  => ['layout.update', $id],
-		  'method' => 'PUT'
+			'route'  => ['layout.update', $id],
+			'method' => 'PUT'
 		])->with('title', "Edit Layout: {$this->form->getModel()->name}");
 	}
 

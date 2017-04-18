@@ -6,8 +6,10 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Team;
 use App\Policies\CategoryPolicy;
+use App\Policies\Helpers\PolicyData;
 use App\Policies\TeamPolicy;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Database\Connection;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -32,6 +34,10 @@ class AuthServiceProvider extends ServiceProvider {
 		if ($this->canRegisterGates()) {
 			$this->registerGates($gate);
 		}
+
+		$this->app->singleton(PolicyData::class, function ($app) {
+			return new PolicyData($app->make(Connection::class));
+		});
 	}
 
 	protected function canRegisterGates(): bool {
@@ -50,12 +56,6 @@ class AuthServiceProvider extends ServiceProvider {
 			$gate->define($activity->name, function ($user) use ($activity) {
 				return $user->hasRole($activity->roles);
 			});
-			//won't work unless we are happy to use 'can::teamActivityName(user,team)
-			//if(Schema::hasTable('activity_role_teams')) {
-			//	$gate->define('team' . $activity->name, function ($user,$team) use ($activity) {
-			//		return $user->hasTeam($activity->teams);
-			//	});
-			//}
 		}
 	}
 
