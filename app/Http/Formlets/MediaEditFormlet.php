@@ -61,7 +61,7 @@ class MediaEditFormlet extends Formlet {
 			'media'       => ['image'],
 			'name'        => ['required', 'max:255', Rule::unique('media')->ignore($key)],
 			'filename'    => ['required', 'max:255'],
-			'category_id' => 'required|exists:categories,id'
+			'category_id' => 'required|category',
 		];
 
 		return $rules;

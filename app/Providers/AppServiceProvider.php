@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-//use App\Models\AbstractTree;
-//use App\Models\Category;
-//use App\Models\TreeModelObserver;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -17,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+			Validator::extend('category','App\Validators\CategoryValidator@validate');
     }
 
     /**
@@ -26,6 +25,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

@@ -86,6 +86,7 @@ return [
     'uploaded'             => 'The :attribute failed to upload.',
     'url'                  => 'The :attribute format is invalid.',
 
+		'category'	 						=> 'The :attribute is invalid.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -96,7 +97,7 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
-
+//		"accepted" => "The :attribute must be accepted.",
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

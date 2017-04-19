@@ -61,7 +61,7 @@ class MediaFormlet extends Formlet {
 		return [
 		  'media' => 'required|image',
 		  'name' => 'required|max:255|unique:media',
-		  'category_id' => 'required|exists:categories,id',
+		  'category_id' => 'required|category|exists:categories,id',
 		  'team_id' => 'required|exists:teams,id'
 		];
 	}
