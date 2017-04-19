@@ -28,8 +28,8 @@ class CategoryController extends ApiController
 		$this->category = $category;
 	}
 
-	public function index(Request $request){
-		return Category::branch($request->get('section',"ROOT"));
+	public function index(Request $request,Category $node){
+		return $node->branch($request->get('section',"ROOT"));
 	}
 
 	public function show($id){

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface TreeInterface {
 
-	public static function nodeBranch($name = 'ROOT'): array;
+	public function branch($name = 'ROOT'): array;
 
 	public static function options(string $reference);
 

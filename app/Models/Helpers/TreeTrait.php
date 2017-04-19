@@ -19,8 +19,8 @@ trait TreeTrait {
 		}
 	}
 
-	public static function nodeBranch($name = 'ROOT', \Closure $closure = null): array {
-		$node = with(new static)->section($name)->first();
+	public function branch($name = 'ROOT'): array {
+		$node = $this->section($name)->first();
 		$items = $node->descendants(true)->get();
 		$objects = [];
 		$nodes = [];
@@ -28,8 +28,8 @@ trait TreeTrait {
 			$objects[$item->idx] = $item; //so we can get parent from object.
 			$nodes[$item->idx] = new Node($item->id, $item->name);
 			if ($item->name != $name) {
-				if (static::allowed($closure,$item)) {
-					if (static::allowed($closure,$objects[$item->parent])) {
+				if($this->canView($item)) {
+					if ($this->canView($objects[$item->parent])) {
 						$nodes[$item->parent]->addChild($nodes[$item->idx]);
 					} else {
 						$nodes[$node->idx]->addChild($nodes[$item->idx]);
@@ -101,6 +101,10 @@ trait TreeTrait {
 	protected function canUpdate(TreeInterface $node){
 		return true;
 	}
+	protected function canView(TreeInterface $node){
+		return true;
+	}
+
 
 	public function scopeIndex(Builder $query,int $index){
 		return $query->where('idx', $index);

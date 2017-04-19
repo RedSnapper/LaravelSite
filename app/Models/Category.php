@@ -15,14 +15,13 @@ class Category extends Model implements TreeInterface {
 	public $timestamps = false;
 	protected $table = "categories";
 
-	public static function branch(string $section = "ROOT") {
-		return static::nodeBranch($section, function (Category $category) {
-			return Gate::allows('view', $category);
-		});
-	}
 
 	protected function canUpdate(Category $category){
 		return Gate::allows('update', $category);
+	}
+
+	protected function canView(Category $category){
+		return Gate::allows('view', $category);
 	}
 
 	public function activities() {
