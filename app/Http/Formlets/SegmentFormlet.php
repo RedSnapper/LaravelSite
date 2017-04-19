@@ -7,12 +7,11 @@
 
 namespace App\Http\Formlets;
 
+use App\Http\Controllers\CategoryController;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
-use RS\Form\Fields\Radio;
 use RS\Form\Fields\Select;
 use RS\Form\Fields\TextArea;
-use App\Models\Category;
 use App\Models\Segment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,14 +20,14 @@ use Illuminate\Validation\Rule;
 class SegmentFormlet extends Formlet {
 	public $formView = "segment.form";
 	/**
-	 * @var Category
+	 * @var CategoryController
 	 */
-	private $category;
+	private $categoryController;
 
-	public function __construct(Segment $segment,Category $category) {
+	public function __construct(Segment $segment,CategoryController $categoryController) {
 
 		$this->setModel($segment);
-		$this->category = $category;
+		$this->categoryController = $categoryController;
 	}
 
 	public function prepareForm() {
@@ -36,7 +35,7 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('category_id',$this->category->options('SEGMENTS'));
+		$field = new Select('category_id',$this->categoryController->options('SEGMENTS'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

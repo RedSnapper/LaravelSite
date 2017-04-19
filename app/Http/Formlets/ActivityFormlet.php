@@ -7,11 +7,10 @@
 
 namespace App\Http\Formlets;
 
+use App\Http\Controllers\CategoryController;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
-use RS\Form\Fields\TextArea;
-use App\Models\Category;
 use App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,18 +19,21 @@ use Illuminate\Validation\Rule;
 
 class ActivityFormlet extends Formlet {
 	public $formView = "activity.form";
-	private $category;
+	/**
+	 * @var CategoryController
+	 */
+	private $categoryController;
 
-	public function __construct(Activity $activity,Category $category) {
+	public function __construct(Activity $activity,CategoryController $categoryController) {
 		$this->setModel($activity);
-		$this->category = $category;
+		$this->categoryController = $categoryController;
 	}
 
 	public function prepareForm() {
 
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
-		$field = new Select('category_id',$this->category->options('ACTIVITIES'));
+		$field = new Select('category_id',$this->categoryController->options('ACTIVITIES'));
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")

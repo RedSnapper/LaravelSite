@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
@@ -13,13 +14,13 @@ class RoleFormlet extends Formlet {
 
 	public $formView = "role.form";
 	/**
-	 * @var Category
+	 * @var CategoryController
 	 */
-	private $category;
+	private $categoryController;
 
-	public function __construct(Role $role,Category $category) {
+	public function __construct(Role $role,CategoryController $categoryController) {
 		$this->setModel($role);
-		$this->category = $category;
+		$this->categoryController = $categoryController;
 	}
 
 	public function prepareForm() {
@@ -28,7 +29,7 @@ class RoleFormlet extends Formlet {
 		  $field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id', $this->category->options('ROLES'));
+		$field = new Select('category_id', $this->categoryController->options('ROLES'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

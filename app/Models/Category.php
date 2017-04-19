@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Helpers\TreeInterface;
 use App\Models\Helpers\TreeTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
 
 class Category extends Model implements TreeInterface {
 
@@ -14,15 +13,6 @@ class Category extends Model implements TreeInterface {
 	protected $guarded = ['id', 'size', 'nextchild', 'section'];
 	public $timestamps = false;
 	protected $table = "categories";
-
-
-	protected function canUpdate(Category $category){
-		return Gate::allows('update', $category);
-	}
-
-	protected function canView(Category $category){
-		return Gate::allows('view', $category);
-	}
 
 	public function activities() {
 		return $this->hasMany(Activity::class);

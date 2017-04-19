@@ -2,7 +2,7 @@
 
 namespace App\Http\Formlets;
 
-use App\Models\Category;
+use App\Http\Controllers\CategoryController;
 use App\Models\Media;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
@@ -14,13 +14,13 @@ class MediaFormlet extends Formlet {
 
 	public $formView = "media.form";
 	/**
-	 * @var Category
+	 * @var CategoryController
 	 */
-	private $category;
+	private $categoryController;
 
-	public function __construct(Media $media,Category $category) {
+	public function __construct(Media $media, CategoryController $categoryController) {
 		$this->setModel($media);
-		$this->category = $category;
+		$this->categoryController = $categoryController;
 	}
 
 	/**
@@ -33,7 +33,7 @@ class MediaFormlet extends Formlet {
 		$field = new Input('text', 'name');
 		$this->add($field->setLabel("Name")->setRequired(true));
 
-		$field = new Select('category_id',$this->category->options('MEDIA'));
+		$field = new Select('category_id',$this->categoryController->options('MEDIA'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface TreeInterface {
 
-	public function branch($name = 'ROOT'): array;
-
-	public function options(string $reference);
-
 	public function scopeParent(Builder $query);
 
 	public function scopeAncestors(Builder $query, bool $self = false);
@@ -21,15 +17,15 @@ interface TreeInterface {
 
 	public function scopeChildren(Builder $query);
 
-	public function createNode(int $parent = null, string $name) : TreeInterface;
+//	public function createNode(int $parent = null, string $name) : TreeInterface;
 
-	//public function moveTo(int $parentId = null,int $indexReplace = null);
+//	public function moveTo(TreeInterface $parentId = null,int $indexReplace = null);
 
-	public function moveAfter(int $sibling);
+	public function moveAfter(TreeInterface $sibling);
 
-	public function moveBefore(int $sibling);
+	public function moveBefore(TreeInterface $sibling,TreeInterface $parent);
 
-	public function moveInto(int $parent);
+	public function moveInto(TreeInterface $parent);
 
 	public function scopeIndex(Builder $query, int $index);
 

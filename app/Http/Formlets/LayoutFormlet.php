@@ -2,7 +2,7 @@
 
 namespace App\Http\Formlets;
 
-use App\Models\Category;
+use App\Http\Controllers\CategoryController;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
@@ -14,13 +14,13 @@ class LayoutFormlet  extends Formlet {
 
 	public $formView = "layout.form";
 	/**
-	 * @var Category
+	 * @var CategoryController
 	 */
-	private $category;
+	private $categoryController;
 
-	public function __construct(Layout $layout,Category $category) {
+	public function __construct(Layout $layout,CategoryController $categoryController) {
 		$this->setModel($layout);
-		$this->category = $category;
+		$this->categoryController = $categoryController;
 	}
 
 	public function prepareForm(){
@@ -28,7 +28,7 @@ class LayoutFormlet  extends Formlet {
 		$this->add(
 			$field->setLabel('Name')
 		);
-		$field = new Select('category_id',$this->category->options('LAYOUTS'));
+		$field = new Select('category_id',$this->categoryController->options('LAYOUTS'));
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")
