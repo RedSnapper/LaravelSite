@@ -40,9 +40,10 @@ trait TreeTrait {
 		return reset($nodes)->children;
 	}
 
-	public static function options(string $reference) {
-		$node  = with(new static)->section($reference)->first();
-		return $node->descendants(false)->pluck('name','id');
+	public function options(string $reference) {
+		$node  = $this->section($reference)->first();
+		$items = $node->descendants(false)->get();
+		return $items->filter(function($item) { return $this->canView($item);})->pluck('name','id');
 	}
 
 	public function createNode(int $parentId = null, string $name) : TreeInterface {

@@ -20,15 +20,18 @@ use Illuminate\Validation\Rule;
 
 class ActivityFormlet extends Formlet {
 	public $formView = "activity.form";
+	private $category;
 
-	public function __construct(Activity $activity) {
+	public function __construct(Activity $activity,Category $category) {
 		$this->setModel($activity);
+		$this->category = $category;
 	}
 
 	public function prepareForm() {
+
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
-		$field = new Select('category_id',Category::options('ACTIVITIES'));
+		$field = new Select('category_id',$this->category->options('ACTIVITIES'));
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")

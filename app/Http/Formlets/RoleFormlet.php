@@ -12,9 +12,14 @@ use App\Models\Category;
 class RoleFormlet extends Formlet {
 
 	public $formView = "role.form";
+	/**
+	 * @var Category
+	 */
+	private $category;
 
-	public function __construct(Role $role) {
+	public function __construct(Role $role,Category $category) {
 		$this->setModel($role);
+		$this->category = $category;
 	}
 
 	public function prepareForm() {
@@ -23,7 +28,7 @@ class RoleFormlet extends Formlet {
 		  $field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id', Category::options('ROLES'));
+		$field = new Select('category_id', $this->category->options('ROLES'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

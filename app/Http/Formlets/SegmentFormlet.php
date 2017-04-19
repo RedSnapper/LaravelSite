@@ -20,10 +20,15 @@ use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {
 	public $formView = "segment.form";
+	/**
+	 * @var Category
+	 */
+	private $category;
 
-	public function __construct(Segment $segment) {
+	public function __construct(Segment $segment,Category $category) {
 
 		$this->setModel($segment);
+		$this->category = $category;
 	}
 
 	public function prepareForm() {
@@ -31,7 +36,7 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('category_id',Category::options('SEGMENTS'));
+		$field = new Select('category_id',$this->category->options('SEGMENTS'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

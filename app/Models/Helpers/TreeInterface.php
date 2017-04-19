@@ -11,7 +11,7 @@ interface TreeInterface {
 
 	public function branch($name = 'ROOT'): array;
 
-	public static function options(string $reference);
+	public function options(string $reference);
 
 	public function scopeParent(Builder $query);
 

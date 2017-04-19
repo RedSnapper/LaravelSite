@@ -13,9 +13,14 @@ use Illuminate\Validation\Rule;
 class LayoutFormlet  extends Formlet {
 
 	public $formView = "layout.form";
+	/**
+	 * @var Category
+	 */
+	private $category;
 
-	public function __construct(Layout $layout) {
+	public function __construct(Layout $layout,Category $category) {
 		$this->setModel($layout);
+		$this->category = $category;
 	}
 
 	public function prepareForm(){
@@ -23,7 +28,7 @@ class LayoutFormlet  extends Formlet {
 		$this->add(
 			$field->setLabel('Name')
 		);
-		$field = new Select('category_id',Category::options('LAYOUTS'));
+		$field = new Select('category_id',$this->category->options('LAYOUTS'));
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")

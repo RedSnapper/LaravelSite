@@ -13,9 +13,14 @@ use RS\Form\Formlet;
 class MediaFormlet extends Formlet {
 
 	public $formView = "media.form";
+	/**
+	 * @var Category
+	 */
+	private $category;
 
-	public function __construct(Media $media) {
+	public function __construct(Media $media,Category $category) {
 		$this->setModel($media);
+		$this->category = $category;
 	}
 
 	/**
@@ -28,7 +33,7 @@ class MediaFormlet extends Formlet {
 		$field = new Input('text', 'name');
 		$this->add($field->setLabel("Name")->setRequired(true));
 
-		$field = new Select('category_id',Category::options('MEDIA'));
+		$field = new Select('category_id',$this->category->options('MEDIA'));
 		$this->add(
 		  $field->setLabel("Category")
 			->setPlaceholder("Please select a category")

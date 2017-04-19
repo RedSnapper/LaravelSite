@@ -54,11 +54,11 @@ class MediaController extends Controller {
 	public function create(Request $request) {
 		$requestCategory = $request->get('category');
 		if (!is_null($requestCategory)) {
-			$category = Category::find($request->get('category'));
+			$category = Category::find($requestCategory);
 			$this->authorize('MEDIA_CREATE', $category);
 			if ($category->exists) {
 				$form = $this->form->create(['route' => 'media.store']);
-				$form->with('category', $category);
+				$form->with('category',$category->id);
 				return $form->render()->with('title', 'New Categorised Media');
 			}
 		} else {

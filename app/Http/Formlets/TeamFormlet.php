@@ -12,9 +12,14 @@ use RS\Form\Formlet;
 
 class TeamFormlet extends Formlet {
 	public $formView = "team.form";
+	/**
+	 * @var Category
+	 */
+	private $category;
 
-	public function __construct(Team $team) {
+	public function __construct(Team $team,Category $category) {
 		$this->setModel($team);
+		$this->category = $category;
 	}
 
 	public function prepareForm() {
@@ -23,7 +28,7 @@ class TeamFormlet extends Formlet {
 			$field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id', Category::options('TEAMS'));
+		$field = new Select('category_id', $this->category->options('TEAMS'));
 		$this->add(
 			$field->setLabel("Category")
 				->setPlaceholder("Please select a category")
