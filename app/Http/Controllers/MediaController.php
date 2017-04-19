@@ -6,7 +6,6 @@ use App\Http\Formlets\MediaEditFormlet;
 use App\Http\Formlets\MediaFormlet;
 use App\Models\Category;
 use App\Models\Media;
-use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,23 +26,16 @@ class MediaController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Category $category) {
-
-		if ($category->exists) {
-
-			$this->authorize('MEDIA_INDEX',$category);
-
+		$this->authorize('MEDIA_INDEX');
+		if ($category->exists && Gate::allows('MEDIA_INDEX', $category)) {
 			$medias = Media::orderBy('name');
 			$medias->where('category_id', $category->id);
 			$medias = $medias->paginate(10);
 
 			return view("media.index", compact('medias', 'category'));
 		}
-
-		$this->authorize('MEDIA_INDEX');
-
 		return view("media.index");
 	}
-
 
 	public function show(Media $medium) {
 		//$file = Storage::get("{$medium->path}");
@@ -60,12 +52,20 @@ class MediaController extends Controller {
 	 * Show the form for creating a new resource.
 	 */
 	public function create(Request $request) {
-		$form = $this->form->create(['route' => 'media.store']);
-
-		$category = $request->get('category');
-		$form->with('category', $category);
-
-		return $form->render()->with('title', 'New Media');
+		$requestCategory = $request->get('category');
+		if (!is_null($requestCategory)) {
+			$category = Category::find($request->get('category'));
+			$this->authorize('MEDIA_CREATE', $category);
+			if ($category->exists) {
+				$form = $this->form->create(['route' => 'media.store']);
+				$form->with('category', $category);
+				return $form->render()->with('title', 'New Categorised Media');
+			}
+		} else {
+			$this->authorize('MEDIA_CREATE');
+			$form = $this->form->create(['route' => 'media.store']);
+			return $form->render()->with('title', 'New Media');
+		}
 	}
 
 	/**

@@ -106,8 +106,15 @@ trait TreeTrait {
 		return $query->where('idx', $index);
 	}
 
-	public function scopeReference(Builder $query,string $reference){
-		return $query->where('name',$reference)->where('section',false);
+	public function scopeReference(Builder $query,string $reference,string $scope = "") {
+		if(!empty($scope)) {
+			$table = $this->getTable();
+			return $query->select("$table.*")->join("$table as a",function ($join) use ($table) {
+				return $join->on("a.nextchild",'>',"$table.idx")->on("a.idx",'<',"$table.idx");
+			})->where("$table.section",false)->where("$table.name",$reference)->where("a.section",true)->where("a.name",$scope);
+		} else {
+			return $query->where('name',$reference)->where('section',false);
+		}
 	}
 
 	public function scopeSection(Builder $query,string $reference){

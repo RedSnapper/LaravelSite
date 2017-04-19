@@ -11,12 +11,32 @@ use App\Models\Category;
  */
 class ActivitiesTableSeeder extends Seeder {
 	public function run() {
-		$devCategory = Category::reference('Activities')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'LAYOUT_NAV','label'=>'Layouts navigation','category_id'=> $devCategory]);
-		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $devCategory]);
-		factory(Activity::class,1)->create(['name'=>'ACTIVITY_NAV','label'=>'Activities navigation','category_id'=> $devCategory]);
-		factory(Activity::class,1)->create(['name'=>'ACTIVITY_INDEX','label'=>'Activities index access','category_id'=> $devCategory]);
-//		factory(Activity::class,3)->create();
+		//Layouts
+		$category = Category::reference('Layouts','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'LAYOUT_NAV','label'=>'Layouts navigation','category_id'=> $category]);
+		//Roles
+		$category = Category::reference('Roles','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $category]);
+		//Activities
+		$category = Category::reference('Activities','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'ACTIVITY_NAV','label'=>'Activities navigation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'ACTIVITY_INDEX','label'=>'Activities index access','category_id'=> $category]);
+		//Media
+		$category = Category::reference('Media','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'MEDIA_NAV','label'=>'Media navigation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'MEDIA_INDEX','label'=>'Media index access','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'MEDIA_CREATE','label'=>'Media creation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'MEDIA_EDIT','label'=>'Media edit/update access','category_id'=> $category]);
+		//Teams
+		$category = Category::reference('Teams','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'TEAM_NAV','label'=>'Team navigation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'TEAM_INDEX','label'=>'Team index access','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'TEAM_EDIT','label'=>'Team edit/update access','category_id'=> $category]);
+		//Segments
+		$category = Category::reference('Segments','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'SEGMENT_NAV','label'=>'Segment navigation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'SEGMENT_INDEX','label'=>'Segment index access','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'SEGMENT_EDIT','label'=>'Segment edit/update access','category_id'=> $category]);
 	}
 
 }

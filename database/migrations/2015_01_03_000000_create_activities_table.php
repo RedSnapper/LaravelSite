@@ -17,7 +17,7 @@ class CreateActivitiesTable extends Migration {
 			$table->string('label')->nullable();
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
-				->onDelete('set null');
+				->onDelete('restrict');
 
 			$table->timestamps();
 		});

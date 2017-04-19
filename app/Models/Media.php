@@ -15,7 +15,7 @@ class Media extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'filename', 'category_id'];
+	protected $fillable = ['name', 'filename', 'category_id', 'team_id'];
 
 	public function saveMedia(array $fields, UploadedFile $file = null): Media {
 

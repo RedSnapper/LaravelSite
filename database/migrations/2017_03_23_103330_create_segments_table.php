@@ -17,7 +17,7 @@ class CreateSegmentsTable extends Migration {
 			$table->string('syntax')->nullable();
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
-				->onDelete('set null');
+				->onDelete('restrict');
 			$table->text('docs');
 			$table->timestamps();
 		});

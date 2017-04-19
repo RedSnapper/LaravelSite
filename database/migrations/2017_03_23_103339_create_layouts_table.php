@@ -16,7 +16,7 @@ class CreateLayoutsTable extends Migration {
 			$table->string('name')->unique();
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
-				->onDelete('set null');
+				->onDelete('restrict');
 
 			$table->timestamps();
 		});

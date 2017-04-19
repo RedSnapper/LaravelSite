@@ -17,7 +17,7 @@ class CreateTeamsTable extends Migration {
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->timestamps();
 			$table->foreign('category_id')->references('id')->on('categories')
-				->onDelete('set null');
+				->onDelete('restrict'); //was set null. should be either restrict or cascade.
 		});
 
 	}

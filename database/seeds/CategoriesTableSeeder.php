@@ -24,28 +24,34 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('ROLES',3);
 		$this->addGroup('SEGMENTS',6);
 		$this->addGroup('LAYOUTS',4);
-		$this->addGroup('ACTIVITIES',2);
+		$this->addGroup('ACTIVITIES',6,['Activities','Layouts','Media','Roles','Segments','Teams']);
 		$this->addGroup('MEDIA',4);
-		$this->addGroup('TEAMS',9);
+		$this->addGroup('TEAMS',4);
 	}
 
-	private function addGroup($name,$size = 3) {
+	private function addGroup($name,$size = 3,array $names = []) {
 		factory(Category::class,1)->create(['parent'=>1,'name'=>$name,'section'=>true]);
 		$this->nodeCount++;
 		$branchRoot = $this->nodeCount;
-		$branchSize = $branchRoot + $size;
-		factory(Category::class,1)->create(['parent' => $branchRoot,'name' => ucfirst(strtolower($name)) ]);
-		$this->nodeCount++;
-//do max 3 branchGroups.
-		$branchGroups = min($size,3);
-		for($i = 0; $i < $branchGroups; $i++) {
-				factory(Category::class,1)->create(['parent' => $branchRoot]);
-			$this->nodeCount++;
+		$branchSize = $branchRoot + $size; //so this is the number of categories under this branch, excluding local root.
+		$name = count($names) == 0 ? ucfirst(strtolower($name)) : $names[0]; //the first name by $names[0] or via groupName.
+		$this->addNode($branchRoot,$name);
+		$branchNodes = min($size,max(3,count($names) - 1)); //one of the names was used for the first category.
+		for($i = 0; $i < $branchNodes; $i++) {
+			$this->addNode($branchRoot,@$names[$branchSize - $this->nodeCount]);
 		}
 //add the rest randomly.
 		while($this->nodeCount < $branchSize) {
-			factory(Category::class,1)->create(['parent' => mt_rand($branchRoot,$this->nodeCount)]);
-			$this->nodeCount++;
+			$this->addNode(mt_rand($branchRoot,$this->nodeCount),@$names[$branchSize - $this->nodeCount]);
 		}
+	}
+
+	private function addNode($parent,$name) {
+		if(!is_null($name)) {
+			factory(Category::class,1)->create(['parent' => $parent,'name' => $name]);
+		} else {
+			factory(Category::class,1)->create(['parent' => $parent]);
+		}
+		$this->nodeCount++;
 	}
 }

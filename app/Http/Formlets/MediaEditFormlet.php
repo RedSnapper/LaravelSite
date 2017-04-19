@@ -4,6 +4,7 @@ namespace App\Http\Formlets;
 
 use App\Models\Category;
 use App\Models\Media;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;
@@ -34,7 +35,15 @@ class MediaEditFormlet extends Formlet{
 	   		->setDefault($this->getData('category'))
 	   );
 
-	   $field = new Input('file', 'media');
+
+		 $field = new Select('team_id',Team::options());
+		 $this->add(
+			 $field->setLabel("Team")
+				 ->setPlaceholder("Please select a team")
+//				 ->setDefault($this->getData('team'))
+		 );
+
+		 $field = new Input('file', 'media');
 	   $this->add($field->setLabel("Media"));
 
 	   $field = new Input('text', 'filename');
