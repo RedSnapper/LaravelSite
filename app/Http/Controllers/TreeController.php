@@ -31,8 +31,8 @@ class TreeController {
 			$objects[$item->idx] = $item; //so we can get parent from object.
 			$nodes[$item->idx] = new Node($item->id, $item->name);
 			if ($item->name != $name) {
-				if (is_null($allow) || $allow($item)) {
-					if (is_null($allow) || $allow($objects[$item->parent])) {
+				if ($this->allowed($allow,$item)) {
+					if ($this->allowed($allow,$objects[$item->parent])) {
 						$nodes[$item->parent]->addChild($nodes[$item->idx]);
 					} else {
 						$nodes[$node->idx]->addChild($nodes[$item->idx]);
@@ -57,7 +57,7 @@ class TreeController {
 		$fields = ['name' => $name];
 		if (!is_null($parentId)) {
 			$parent = $this->node->find($parentId);
-			if (!is_null($allow) && !$allow($parent)) {
+			if (!$this->allowed($allow,$parent)) {
 				return null; //not allowed to do anything.
 			}
 			$fields['parent'] = $parent->idx;
@@ -68,7 +68,7 @@ class TreeController {
 	public function moveBefore(TreeInterface $node,int $sibling,\Closure $allow = null): bool {
 		$sibling = $node->find($sibling);
 		$parent = $sibling->parent()->first();
-		if (is_null($allow) || $allow($parent)) {
+		if ($this->allowed($allow,$parent)) {
 			return $node->moveBefore($sibling,$parent);
 		}
 		return false;
@@ -76,7 +76,7 @@ class TreeController {
 
 	public function moveAfter(TreeInterface $node, int $sibling, \Closure $allow = null): bool {
 		$sibling = $node->find($sibling);
-		if (is_null($allow) || $allow($sibling->parent()->first())) {
+		if ($this->allowed($allow,$sibling->parent()->first())) {
 			return $node->moveAfter($sibling);
 		}
 		return false;
@@ -84,10 +84,14 @@ class TreeController {
 
 	public function moveInto(TreeInterface $node, int $parentId, \Closure $allow = null): bool {
 		$parent = $node->find($parentId);
-		if (is_null($allow) || $allow($parent)) {
+		if ($this->allowed($allow,$parent)) {
 			return $node->moveInto($parent);
 		}
 		return false;
+	}
+
+	protected function allowed(\Closure $closure=null,$node):bool{
+		return is_null($closure) || $closure($node);
 	}
 
 }

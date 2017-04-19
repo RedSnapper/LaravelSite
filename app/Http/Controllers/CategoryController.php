@@ -9,49 +9,34 @@ use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends ApiController {
 	protected $transformer;
-	/**
-	 * @var Category
-	 */
-	private $category;
+
 	/**
 	 * @var TreeController
 	 */
 	private $treeController;
-	/**
-	 * @var \Closure
-	 */
-	private $allowsModify, $allowsView;
 
 	/**
 	 * CategoryController constructor.
 	 *
-	 * @param Category            $category
 	 * @param CategoryTransformer $transformer
+	 * @param Category            $node
 	 */
-	public function __construct(Category $category, CategoryTransformer $transformer, Category $node) {
+	public function __construct(CategoryTransformer $transformer, Category $node) {
 		$this->middleware('auth');
 		$this->transformer = $transformer;
-		$this->category = $category;
 		$this->treeController = new TreeController($node);
-
-		$this->allowsModify = function (Category $category) {
-			return Gate::allows('update', $category);
-		};
-		$this->allowsView = function (Category $category) {
-			return Gate::allows('view', $category);
-		};
 	}
 
 	public function options(string $reference) {
-		return $this->treeController->options($reference,$this->allowsView)->pluck('name', 'id');
+		return $this->treeController->options($reference, $this->allowsView())->pluck('name', 'id');
 	}
 
 	public function getIds(string $reference) {
-		return $this->treeController->options($reference,$this->allowsView)->pluck(['id']);
+		return $this->treeController->options($reference, $this->allowsView())->pluck(['id']);
 	}
 
 	public function index(Request $request) {
-		return $this->treeController->branch($request->get('section', "ROOT"),$this->allowsView);
+		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsView());
 	}
 
 	public function show($id) {
@@ -68,11 +53,11 @@ class CategoryController extends ApiController {
 	public function store(Request $request) {
 
 		$this->validate($request, [
-			'parent' => 'required|exists:categories,id',
-			'name'   => 'required'
+		  'parent' => 'required|category',
+		  'name'   => 'required'
 		]);
 
-		$category = $this->treeController->createNode($request->get('parent'), $request->get('name'), $this->allowsModify);
+		$category = $this->treeController->createNode($request->get('parent'), $request->get('name'), $this->allowsModify());
 
 		return $this->respondWithItemCreated($category);
 	}
@@ -84,8 +69,10 @@ class CategoryController extends ApiController {
 		if (!$category) {
 			return $this->respondNotFound('Category does not exist');
 		}
-		$category->fill($request->all());
-		if (($this->allowsModify)($category)) {
+
+		$closure = $this->allowsModify();
+		if ($closure($category)) {
+			$category->fill($request->all());
 			$category->save();
 			return $this->respondWithItem($category);
 		}
@@ -93,21 +80,21 @@ class CategoryController extends ApiController {
 	}
 
 	public function moveInto(Category $category, Request $request) {
-		if ($this->treeController->moveInto($category, $request->get('node'), $this->allowsModify)) {
+		if ($this->treeController->moveInto($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
 	}
 
 	public function moveBefore(Category $category, Request $request) {
-		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify)) {
+		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
 	}
 
 	public function moveAfter(Category $category, Request $request) {
-		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify)) {
+		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
@@ -118,10 +105,25 @@ class CategoryController extends ApiController {
 		if (!$category) {
 			return $this->respondNotFound('Category does not exist');
 		}
-		if (($this->allowsModify)($category)) {
+		$closure = $this->allowsModify();
+		if ($closure($category)) {
 			$category->delete();
 			return $this->respondWithItem($category);
 		}
 		return $this->respondForbidden();
+	}
+
+
+
+	private function allowsModify() {
+		return function (Category $category) {
+			return Gate::allows('update', $category);
+		};
+	}
+
+	private function allowsView() {
+		return function (Category $category) {
+			return Gate::allows('update', $category);
+		};
 	}
 }
