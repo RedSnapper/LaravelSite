@@ -43,11 +43,15 @@ class CategoryController extends ApiController {
 	}
 
 	public function options(string $reference) {
-		return $this->treeController->options($reference,$this->allowsView);
+		return $this->treeController->options($reference,$this->allowsView)->pluck('name', 'id');
+	}
+
+	public function getIds(string $reference) {
+		return $this->treeController->options($reference,$this->allowsView)->pluck(['id']);
 	}
 
 	public function index(Request $request) {
-		return $this->treeController->branch($request->get('section', "ROOT"));
+		return $this->treeController->branch($request->get('section', "ROOT"),$this->allowsView);
 	}
 
 	public function show($id) {

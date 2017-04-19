@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Role extends Model
 {
@@ -48,8 +49,8 @@ class Role extends Model
 		return $this->categories()->save($category);
 	}
 
-	public static function options() {
-		return with(new static)->all()->pluck('name','id');
+	public static function options(Collection $categories = null) {
+		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');
 	}
 
 

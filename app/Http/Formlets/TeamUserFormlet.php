@@ -7,6 +7,7 @@
 
 namespace App\Http\Formlets;
 
+use App\Http\Controllers\CategoryController;
 use App\Models\Role;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
@@ -14,13 +15,19 @@ use RS\Form\Formlet;
 class TeamUserFormlet extends Formlet {
 	public $formletView = "team.user";
 
+	private $categoryController;
+
+	public function __construct(CategoryController $categoryController) {
+		$this->categoryController = $categoryController;
+	}
+
 	/**
 	 * Prepare the form with fields
 	 *
 	 * @return void
 	 */
 	public function prepareForm() {
-		$field = new Select('role[]',Role::options());
+		$field = new Select('role[]',Role::options($this->categoryController->getIds("ROLES")));
 		$this->add(
 			$field->setMultiple(true)
 				->setValue($this->model->teamRoles->pluck('id')->all())
