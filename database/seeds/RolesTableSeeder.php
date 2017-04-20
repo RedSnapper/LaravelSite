@@ -14,10 +14,10 @@ class RolesTableSeeder extends Seeder {
 	 */
 	//TODO:: add fix for superuser to have root access to categories.
 	public function run() {
-
-		$devCategory = Category::reference('Roles')->first()->id;
-		$this->withJoins(1,7,['name'=>'SuperUser','category_id'=> $devCategory]);
-		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $devCategory]);
+		$category = Category::reference('Super')->first()->id;
+		$this->withJoins(1,12345,['name'=>'SuperUser','category_id'=> $category]);
+		$category = Category::reference('Admin')->first()->id;
+		$this->withJoins(1,7,['name'=>'Editor','category_id'=> $category]);
 		$this->withJoins(3,9);
 
 		$this->giveAccessToAllCategories();
@@ -26,7 +26,11 @@ class RolesTableSeeder extends Seeder {
 
 	private function withJoins($count,$activities = 5,$values = []) {
 		factory(Role::class,$count)->create($values)->each(function ($role) use($activities) {
-			$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
+			if($activities == 12345) {
+				$role->activities()->attach(Activity::all()->pluck('id'));
+			} else {
+				$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
+			}
 				$role->users()->attach([1,2]); //Ben n Param
 				$role->users()->attach(User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id'));
 		});

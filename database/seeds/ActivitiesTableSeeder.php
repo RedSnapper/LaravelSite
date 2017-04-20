@@ -11,11 +11,20 @@ use App\Models\Category;
  */
 class ActivitiesTableSeeder extends Seeder {
 	public function run() {
+		//Users
+		$category = Category::reference('Users','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'USER_NAV','label'=>'User navigation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'USER_INDEX','label'=>'User index access','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'USER_CREATE','label'=>'User creation','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'USER_DESTROY','label'=>'User deletion','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'USER_MODIFY','label'=>'User edit/update access','category_id'=> $category]);
+		factory(Activity::class,1)->create(['name'=>'USER_SHOW','label'=>'User show details','category_id'=> $category]);
 		//Layouts
 		$category = Category::reference('Layouts','ACTIVITIES')->first()->id;
 		factory(Activity::class,1)->create(['name'=>'LAYOUT_NAV','label'=>'Layouts navigation','category_id'=> $category]);
 		//Roles
 		$category = Category::reference('Roles','ACTIVITIES')->first()->id;
+		factory(Activity::class,1)->create(['name'=>'ACCESS_CONTROL','label'=>'Eligible to reach access control.','category_id'=> $category]);
 		factory(Activity::class,1)->create(['name'=>'ROLE_NAV','label'=>'Roles navigation','category_id'=> $category]);
 		//Activities
 		$category = Category::reference('Activities','ACTIVITIES')->first()->id;

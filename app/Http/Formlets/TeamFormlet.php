@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -13,13 +14,13 @@ use RS\Form\Formlet;
 class TeamFormlet extends Formlet {
 	public $formView = "team.form";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Team $team,CategoryController $categoryController) {
+	public function __construct(Team $team,CategoryHelper $categoryHelper) {
 		$this->setModel($team);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	public function prepareForm() {
@@ -28,12 +29,7 @@ class TeamFormlet extends Formlet {
 			$field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id', $this->categoryController->options('TEAMS'));
-		$this->add(
-			$field->setLabel("Category")
-				->setPlaceholder("Please select a category")
-				->setDefault($this->getData('category'))
-		);
+		$this->categoryHelper->field($this,'TEAMS');
 
 		//Set UserTeamRoles
 		$team = $this->getModel()->getKey();
@@ -53,7 +49,7 @@ class TeamFormlet extends Formlet {
 	public function rules(): array {
 		return [
 			'name'        => 'required|max:255',
-			'category_id' => 'required'
+			'category_id' => 'required|category'
 		];
 	}
 

@@ -6,6 +6,7 @@ use App\Http\Formlets\MediaEditFormlet;
 use App\Http\Formlets\MediaFormlet;
 use App\Models\Category;
 use App\Models\Media;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,10 +15,15 @@ class MediaController extends Controller {
 	 * @var MediaFormlet
 	 */
 	private $form;
+	/**
+	 * @var CategoryController
+	 */
+	private $categoryController;
 
-	public function __construct(MediaFormlet $form) {
+	public function __construct(MediaFormlet $form,CategoryController $categoryController) {
 		$this->form = $form;
 		$this->middleware('auth');
+		$this->categoryController = $categoryController;
 	}
 
 	/**
@@ -29,9 +35,10 @@ class MediaController extends Controller {
 		$this->authorize('MEDIA_INDEX');
 		if ($category->exists && Gate::allows('MEDIA_INDEX', $category)) {
 			$medias = Media::orderBy('name');
-			$medias->where('category_id', $category->id);
+			$teamCats = $this->categoryController->getIds('TEAMS'); 									//teams that I am in.
+			$teamIds = Team::getIds($teamCats);
+			$medias->whereIn('team_id',$teamIds)->where('category_id', $category->id);
 			$medias = $medias->paginate(10);
-
 			return view("media.index", compact('medias', 'category'));
 		}
 		return view("media.index");

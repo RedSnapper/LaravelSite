@@ -8,6 +8,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
@@ -20,14 +21,14 @@ use Illuminate\Validation\Rule;
 class SegmentFormlet extends Formlet {
 	public $formView = "segment.form";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Segment $segment,CategoryController $categoryController) {
+	public function __construct(Segment $segment,CategoryHelper $categoryHelper) {
 
 		$this->setModel($segment);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	public function prepareForm() {
@@ -35,12 +36,7 @@ class SegmentFormlet extends Formlet {
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
-		$field = new Select('category_id',$this->categoryController->options('SEGMENTS'));
-		$this->add(
-		  $field->setLabel("Category")
-			->setPlaceholder("Please select a category")
-		  	->setDefault($this->getData('category'))
-		);
+		$this->categoryHelper->field($this,'SEGMENTS');
 
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 
@@ -70,7 +66,7 @@ class SegmentFormlet extends Formlet {
 		$key = $this->model->getKey();
 		return [
 		  'name' => ['required', 'max:255', Rule::unique('segments')->ignore($key)],
-		  'category_id' => 'required'
+		  'category_id' => 'required|category'
 		];
 	}
 

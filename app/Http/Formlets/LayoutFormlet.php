@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
@@ -12,28 +13,21 @@ use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
 
-	public $formView = "layout.form";
-	/**
-	 * @var CategoryController
-	 */
 	private $categoryController;
+	/**
+	 * @var CategoryHelper
+	 */
+	private $categoryHelper;
 
-	public function __construct(Layout $layout,CategoryController $categoryController) {
+	public function __construct(Layout $layout,CategoryHelper $categoryHelper) {
 		$this->setModel($layout);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	public function prepareForm(){
 		$field = new Input('text','name');
-		$this->add(
-			$field->setLabel('Name')
-		);
-		$field = new Select('category_id',$this->categoryController->options('LAYOUTS'));
-		$this->add(
-			$field->setLabel("Category")
-				->setPlaceholder("Please select a category")
-				->setDefault($this->getData('category'))
-		);
+		$this->add($field->setLabel('Name'));
+		$this->categoryHelper->field($this,'LAYOUTS');
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
 
 	}

@@ -117,13 +117,13 @@ class CategoryController extends ApiController {
 
 	private function allowsModify() {
 		return function (Category $category) {
-			return Gate::allows('update', $category);
+			return Gate::allows('modify', $category);
 		};
 	}
 
 	private function allowsView() {
 		return function (Category $category) {
-			return Gate::allows('update', $category);
+			return Gate::allows('view', $category);
 		};
 	}
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Media;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
@@ -14,13 +15,13 @@ class MediaFormlet extends Formlet {
 
 	public $formView = "media.form";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Media $media, CategoryController $categoryController) {
+	public function __construct(Media $media, CategoryHelper $categoryHelper) {
 		$this->setModel($media);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	/**
@@ -33,18 +34,12 @@ class MediaFormlet extends Formlet {
 		$field = new Input('text', 'name');
 		$this->add($field->setLabel("Name")->setRequired(true));
 
-		$field = new Select('category_id',$this->categoryController->options('MEDIA'));
-		$this->add(
-		  $field->setLabel("Category")
-			->setPlaceholder("Please select a category")
-			->setDefault($this->getData('category'))
-		);
+		$this->categoryHelper->field($this,'MEDIA');
 
-		$field = new Select('team_id',Team::options());
+		$field = new Select('team_id', Team::options($this->categoryHelper->available("TEAMS")));
 		$this->add(
 			$field->setLabel("Team")
 				->setPlaceholder("Please select a team")
-//				->setDefault($this->getData('team'))
 		);
 
 		$field = new Input('file', 'media');

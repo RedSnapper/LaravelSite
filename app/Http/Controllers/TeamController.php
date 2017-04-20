@@ -84,4 +84,9 @@ class TeamController extends Controller {
 		$this->form->delete($id);
 		return redirect()->back();
 	}
+
+	public function getIds(string $reference) {
+//		return $this->treeController->options($reference, $this->allowsView())->pluck(['id']);
+	}
+
 }

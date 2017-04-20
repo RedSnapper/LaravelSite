@@ -32,7 +32,7 @@ class CategoryPolicy {
 		return $this->user->hasCategory($user, $category);
 	}
 
-	public function update(User $user, Category $category) {
+	public function modify(User $user, Category $category) {
 		return $this->user->hasCategory($user, $category);
 	}
 

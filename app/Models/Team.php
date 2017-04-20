@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class Team extends Model {
@@ -59,8 +59,18 @@ class Team extends Model {
 	 * 1: the visibility (by role) of the categories it is in.
 	 * 2: being a member of the team.
 	 **/
-	public static function options() {
-		return with(new static)->all()->pluck('name','id');
+	public static function options(Collection $categories = null) {
+		return is_null($categories) ?
+		 with(new static)->pluck('name','id')
+		:
+		 with(new static)->whereIn('category_id',$categories)->pluck('name','id');
+	}
+
+	public static function getIds(Collection $categories = null) {
+		return is_null($categories) ?
+			with(new static)->pluck('id')
+			:
+			with(new static)->whereIn('category_id',$categories)->pluck('id');
 	}
 
 

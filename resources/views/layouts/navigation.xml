@@ -22,22 +22,22 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav" data-v.auth="true">
 
-                    <li>
+                    <li data-v.can="MEDIA_NAV">
                         <a data-v.route="media.index">Media</a>
                     </li>
-                    <li class="dropdown">
+                    <li data-v.can="ACCESS_CONTROL"  class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Access Control <span class="caret"/></a>
                         <ul class="dropdown-menu">
-                            <li>
+                            <li data-v.can="USER_NAV" >
                                 <a data-v.route="user.index">Users</a>
                             </li>
-                            <li>
+                            <li data-v.can="TEAM_NAV">
                                 <a data-v.route="team.index">Teams</a>
                             </li>
-                            <li>
+                            <li data-v.can="ROLE_NAV">
                                 <a data-v.route="role.index">Roles</a>
                             </li>
-                            <li>
+                            <li data-v.can="ACTIVITY_NAV">
                                 <a data-v.route="activity.index">Activities</a>
                             </li>
                         </ul>

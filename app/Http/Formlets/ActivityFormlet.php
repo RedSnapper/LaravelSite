@@ -7,10 +7,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
-use RS\Form\Fields\Select;
 use App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,26 +19,20 @@ use Illuminate\Validation\Rule;
 class ActivityFormlet extends Formlet {
 	public $formView = "activity.form";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Activity $activity,CategoryController $categoryController) {
+	public function __construct(Activity $activity,CategoryHelper $categoryHelper) {
 		$this->setModel($activity);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	public function prepareForm() {
 
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
-		$field = new Select('category_id',$this->categoryController->options('ACTIVITIES'));
-		$this->add(
-			$field->setLabel("Category")
-				->setPlaceholder("Please select a category")
-				->setDefault($this->request->get('category'))
-		);
-
+		$this->categoryHelper->field($this,'ACTIVITIES');
 		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles());
 
 	}
@@ -68,7 +61,7 @@ class ActivityFormlet extends Formlet {
 		$key = $this->model->getKey();
 		return [
 			'name' => ['required', 'max:255', Rule::unique('activities')->ignore($key)],
-			'category_id' => 'required'
+			'category_id' => 'required|category'
 		];
 	}
 

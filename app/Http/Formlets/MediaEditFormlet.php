@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Media;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
@@ -14,13 +15,13 @@ use RS\Form\Formlet;
 class MediaEditFormlet extends Formlet {
 	public $formView = "media.edit";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Media $media, CategoryController $categoryController) {
+	public function __construct(Media $media, CategoryHelper $categoryHelper) {
 		$this->setModel($media);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	/**
@@ -32,12 +33,9 @@ class MediaEditFormlet extends Formlet {
 		$field = new Input('text', 'name');
 		$this->add($field->setLabel("Name")->setRequired(true));
 
-		$field = new Select('category_id', $this->categoryController->options('MEDIA'));
-		$this->add(
-			$field->setLabel("Category")
-		);
+		$this->categoryHelper->field($this,'MEDIA');
 
-		$field = new Select('team_id', Team::options());
+		$field = new Select('team_id', Team::options($this->categoryHelper->available("TEAMS")));
 		$this->add(
 			$field->setLabel("Team")
 				->setPlaceholder("Please select a team")
@@ -62,6 +60,8 @@ class MediaEditFormlet extends Formlet {
 			'name'        => ['required', 'max:255', Rule::unique('media')->ignore($key)],
 			'filename'    => ['required', 'max:255'],
 			'category_id' => 'required|category',
+			'team_id'     => 'required|integer',
+
 		];
 
 		return $rules;

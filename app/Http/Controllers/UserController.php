@@ -28,6 +28,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(User $user) {
+		$this->authorize('USER_INDEX');
 		$users = $user->orderBy('email')->paginate(10);
 		return view("user.index", compact('users'));
 	}
@@ -39,6 +40,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id = null) {
+		$this->authorize('USER_SHOW');
 		$form = $this->form->create(
 		  ['route' => 'user.store']
 		);
@@ -54,6 +56,7 @@ class UserController extends Controller {
 	 * @return View
 	 */
 	public function create($id = null) {
+		$this->authorize('USER_CREATE');
 		return $this->form->renderWith(['route' => ['user.store']])
 		  ->with('title','New User');
 	}
@@ -64,6 +67,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Contracts\View\View
 	 */
 	public function edit($id = null) {
+		$this->authorize('USER_MODIFY');
 		$this->form->setKey($id);
 		//now update method for updating an existing model.
 		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH'])
@@ -77,6 +81,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request) {
+		$this->authorize('USER_CREATE');
 		$user = $this->form->store();
 		return redirect()->route('user.edit', $user->id);
 	}
@@ -88,6 +93,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update($id) {
+		$this->authorize('USER_MODIFY');
 		$this->form->setKey($id);
 		$user = $this->form->update();
 		return redirect()->route('user.edit',$user->id);
@@ -100,6 +106,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
+		$this->authorize('USER_DESTROY');
 		$this->form->delete($id);
 		return redirect()->back();
 	}

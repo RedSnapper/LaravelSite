@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Formlets\Helpers\CategoryHelper;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
@@ -14,13 +15,13 @@ class RoleFormlet extends Formlet {
 
 	public $formView = "role.form";
 	/**
-	 * @var CategoryController
+	 * @var CategoryHelper
 	 */
-	private $categoryController;
+	private $categoryHelper;
 
-	public function __construct(Role $role,CategoryController $categoryController) {
+	public function __construct(Role $role,CategoryHelper $categoryHelper) {
 		$this->setModel($role);
-		$this->categoryController = $categoryController;
+		$this->categoryHelper = $categoryHelper;
 	}
 
 	public function prepareForm() {
@@ -29,12 +30,7 @@ class RoleFormlet extends Formlet {
 		  $field->setLabel('Name')->setRequired()
 		);
 
-		$field = new Select('category_id', $this->categoryController->options('ROLES'));
-		$this->add(
-		  $field->setLabel("Category")
-			->setPlaceholder("Please select a category")
-			->setDefault($this->getData('category'))
-		);
+		$this->categoryHelper->field($this,'ROLES');
 
 		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
 
@@ -45,7 +41,7 @@ class RoleFormlet extends Formlet {
 	public function rules(): array {
 		return [
 		  'name' => 'required|max:255',
-		  'category_id' => 'required'
+		  'category_id' => 'required|category'
 		];
 	}
 
