@@ -81,10 +81,11 @@ class UserPolicy {
 	}
 
 	/**
-	 * @param int $user
+	 * @param int|User $user
 	 * @return Collection
 	 */
-	private function getAvailableCategories(int $user): Collection {
+	protected function getAvailableCategories(int $user): Collection {
+		$user = $this->getUserID($user);
 		$query = $this->connection->table('categories as self')->select('self.id')
 		  ->join('categories', function ($join) {
 			  $join->on('self.idx', '<', 'categories.nextchild')->on('self.idx', '>=', 'categories.idx');
@@ -99,10 +100,11 @@ class UserPolicy {
 
 	/**
 	 * @param Connection $connection
-	 * @param int        $user
+	 * @param int|User        $user
 	 * @return Collection
 	 */
-	private function getAvailableTeamCategories(int $user): Collection {
+	protected function getAvailableTeamCategories($user): Collection {
+		$user = $this->getUserID($user);
 		$query = $this->connection->table('categories as self')->select([
 		  'self.id as category',
 		  'role_team_user.team_id as team'
@@ -118,10 +120,11 @@ class UserPolicy {
 	}
 
 	/**
-	 * @param int $user
+	 * @param int|User $user
 	 * @return Collection
 	 */
-	private function getAvailableTeams(int $user): Collection {
+	protected function getAvailableTeams($user): Collection {
+		$user = $this->getUserID($user);
 		$query = $this->connection->table('role_team_user as rtu')->select([
 		  'rtu.team_id as team',
 		  'a.name as activity'
@@ -130,6 +133,13 @@ class UserPolicy {
 		  ->join('activities as a', 'a.id', 'ar.activity_id')
 		  ->where('rtu.user_id', $user);
 		return collect($query->get())->groupBy('team');
+	}
+	/**
+	 * @param $user
+	 * @return int
+	 */
+	protected function getUserID($user): int {
+		return is_a($user, User::class) ? $user->id : (int) $user;
 	}
 
 	/**

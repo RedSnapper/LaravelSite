@@ -31,8 +31,8 @@ class CategoryController extends ApiController {
 		return $this->treeController->options($reference, $this->allowsView())->pluck('name', 'id');
 	}
 
-	public function getIds(string $reference) {
-		return $this->treeController->options($reference, $this->allowsView())->pluck(['id']);
+	public function getCollection(string $reference) {
+		return $this->treeController->options($reference, $this->allowsView());
 	}
 
 	public function index(Request $request) {

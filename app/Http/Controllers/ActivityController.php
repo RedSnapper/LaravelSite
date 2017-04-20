@@ -16,7 +16,7 @@ class ActivityController extends Controller {
 	private $form;
 
 	public function __construct(ActivityFormlet $form) {
-		$this->middleware('can:ACTIVITY_NAV');
+		$this->middleware('can:ACTIVITY_ACCESS');
 		$this->form = $form;
 	}
 
@@ -26,7 +26,6 @@ class ActivityController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Category $category) {
-		$this->authorize('ACTIVITY_INDEX');
 		$activities = Activity::orderBy('name');
 		if ($category->exists) {
 			$activities->where('category_id', $category->id);

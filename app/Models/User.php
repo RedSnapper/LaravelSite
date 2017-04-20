@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable {
 	use Notifiable;
@@ -66,6 +67,10 @@ class User extends Authenticatable {
 
 	public function roleTeams() {
 		return $this->belongsToMany(Team::class, 'role_team_user', 'user_id', 'team_id')->withPivot('role_id');
+	}
+
+	public function rTeams() {
+		return $this->belongsToMany(Team::class,'role_team_user', 'user_id', 'team_id')->get(["teams.*"])->groupBy("teams.id");
 	}
 
 	public function hasRole($role, $team = null) {

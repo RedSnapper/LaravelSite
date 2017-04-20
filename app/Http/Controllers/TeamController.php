@@ -85,8 +85,10 @@ class TeamController extends Controller {
 		return redirect()->back();
 	}
 
-	public function getIds(string $reference) {
-//		return $this->treeController->options($reference, $this->allowsView())->pluck(['id']);
+	public function getCollection() {
+//		return $this->treeController->options($reference, $this->allowsView());
 	}
+
+
 
 }

@@ -40,7 +40,7 @@ Route::get('segment/{category?}', 'SegmentController@index')->name('segment.inde
 //Media
 Route::resource('/media','MediaController',['except'=>'show']);
 Route::get('/media/search','MediaController@search');
-Route::get('media/{category?}', 'MediaController@index')->name('media.index');
+Route::get('media/{team}/{category?}', 'MediaController@index')->name('media.index');
 
 
 Route::get('/img/{media}','ImageController@show')->name('img.show');

@@ -2,10 +2,16 @@
 
 namespace App\View\Layouts;
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\LogoutForm;
+use App\Models\Team;
+use App\Models\User;
+use App\Policies\Helpers\UserPolicy;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use RS\NView\Document;
+use RS\NView\View;
 use RS\NView\ViewController;
 
 class Navigation extends ViewController{
@@ -14,11 +20,27 @@ class Navigation extends ViewController{
 	 * @var LogoutForm
 	 */
 	private $form;
+	/**
+	 * @var CategoryController
+	 */
+	private $catController;
 
-	public function __construct(LogoutForm $form) {
+	public function __construct(LogoutForm $form, CategoryController $catController) {
 		$this->form = $form;
+		$this->catController = $catController;
 	}
 
+	public function compose(View $view) {
+		$mediaCats = $this->catController->getCollection("MEDIA");
+		$userTeams = Auth::user()->rTeams()->flatten();
+		$userTeams->filter(function($team) use($mediaCats) {
+			foreach ($mediaCats as $category) {
+				if (Gate::allows('MEDIA_ACCESS', [$team,$category])) return true;
+			}
+			return false;
+		});
+		$view->with('mediaTeams',$userTeams);
+	}
 
 	public function render(Document $view,array $data): Document {
    		$view->set("//*[@data-v.xp='app']/child-gap()",config('app.name'));
