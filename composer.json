@@ -27,6 +27,7 @@
         "rs/nview-laravel": "dev-master"
     },
     "require-dev": {
+        "doctrine/dbal": "^2.5",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
@@ -42,7 +43,8 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": ["tests/utilities/functions.php"]
     },
     "scripts": {
         "post-root-package-install": [
