@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Team;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
-class TeamsTableSeeder extends Seeder {
+class TeamsTableSeeder extends BaseTableSeeder {
 	/**
 	 * Run the database seeds.
 	 *
@@ -21,13 +21,21 @@ class TeamsTableSeeder extends Seeder {
 	}
 
 	private function withJoins($count,$roles = 5,$values = []) {
-		factory(Team::class,$count)->create($values)->each(function ($team) use($roles) {
+
+		Collection::times($count, function () use ($values, $roles) {
+
+			$values['category_id'] = @$values['category_id'] ?? $this->getRandomCategory('TEAMS');
+			$team = factory(Team::class)->create($values);
+
 			$roles = Role::inRandomOrder()->limit($roles)->pluck('id');
 			foreach($roles as $role) {
 				$team->attachRoleUsers($role,[1,2]);
 				$team->attachRoleUsers($role,User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id')->all());
 			}
+
+			return $team;
 		});
+
 
 	}
 

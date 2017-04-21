@@ -2,10 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Category;
-use App\Models\Layout;
-use App\Models\Role;
-use App\Models\Segment;
-use App\Models\Activity;
 
 /**
  * Part of form

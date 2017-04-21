@@ -1,49 +1,59 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\Activity;
 use App\Models\Category;
 
-/**
- * Part of form
- * User: ben ©2017 Red Snapper Ltd.
- * Date: 05/04/2017 10:52
- */
-class ActivitiesTableSeeder extends Seeder {
+class ActivitiesTableSeeder extends BaseTableSeeder {
 	public function run() {
+
 		//Users
-		$category = Category::reference('Users','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'USER_ACCESS','label'=>'User  management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'USER_CREATE','label'=>'User creation','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'USER_MODIFY','label'=>'User modification','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'USER_SHOW','label'=>'User show details','category_id'=> $category]);
+		$category = $this->getCategory('Users');
+		$this->create('USER_ACCESS','User  management access',$category);
+		$this->create('USER_CREATE','User creation',$category);
+		$this->create('USER_MODIFY','User modification',$category);
+		$this->create('USER_SHOW','User show details',$category);
+
 		//Layouts
-		$category = Category::reference('Layouts','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'LAYOUT_ACCESS','label'=>'Layouts navigation','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'LAYOUT_CREATE','label'=>'Layouts creation','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'LAYOUT_MODIFY','label'=>'Layouts modification','category_id'=> $category]);
+		$category = $this->getCategory('Layouts');
+		$this->create('LAYOUT_ACCESS','Layouts navigation',$category);
+		$this->create('LAYOUT_CREATE','Layouts creation',$category);
+		$this->create('LAYOUT_MODIFY','Layouts modification',$category);
+
 		//Roles
-		$category = Category::reference('Roles','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'ACCESS_CONTROL','label'=>'Eligible to reach access control.','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'ROLE_ACCESS','label'=>'Roles  management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'ROLE_MODIFY','label'=>'Roles modification','category_id'=> $category]);
+		$category = $this->getCategory('Roles');
+		$this->create('ACCESS_CONTROL','Eligible to reach access control',$category);
+		$this->create('ROLE_ACCESS','Roles management access',$category);
+		$this->create('ROLE_MODIFY','Roles modification',$category);
+
 		//Activities
-		$category = Category::reference('Activities','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'ACTIVITY_ACCESS','label'=>'Activities  management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'ACTIVITY_MODIFY','label'=>'Activities modification','category_id'=> $category]);
+		$category = $this->getCategory('Activities');
+		$this->create('ACTIVITY_ACCESS','Activities management access',$category);
+		$this->create('ACTIVITY_MODIFY','Activities modification',$category);
+
 		//Media
-		$category = Category::reference('Media','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'MEDIA_ACCESS','label'=>'Media  management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'MEDIA_CREATE','label'=>'Media creation','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'MEDIA_MODIFY','label'=>'Media modification','category_id'=> $category]);
+		$category = $this->getCategory('Media');
+		$this->create('MEDIA_ACCESS','Media  management access',$category);
+		$this->create('MEDIA_CREATE','Media creation',$category);
+		$this->create('MEDIA_MODIFY','Media modification',$category);
+
 		//Teams
-		$category = Category::reference('Teams','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'TEAM_ACCESS','label'=>'Team  management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'TEAM_MODIFY','label'=>'Team modification','category_id'=> $category]);
+		$category = $this->getCategory('Teams');
+		$this->create('TEAM_ACCESS','Team management access',$category);
+		$this->create('TEAM_MODIFY','Team modification',$category);
+
 		//Segments
-		$category = Category::reference('Segments','ACTIVITIES')->first()->id;
-		factory(Activity::class,1)->create(['name'=>'SEGMENT_ACCESS','label'=>'Segment management access','category_id'=> $category]);
-		factory(Activity::class,1)->create(['name'=>'SEGMENT_MODIFY','label'=>'Segment modification','category_id'=> $category]);
+		$category = $this->getCategory('Segments');
+		$this->create('SEGMENT_ACCESS','Segment management access',$category);
+		$this->create('SEGMENT_MODIFY','Segment modification',$category);
+
+	}
+
+	protected function getCategory(string $name){
+		return Category::reference($name,'ACTIVITIES')->first()->id;
+	}
+
+	protected function create(string $name,string $label,int $category_id){
+		return factory(Activity::class)->create(compact('name','label','category_id'));
 	}
 
 }
