@@ -26,25 +26,17 @@ class CategoriesTest extends TestCase {
 
 		$root = create(Category::class);
 
-		$user = create(User::class);
+		$user = $this->signIn();
 
-		$role = create(Role::class);
-		$role->givePermissionToCategory($root);
-
-		$user->roles()->save($role);
-
-		$this->signIn($user);
-
-		$child = make(Category::class,['parent'=>$root->id]);
+		$user->roles()->first()->givePermissionToCategory($root);
+		
+		$child = make(Category::class, ['parent' => $root->id]);
 
 		$response = $this->json('POST', '/api/category', $child->toArray());
 
 		$response
-		  ->assertStatus(201);
-
-		//$this->get($response->headers->get('Location'))
-		//  ->assertSee($child->name)
-		//  ->assertSee($thread->body);
+		  ->assertStatus(201)
+		  ->assertJsonFragment(['name' => $child->name]);
 	}
 
 }
