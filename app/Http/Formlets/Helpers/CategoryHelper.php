@@ -28,6 +28,7 @@ class CategoryHelper {
 			$category = $form->getModel()->category_id; //from the model.
 		}
 		$categoryOptions = $this->categoryController->options($section);
+		
 		if($categoryOptions->has($category)) {
 			$field = new Select('category_id', $this->categoryController->options($section));
 			$form->add(

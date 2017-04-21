@@ -69,8 +69,8 @@ class User extends Authenticatable {
 		return $this->belongsToMany(Team::class, 'role_team_user', 'user_id', 'team_id')->withPivot('role_id');
 	}
 
-	public function rTeams() {
-		return $this->belongsToMany(Team::class,'role_team_user', 'user_id', 'team_id')->get(["teams.*"])->groupBy("teams.id");
+	public function teams() {
+		return $this->belongsToMany(Team::class,'role_team_user', 'user_id', 'team_id')->groupBy(["teams.id","role_team_user.user_id"]);
 	}
 
 	public function hasRole($role, $team = null) {
@@ -86,6 +86,7 @@ class User extends Authenticatable {
 			return !!$role->intersect($this->teamRoles->wherePivot('team_id',$team))->count();
 		}
 	}
+
 
 	public function assignRole($role, $team = null) {
 		if (is_null($team)) {

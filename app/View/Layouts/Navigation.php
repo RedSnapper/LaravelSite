@@ -32,18 +32,12 @@ class Navigation extends ViewController{
 
 	public function compose(View $view) {
 
-		if(!auth()->check()){
+		if(!Auth::check()){
 			return;
 		}
 
-		$mediaCats = $this->catController->getCollection("MEDIA");
-		$userTeams = Auth::user()->rTeams()->flatten();
-		$userTeams->filter(function($team) use($mediaCats) {
-			foreach ($mediaCats as $category) {
-				if (Gate::allows('MEDIA_ACCESS', [$team,$category])) return true;
-			}
-			return false;
-		});
+		$userTeams = Auth::user()->teams()->get();
+
 		$view->with('mediaTeams',$userTeams);
 	}
 

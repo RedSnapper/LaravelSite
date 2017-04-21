@@ -38,9 +38,11 @@ Route::resource('/segment','SegmentController', ['except' => 'show']);
 Route::get('segment/{category?}', 'SegmentController@index')->name('segment.index');
 
 //Media
-Route::resource('/media','MediaController',['except'=>'show']);
 Route::get('/media/search','MediaController@search');
+Route::resource('/media','MediaController',['except'=>'show']);
 Route::get('media/{team}/{category?}', 'MediaController@index')->name('media.index');
+
+Route::resource('team.media','TeamMediaController',['except'=>'show']);
 
 
 Route::get('/img/{media}','ImageController@show')->name('img.show');
