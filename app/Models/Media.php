@@ -10,6 +10,8 @@ class Media extends Model {
 
 	use Searchable;
 
+	protected $with = ['team','category'];
+
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -53,6 +55,10 @@ class Media extends Model {
 
 	public function category() {
 		return $this->belongsTo(Category::class);
+	}
+
+	public function team() {
+		return $this->belongsTo(Team::class);
 	}
 
 	public function scopeTeam($query,$team) {

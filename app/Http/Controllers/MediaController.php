@@ -101,16 +101,24 @@ class MediaController extends Controller {
 	/**
 	 * @return \Illuminate\Contracts\View\View
 	 */
-	public function edit($id, MediaEditFormlet $form) {
-		$form->setKey($id);
+	public function edit(Media $medium, MediaEditFormlet $form) {
+
+		// Medium is the generated name by Laravel
+		// If we want model binding we need to use this name or change it
+		// in the routes file
+
+		$this->authorize('MEDIA_MODIFY',[$medium->category,$medium->team]);
+		$form->setModel($medium);
 		return $form->renderWith([
-			'route'  => ['media.update', $id],
+			'route'  => ['media.update', $medium->id],
 			'method' => 'PUT'
 		])->with('media', $form->getModel());
 	}
 
-	public function update($id, MediaEditFormlet $form) {
-		$form->setKey($id);
+	public function update(Media $medium, MediaEditFormlet $form) {
+
+		$this->authorize('MEDIA_MODIFY',[$medium->category,$medium->team]);
+		$form->setModel($medium);
 		$media = $form->update();
 		return redirect()->route('media.edit', $media->id);
 	}

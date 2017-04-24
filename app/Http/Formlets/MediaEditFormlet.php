@@ -35,7 +35,7 @@ class MediaEditFormlet extends Formlet {
 
 		$this->categoryHelper->field($this,'MEDIA');
 
-		$field = new Select('team_id', Team::options($this->categoryHelper->available("TEAMS")));
+		$field = new Select('team_id', auth()->user()->teams()->pluck('name', 'id'));
 		$this->add(
 			$field->setLabel("Team")
 				->setPlaceholder("Please select a team")
