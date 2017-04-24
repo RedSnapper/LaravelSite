@@ -2,6 +2,7 @@
 import './bootstrap';
 import 'jqtree';
 import './jqTreeContextMenu';
+import without from 'lodash/without';
 
 import * as api from './api/category';
 
@@ -114,14 +115,9 @@ $tree.bind(
 //TODO: use querystring merge rather than replace
 $tree.bind('tree.click', e => {
 
-    const path = window.location.pathname;
-    let parts = path.split('/');
-    if(parts.length > 2){
-        parts[parts.length-1] = e.node.id;
-    }else{
-        parts = parts.concat(e.node.id);
-    }
-
+    const path = $tree.data('link');
+    let parts = without(path.split('/'),"");
+    parts = parts.concat(e.node.id);
     window.location.pathname = parts.join('/');
 });
 
