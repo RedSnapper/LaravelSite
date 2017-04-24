@@ -41,7 +41,7 @@ class MediaFormlet extends Formlet {
 		$this->add(
 		  $field->setLabel("Team")
 			->setPlaceholder("Please select a team")
-		  	->setDefault($this->getData('team')->id)
+		  	//->setDefault($this->getData('team')->id)
 		);
 
 		$field = new Input('file', 'media');

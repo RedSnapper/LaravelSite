@@ -46,22 +46,14 @@ class MediaController extends Controller {
 			return view("media.index",compact('team'));
 		}
 
+		$this->authorize('MEDIA_ACCESS',[$team,$category]);
 
+		$medias = Media::orderBy('name')
+			->team($team->id)
+			->category($category->id)
+			->paginate(10);
 
-////		$teamCats = $this->userPolicy->getAvailableTeamCategories(auth()->user()); 									//teams that I am in.
-//		if ($category->exists && Gate::allows('MEDIA_ACCESS', [$category, $team])) {
-//			$medias = Media::orderBy('name');
-////			$medias->whereIn('team_id',$teamIds)->where('category_id', $category->id);
-//			$medias = $medias->paginate(10);
-//			return view("media.index", compact('medias', 'category'));
-//		} elseif ($category->exists && Gate::allows('MEDIA_ACCESS', [$team,$category])) {
-//			$medias = Media::orderBy('name');
-////			$medias->whereIn('category_id',$teamIds)->where('team_id', $category->id);
-//			$medias = $medias->paginate(10);
-//			return view("media.index", compact('medias', 'category'));
-//		}
-
-		return view("media.index");
+		return view("media.index",compact('team','medias','category'));
 	}
 
 	public function show(Media $medium) {

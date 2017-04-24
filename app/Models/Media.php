@@ -55,6 +55,14 @@ class Media extends Model {
 		return $this->belongsTo(Category::class);
 	}
 
+	public function scopeTeam($query,$team) {
+		return $query->where('team_id',$team);
+	}
+
+	public function scopeCategory($query,$category) {
+		return $query->where('category_id',$category);
+	}
+
 	/**
 	 * Get parameters for media
 	 *

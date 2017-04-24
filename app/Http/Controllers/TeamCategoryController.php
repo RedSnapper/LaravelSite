@@ -28,18 +28,7 @@ class TeamCategoryController extends ApiController {
 		$this->treeController = new TreeController($node);
 	}
 
-	public function options(string $reference) {
-		return $this->getCollection($reference)->pluck('name', 'id');
-	}
-
-	public function getCollection(string $reference) {
-		return $this->treeController->options($reference, $this->allowsView());
-	}
-
-	public function getIds(string $reference) {
-		return $this->getCollection($reference)->pluck('id');
-	}
-
+	
 	public function index(Team $team,Request $request) {
 		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsView($team));
 	}
