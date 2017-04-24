@@ -40,19 +40,26 @@ class MediaController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Team $team,Category $category) {
-		$this->authorize('MEDIA_ACCESS');
-//		$teamCats = $this->userPolicy->getAvailableTeamCategories(auth()->user()); 									//teams that I am in.
-		if ($category->exists && Gate::allows('MEDIA_ACCESS', [$category, $team])) {
-			$medias = Media::orderBy('name');
-//			$medias->whereIn('team_id',$teamIds)->where('category_id', $category->id);
-			$medias = $medias->paginate(10);
-			return view("media.index", compact('medias', 'category'));
-		} elseif ($category->exists && Gate::allows('MEDIA_ACCESS', [$team,$category])) {
-			$medias = Media::orderBy('name');
-//			$medias->whereIn('category_id',$teamIds)->where('team_id', $category->id);
-			$medias = $medias->paginate(10);
-			return view("media.index", compact('medias', 'category'));
+
+		if (!$category->exists){
+			$this->authorize('MEDIA_ACCESS',$team);
+			return view("media.index",compact('team'));
 		}
+
+
+
+////		$teamCats = $this->userPolicy->getAvailableTeamCategories(auth()->user()); 									//teams that I am in.
+//		if ($category->exists && Gate::allows('MEDIA_ACCESS', [$category, $team])) {
+//			$medias = Media::orderBy('name');
+////			$medias->whereIn('team_id',$teamIds)->where('category_id', $category->id);
+//			$medias = $medias->paginate(10);
+//			return view("media.index", compact('medias', 'category'));
+//		} elseif ($category->exists && Gate::allows('MEDIA_ACCESS', [$team,$category])) {
+//			$medias = Media::orderBy('name');
+////			$medias->whereIn('category_id',$teamIds)->where('team_id', $category->id);
+//			$medias = $medias->paginate(10);
+//			return view("media.index", compact('medias', 'category'));
+//		}
 
 		return view("media.index");
 	}

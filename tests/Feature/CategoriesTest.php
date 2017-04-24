@@ -15,10 +15,21 @@ class CategoriesTest extends TestCase {
 	use DatabaseTransactions;
 
 	/** @test */
-	function guests_may_not_create_categories() {
+	function unauthorized_users_may_not_create_categories() {
 
 		$this->post('/api/category')
 		  ->assertRedirect('/login');
+
+		$root = create(Category::class);
+
+		$this->signIn();
+
+		$child = make(Category::class, ['parent' => $root->id]);
+
+		$response = $this->json('POST', '/api/category', $child->toArray());
+
+		$response
+			->assertStatus(422);
 	}
 
 	/** @test */

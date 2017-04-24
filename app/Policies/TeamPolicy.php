@@ -2,6 +2,9 @@
 
 namespace App\Policies;
 
+use App\Models\Category;
+use App\Models\Team;
+use App\Models\User;
 use App\Policies\Helpers\UserPolicy;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -26,6 +29,14 @@ class TeamPolicy {
 
 	public function __construct(UserPolicy $user) {
 		$this->user = $user;
+	}
+
+	public function view(User $user, Team $team , Category $category) {
+		return $this->user->hasTeamCategory($user,$team, $category);
+	}
+
+	public function modify(User $user, Team $team , Category $category) {
+		return $this->user->hasTeamCategory($user,$team, $category);
 	}
 
 	public function __call($activity, $arguments) {
