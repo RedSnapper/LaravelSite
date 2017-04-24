@@ -28,19 +28,19 @@ class TeamCategoryController extends ApiController {
 		$this->treeController = new TreeController($node);
 	}
 
-	
+
 	public function index(Team $team,Request $request) {
 		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsView($team));
 	}
 
-	public function store(Request $request) {
+	public function store(Team $team,Request $request) {
 
 		$this->validate($request, [
 			'parent' => 'required|category',
 			'name' => 'required'
 		]);
 
-		$category = $this->treeController->createNode($request->get('parent'), $request->get('name'), $this->allowsModify());
+		$category = $this->treeController->createNode($request->get('parent'), $request->get('name'), $this->allowsModify($team));
 
 		return $this->respondWithItemCreated($category);
 	}

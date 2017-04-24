@@ -24,3 +24,6 @@ Route::put('/category/{category}/moveBefore','CategoryController@moveBefore');
 Route::put('/category/{category}/moveAfter','CategoryController@moveAfter');
 
 Route::resource('team.category','TeamCategoryController',['except'=>['create','edit','show']]);
+Route::put('/team/{team}/category/{category}/moveInto','TeamCategoryController@moveInto');
+Route::put('/team/{team}/category/{category}/moveBefore','TeamCategoryController@moveBefore');
+Route::put('/team/{team}/category/{category}/moveAfter','TeamCategoryController@moveAfter');

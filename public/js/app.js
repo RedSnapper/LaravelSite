@@ -63,11 +63,317 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 101);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var bind = __webpack_require__(12);
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  typeof document.createElement -> undefined
+ */
+function isStandardBrowserEnv() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    typeof document.createElement === 'function'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object' && !isArray(obj)) {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim
+};
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10294,375 +10600,77 @@ return jQuery;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var bind = __webpack_require__(9);
-
-/*global toString:true*/
-
-// utils is a library of generic helper functions non-specific to axios
-
-var toString = Object.prototype.toString;
+var eq = __webpack_require__(91);
 
 /**
- * Determine if a value is an Array
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
  *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Array, otherwise false
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
  */
-function isArray(val) {
-  return toString.call(val) === '[object Array]';
-}
-
-/**
- * Determine if a value is an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an ArrayBuffer, otherwise false
- */
-function isArrayBuffer(val) {
-  return toString.call(val) === '[object ArrayBuffer]';
-}
-
-/**
- * Determine if a value is a FormData
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an FormData, otherwise false
- */
-function isFormData(val) {
-  return (typeof FormData !== 'undefined') && (val instanceof FormData);
-}
-
-/**
- * Determine if a value is a view on an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
- */
-function isArrayBufferView(val) {
-  var result;
-  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
-    result = ArrayBuffer.isView(val);
-  } else {
-    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
-  }
-  return result;
-}
-
-/**
- * Determine if a value is a String
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a String, otherwise false
- */
-function isString(val) {
-  return typeof val === 'string';
-}
-
-/**
- * Determine if a value is a Number
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Number, otherwise false
- */
-function isNumber(val) {
-  return typeof val === 'number';
-}
-
-/**
- * Determine if a value is undefined
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-function isUndefined(val) {
-  return typeof val === 'undefined';
-}
-
-/**
- * Determine if a value is an Object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Object, otherwise false
- */
-function isObject(val) {
-  return val !== null && typeof val === 'object';
-}
-
-/**
- * Determine if a value is a Date
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Date, otherwise false
- */
-function isDate(val) {
-  return toString.call(val) === '[object Date]';
-}
-
-/**
- * Determine if a value is a File
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a File, otherwise false
- */
-function isFile(val) {
-  return toString.call(val) === '[object File]';
-}
-
-/**
- * Determine if a value is a Blob
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Blob, otherwise false
- */
-function isBlob(val) {
-  return toString.call(val) === '[object Blob]';
-}
-
-/**
- * Determine if a value is a Function
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Function, otherwise false
- */
-function isFunction(val) {
-  return toString.call(val) === '[object Function]';
-}
-
-/**
- * Determine if a value is a Stream
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Stream, otherwise false
- */
-function isStream(val) {
-  return isObject(val) && isFunction(val.pipe);
-}
-
-/**
- * Determine if a value is a URLSearchParams object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a URLSearchParams object, otherwise false
- */
-function isURLSearchParams(val) {
-  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
-}
-
-/**
- * Trim excess whitespace off the beginning and end of a string
- *
- * @param {String} str The String to trim
- * @returns {String} The String freed of excess whitespace
- */
-function trim(str) {
-  return str.replace(/^\s*/, '').replace(/\s*$/, '');
-}
-
-/**
- * Determine if we're running in a standard browser environment
- *
- * This allows axios to run in a web worker, and react-native.
- * Both environments support XMLHttpRequest, but not fully standard globals.
- *
- * web workers:
- *  typeof window -> undefined
- *  typeof document -> undefined
- *
- * react-native:
- *  typeof document.createElement -> undefined
- */
-function isStandardBrowserEnv() {
-  return (
-    typeof window !== 'undefined' &&
-    typeof document !== 'undefined' &&
-    typeof document.createElement === 'function'
-  );
-}
-
-/**
- * Iterate over an Array or an Object invoking a function for each item.
- *
- * If `obj` is an Array callback will be called passing
- * the value, index, and complete array for each item.
- *
- * If 'obj' is an Object callback will be called passing
- * the value, key, and complete object for each property.
- *
- * @param {Object|Array} obj The object to iterate
- * @param {Function} fn The callback to invoke for each item
- */
-function forEach(obj, fn) {
-  // Don't bother if no value provided
-  if (obj === null || typeof obj === 'undefined') {
-    return;
-  }
-
-  // Force an array if not already something iterable
-  if (typeof obj !== 'object' && !isArray(obj)) {
-    /*eslint no-param-reassign:0*/
-    obj = [obj];
-  }
-
-  if (isArray(obj)) {
-    // Iterate over array values
-    for (var i = 0, l = obj.length; i < l; i++) {
-      fn.call(null, obj[i], i, obj);
-    }
-  } else {
-    // Iterate over object keys
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        fn.call(null, obj[key], key, obj);
-      }
-    }
-  }
-}
-
-/**
- * Accepts varargs expecting each argument to be an object, then
- * immutably merges the properties of each object and returns result.
- *
- * When multiple objects contain the same key the later object in
- * the arguments list will take precedence.
- *
- * Example:
- *
- * ```js
- * var result = merge({foo: 123}, {foo: 456});
- * console.log(result.foo); // outputs 456
- * ```
- *
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function merge(/* obj1, obj2, obj3, ... */) {
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Extends object a by mutably adding to it the properties of object b.
- *
- * @param {Object} a The object to be extended
- * @param {Object} b The object to copy properties from
- * @param {Object} thisArg The object to bind function to
- * @return {Object} The resulting value of object a
- */
-function extend(a, b, thisArg) {
-  forEach(b, function assignValue(val, key) {
-    if (thisArg && typeof val === 'function') {
-      a[key] = bind(val, thisArg);
-    } else {
-      a[key] = val;
-    }
-  });
-  return a;
-}
-
-module.exports = {
-  isArray: isArray,
-  isArrayBuffer: isArrayBuffer,
-  isFormData: isFormData,
-  isArrayBufferView: isArrayBufferView,
-  isString: isString,
-  isNumber: isNumber,
-  isObject: isObject,
-  isUndefined: isUndefined,
-  isDate: isDate,
-  isFile: isFile,
-  isBlob: isBlob,
-  isFunction: isFunction,
-  isStream: isStream,
-  isURLSearchParams: isURLSearchParams,
-  isStandardBrowserEnv: isStandardBrowserEnv,
-  forEach: forEach,
-  merge: merge,
-  extend: extend,
-  trim: trim
-};
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var _indexOf, getBoolString, html_escape, indexOf, isFunction, isInt;
-
-_indexOf = function(array, item) {
-  var i, j, len, value;
-  for (i = j = 0, len = array.length; j < len; i = ++j) {
-    value = array[i];
-    if (value === item) {
-      return i;
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
     }
   }
   return -1;
-};
+}
 
-indexOf = function(array, item) {
-  if (array.indexOf) {
-    return array.indexOf(item);
-  } else {
-    return _indexOf(array, item);
-  }
-};
-
-isInt = function(n) {
-  return typeof n === 'number' && n % 1 === 0;
-};
-
-isFunction = function(v) {
-  return typeof v === 'function';
-};
-
-html_escape = function(string) {
-  return ('' + string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
-};
-
-getBoolString = function(value) {
-  if (value) {
-    return 'true';
-  } else {
-    return 'false';
-  }
-};
-
-module.exports = {
-  _indexOf: _indexOf,
-  getBoolString: getBoolString,
-  html_escape: html_escape,
-  indexOf: indexOf,
-  isInt: isInt,
-  isFunction: isFunction
-};
+module.exports = assocIndexOf;
 
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var isKeyable = __webpack_require__(70);
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+module.exports = getMapData;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(6);
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+module.exports = nativeCreate;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(1);
-var normalizeHeaderName = __webpack_require__(30);
+var utils = __webpack_require__(0);
+var normalizeHeaderName = __webpack_require__(35);
 
 var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 var DEFAULT_CONTENT_TYPE = {
@@ -10679,10 +10687,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(8);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(8);
   }
   return adapter;
 }
@@ -10753,617 +10761,60 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, Node, Position;
+var baseIsNative = __webpack_require__(55),
+    getValue = __webpack_require__(64);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
 
-$ = jQuery;
-
-Position = {
-  getName: function(position) {
-    return Position.strings[position - 1];
-  },
-  nameToIndex: function(name) {
-    var i, j, ref;
-    for (i = j = 1, ref = Position.strings.length; 1 <= ref ? j <= ref : j >= ref; i = 1 <= ref ? ++j : --j) {
-      if (Position.strings[i - 1] === name) {
-        return i;
-      }
-    }
-    return 0;
-  }
-};
-
-Position.BEFORE = 1;
-
-Position.AFTER = 2;
-
-Position.INSIDE = 3;
-
-Position.NONE = 4;
-
-Position.strings = ['before', 'after', 'inside', 'none'];
-
-Node = (function() {
-  function Node(o, is_root, node_class) {
-    if (is_root == null) {
-      is_root = false;
-    }
-    if (node_class == null) {
-      node_class = Node;
-    }
-    this.name = '';
-    this.setData(o);
-    this.children = [];
-    this.parent = null;
-    if (is_root) {
-      this.id_mapping = {};
-      this.tree = this;
-      this.node_class = node_class;
-    }
-  }
-
-  Node.prototype.setData = function(o) {
-
-    /*
-    Set the data of this node.
-    
-    setData(string): set the name of the node
-    setdata(object): set attributes of the node
-    
-    Examples:
-        setdata('node1')
-    
-        setData({ name: 'node1', id: 1});
-    
-        setData({ name: 'node2', id: 2, color: 'green'});
-    
-    * This is an internal function; it is not in the docs
-    * Does not remove existing node values
-     */
-    var key, setName, value;
-    setName = (function(_this) {
-      return function(name) {
-        if (name !== null) {
-          return _this.name = name;
-        }
-      };
-    })(this);
-    if (typeof o !== 'object') {
-      setName(o);
-    } else {
-      for (key in o) {
-        value = o[key];
-        if (key === 'label') {
-          setName(value);
-        } else if (key !== 'children') {
-          this[key] = value;
-        }
-      }
-    }
-    return null;
-  };
-
-  Node.prototype.initFromData = function(data) {
-    var addChildren, addNode;
-    addNode = (function(_this) {
-      return function(node_data) {
-        _this.setData(node_data);
-        if (node_data.children) {
-          return addChildren(node_data.children);
-        }
-      };
-    })(this);
-    addChildren = (function(_this) {
-      return function(children_data) {
-        var child, j, len, node;
-        for (j = 0, len = children_data.length; j < len; j++) {
-          child = children_data[j];
-          node = new _this.tree.node_class('');
-          node.initFromData(child);
-          _this.addChild(node);
-        }
-        return null;
-      };
-    })(this);
-    addNode(data);
-    return null;
-  };
-
-
-  /*
-  Create tree from data.
-  
-  Structure of data is:
-  [
-      {
-          label: 'node1',
-          children: [
-              { label: 'child1' },
-              { label: 'child2' }
-          ]
-      },
-      {
-          label: 'node2'
-      }
-  ]
-   */
-
-  Node.prototype.loadFromData = function(data) {
-    var j, len, node, o;
-    this.removeChildren();
-    for (j = 0, len = data.length; j < len; j++) {
-      o = data[j];
-      node = new this.tree.node_class(o);
-      this.addChild(node);
-      if (typeof o === 'object' && o.children) {
-        node.loadFromData(o.children);
-      }
-    }
-    return null;
-  };
-
-
-  /*
-  Add child.
-  
-  tree.addChild(
-      new Node('child1')
-  );
-   */
-
-  Node.prototype.addChild = function(node) {
-    this.children.push(node);
-    return node._setParent(this);
-  };
-
-
-  /*
-  Add child at position. Index starts at 0.
-  
-  tree.addChildAtPosition(
-      new Node('abc'),
-      1
-  );
-   */
-
-  Node.prototype.addChildAtPosition = function(node, index) {
-    this.children.splice(index, 0, node);
-    return node._setParent(this);
-  };
-
-  Node.prototype._setParent = function(parent) {
-    this.parent = parent;
-    this.tree = parent.tree;
-    return this.tree.addNodeToIndex(this);
-  };
-
-
-  /*
-  Remove child. This also removes the children of the node.
-  
-  tree.removeChild(tree.children[0]);
-   */
-
-  Node.prototype.removeChild = function(node) {
-    node.removeChildren();
-    return this._removeChild(node);
-  };
-
-  Node.prototype._removeChild = function(node) {
-    this.children.splice(this.getChildIndex(node), 1);
-    return this.tree.removeNodeFromIndex(node);
-  };
-
-
-  /*
-  Get child index.
-  
-  var index = getChildIndex(node);
-   */
-
-  Node.prototype.getChildIndex = function(node) {
-    return $.inArray(node, this.children);
-  };
-
-
-  /*
-  Does the tree have children?
-  
-  if (tree.hasChildren()) {
-      //
-  }
-   */
-
-  Node.prototype.hasChildren = function() {
-    return this.children.length !== 0;
-  };
-
-  Node.prototype.isFolder = function() {
-    return this.hasChildren() || this.load_on_demand;
-  };
-
-
-  /*
-  Iterate over all the nodes in the tree.
-  
-  Calls callback with (node, level).
-  
-  The callback must return true to continue the iteration on current node.
-  
-  tree.iterate(
-      function(node, level) {
-         console.log(node.name);
-  
-         // stop iteration after level 2
-         return (level <= 2);
-      }
-  );
-   */
-
-  Node.prototype.iterate = function(callback) {
-    var _iterate;
-    _iterate = function(node, level) {
-      var child, j, len, ref, result;
-      if (node.children) {
-        ref = node.children;
-        for (j = 0, len = ref.length; j < len; j++) {
-          child = ref[j];
-          result = callback(child, level);
-          if (result && child.hasChildren()) {
-            _iterate(child, level + 1);
-          }
-        }
-        return null;
-      }
-    };
-    _iterate(this, 0);
-    return null;
-  };
-
-
-  /*
-  Move node relative to another node.
-  
-  Argument position: Position.BEFORE, Position.AFTER or Position.Inside
-  
-  // move node1 after node2
-  tree.moveNode(node1, node2, Position.AFTER);
-   */
-
-  Node.prototype.moveNode = function(moved_node, target_node, position) {
-    if (moved_node.isParentOf(target_node)) {
-      return;
-    }
-    moved_node.parent._removeChild(moved_node);
-    if (position === Position.AFTER) {
-      return target_node.parent.addChildAtPosition(moved_node, target_node.parent.getChildIndex(target_node) + 1);
-    } else if (position === Position.BEFORE) {
-      return target_node.parent.addChildAtPosition(moved_node, target_node.parent.getChildIndex(target_node));
-    } else if (position === Position.INSIDE) {
-      return target_node.addChildAtPosition(moved_node, 0);
-    }
-  };
-
-
-  /*
-  Get the tree as data.
-   */
-
-  Node.prototype.getData = function(include_parent) {
-    var getDataFromNodes;
-    if (include_parent == null) {
-      include_parent = false;
-    }
-    getDataFromNodes = function(nodes) {
-      var data, j, k, len, node, tmp_node, v;
-      data = [];
-      for (j = 0, len = nodes.length; j < len; j++) {
-        node = nodes[j];
-        tmp_node = {};
-        for (k in node) {
-          v = node[k];
-          if ((k !== 'parent' && k !== 'children' && k !== 'element' && k !== 'tree') && Object.prototype.hasOwnProperty.call(node, k)) {
-            tmp_node[k] = v;
-          }
-        }
-        if (node.hasChildren()) {
-          tmp_node.children = getDataFromNodes(node.children);
-        }
-        data.push(tmp_node);
-      }
-      return data;
-    };
-    if (include_parent) {
-      return getDataFromNodes([this]);
-    } else {
-      return getDataFromNodes(this.children);
-    }
-  };
-
-  Node.prototype.getNodeByName = function(name) {
-    return this.getNodeByCallback(function(node) {
-      return node.name === name;
-    });
-  };
-
-  Node.prototype.getNodeByCallback = function(callback) {
-    var result;
-    result = null;
-    this.iterate(function(node) {
-      if (callback(node)) {
-        result = node;
-        return false;
-      } else {
-        return true;
-      }
-    });
-    return result;
-  };
-
-  Node.prototype.addAfter = function(node_info) {
-    var child_index, node;
-    if (!this.parent) {
-      return null;
-    } else {
-      node = new this.tree.node_class(node_info);
-      child_index = this.parent.getChildIndex(this);
-      this.parent.addChildAtPosition(node, child_index + 1);
-      if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
-        node.loadFromData(node_info.children);
-      }
-      return node;
-    }
-  };
-
-  Node.prototype.addBefore = function(node_info) {
-    var child_index, node;
-    if (!this.parent) {
-      return null;
-    } else {
-      node = new this.tree.node_class(node_info);
-      child_index = this.parent.getChildIndex(this);
-      this.parent.addChildAtPosition(node, child_index);
-      if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
-        node.loadFromData(node_info.children);
-      }
-      return node;
-    }
-  };
-
-  Node.prototype.addParent = function(node_info) {
-    var child, j, len, new_parent, original_parent, ref;
-    if (!this.parent) {
-      return null;
-    } else {
-      new_parent = new this.tree.node_class(node_info);
-      new_parent._setParent(this.tree);
-      original_parent = this.parent;
-      ref = original_parent.children;
-      for (j = 0, len = ref.length; j < len; j++) {
-        child = ref[j];
-        new_parent.addChild(child);
-      }
-      original_parent.children = [];
-      original_parent.addChild(new_parent);
-      return new_parent;
-    }
-  };
-
-  Node.prototype.remove = function() {
-    if (this.parent) {
-      this.parent.removeChild(this);
-      return this.parent = null;
-    }
-  };
-
-  Node.prototype.append = function(node_info) {
-    var node;
-    node = new this.tree.node_class(node_info);
-    this.addChild(node);
-    if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
-      node.loadFromData(node_info.children);
-    }
-    return node;
-  };
-
-  Node.prototype.prepend = function(node_info) {
-    var node;
-    node = new this.tree.node_class(node_info);
-    this.addChildAtPosition(node, 0);
-    if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
-      node.loadFromData(node_info.children);
-    }
-    return node;
-  };
-
-  Node.prototype.isParentOf = function(node) {
-    var parent;
-    parent = node.parent;
-    while (parent) {
-      if (parent === this) {
-        return true;
-      }
-      parent = parent.parent;
-    }
-    return false;
-  };
-
-  Node.prototype.getLevel = function() {
-    var level, node;
-    level = 0;
-    node = this;
-    while (node.parent) {
-      level += 1;
-      node = node.parent;
-    }
-    return level;
-  };
-
-  Node.prototype.getNodeById = function(node_id) {
-    return this.id_mapping[node_id];
-  };
-
-  Node.prototype.addNodeToIndex = function(node) {
-    if (node.id != null) {
-      return this.id_mapping[node.id] = node;
-    }
-  };
-
-  Node.prototype.removeNodeFromIndex = function(node) {
-    if (node.id != null) {
-      return delete this.id_mapping[node.id];
-    }
-  };
-
-  Node.prototype.removeChildren = function() {
-    this.iterate((function(_this) {
-      return function(child) {
-        _this.tree.removeNodeFromIndex(child);
-        return true;
-      };
-    })(this));
-    return this.children = [];
-  };
-
-  Node.prototype.getPreviousSibling = function() {
-    var previous_index;
-    if (!this.parent) {
-      return null;
-    } else {
-      previous_index = this.parent.getChildIndex(this) - 1;
-      if (previous_index >= 0) {
-        return this.parent.children[previous_index];
-      } else {
-        return null;
-      }
-    }
-  };
-
-  Node.prototype.getNextSibling = function() {
-    var next_index;
-    if (!this.parent) {
-      return null;
-    } else {
-      next_index = this.parent.getChildIndex(this) + 1;
-      if (next_index < this.parent.children.length) {
-        return this.parent.children[next_index];
-      } else {
-        return null;
-      }
-    }
-  };
-
-  Node.prototype.getNodesByProperty = function(key, value) {
-    return this.filter(function(node) {
-      return node[key] === value;
-    });
-  };
-
-  Node.prototype.filter = function(f) {
-    var result;
-    result = [];
-    this.iterate(function(node) {
-      if (f(node)) {
-        result.push(node);
-      }
-      return true;
-    });
-    return result;
-  };
-
-  Node.prototype.getNextNode = function(include_children) {
-    var next_sibling;
-    if (include_children == null) {
-      include_children = true;
-    }
-    if (include_children && this.hasChildren() && this.is_open) {
-      return this.children[0];
-    } else {
-      if (!this.parent) {
-        return null;
-      } else {
-        next_sibling = this.getNextSibling();
-        if (next_sibling) {
-          return next_sibling;
-        } else {
-          return this.parent.getNextNode(false);
-        }
-      }
-    }
-  };
-
-  Node.prototype.getPreviousNode = function() {
-    var previous_sibling;
-    if (!this.parent) {
-      return null;
-    } else {
-      previous_sibling = this.getPreviousSibling();
-      if (previous_sibling) {
-        if (!previous_sibling.hasChildren() || !previous_sibling.is_open) {
-          return previous_sibling;
-        } else {
-          return previous_sibling.getLastChild();
-        }
-      } else {
-        return this.getParent();
-      }
-    }
-  };
-
-  Node.prototype.getParent = function() {
-    if (!this.parent) {
-      return null;
-    } else if (!this.parent.parent) {
-      return null;
-    } else {
-      return this.parent;
-    }
-  };
-
-  Node.prototype.getLastChild = function() {
-    var last_child;
-    if (!this.hasChildren()) {
-      return null;
-    } else {
-      last_child = this.children[this.children.length - 1];
-      if (!last_child.hasChildren() || !last_child.is_open) {
-        return last_child;
-      } else {
-        return last_child.getLastChild();
-      }
-    }
-  };
-
-  return Node;
-
-})();
-
-module.exports = {
-  Node: Node,
-  Position: Position
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__(62);
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(1);
-var settle = __webpack_require__(22);
-var buildURL = __webpack_require__(25);
-var parseHeaders = __webpack_require__(31);
-var isURLSameOrigin = __webpack_require__(29);
-var createError = __webpack_require__(8);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(24);
+var utils = __webpack_require__(0);
+var settle = __webpack_require__(27);
+var buildURL = __webpack_require__(30);
+var parseHeaders = __webpack_require__(36);
+var isURLSameOrigin = __webpack_require__(34);
+var createError = __webpack_require__(11);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(29);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -11459,7 +10910,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(27);
+      var cookies = __webpack_require__(32);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -11533,10 +10984,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11562,7 +11013,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11574,13 +11025,13 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(21);
+var enhanceError = __webpack_require__(26);
 
 /**
  * Create an Error with the specified message, config, error code, and response.
@@ -11598,7 +11049,7 @@ module.exports = function createError(message, config, code, response) {
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11616,372 +11067,126 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, BorderDropHint, FolderElement, GhostDropHint, NodeElement, Position, node,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var root = __webpack_require__(7);
 
-node = __webpack_require__(4);
+/** Built-in value references. */
+var Symbol = root.Symbol;
 
-Position = node.Position;
+module.exports = Symbol;
 
-$ = jQuery;
-
-NodeElement = (function() {
-  function NodeElement(node, tree_widget) {
-    this.init(node, tree_widget);
-  }
-
-  NodeElement.prototype.init = function(node, tree_widget) {
-    this.node = node;
-    this.tree_widget = tree_widget;
-    if (!node.element) {
-      node.element = this.tree_widget.element;
-    }
-    return this.$element = $(node.element);
-  };
-
-  NodeElement.prototype.getUl = function() {
-    return this.$element.children('ul:first');
-  };
-
-  NodeElement.prototype.getSpan = function() {
-    return this.$element.children('.jqtree-element').find('span.jqtree-title');
-  };
-
-  NodeElement.prototype.getLi = function() {
-    return this.$element;
-  };
-
-  NodeElement.prototype.addDropHint = function(position) {
-    if (position === Position.INSIDE) {
-      return new BorderDropHint(this.$element);
-    } else {
-      return new GhostDropHint(this.node, this.$element, position);
-    }
-  };
-
-  NodeElement.prototype.select = function() {
-    var $li, $span;
-    $li = this.getLi();
-    $li.addClass('jqtree-selected');
-    $li.attr('aria-selected', 'true');
-    $span = this.getSpan();
-    return $span.attr('tabindex', 0);
-  };
-
-  NodeElement.prototype.deselect = function() {
-    var $li, $span;
-    $li = this.getLi();
-    $li.removeClass('jqtree-selected');
-    $li.attr('aria-selected', 'false');
-    $span = this.getSpan();
-    return $span.attr('tabindex', -1);
-  };
-
-  return NodeElement;
-
-})();
-
-FolderElement = (function(superClass) {
-  extend(FolderElement, superClass);
-
-  function FolderElement() {
-    return FolderElement.__super__.constructor.apply(this, arguments);
-  }
-
-  FolderElement.prototype.open = function(on_finished, slide) {
-    var $button, doOpen;
-    if (slide == null) {
-      slide = true;
-    }
-    if (!this.node.is_open) {
-      this.node.is_open = true;
-      $button = this.getButton();
-      $button.removeClass('jqtree-closed');
-      $button.html('');
-      $button.append(this.tree_widget.renderer.opened_icon_element.cloneNode(false));
-      doOpen = (function(_this) {
-        return function() {
-          var $li, $span;
-          $li = _this.getLi();
-          $li.removeClass('jqtree-closed');
-          $span = _this.getSpan();
-          $span.attr('aria-expanded', 'true');
-          if (on_finished) {
-            on_finished(_this.node);
-          }
-          return _this.tree_widget._triggerEvent('tree.open', {
-            node: _this.node
-          });
-        };
-      })(this);
-      if (slide) {
-        return this.getUl().slideDown('fast', doOpen);
-      } else {
-        this.getUl().show();
-        return doOpen();
-      }
-    }
-  };
-
-  FolderElement.prototype.close = function(slide) {
-    var $button, doClose;
-    if (slide == null) {
-      slide = true;
-    }
-    if (this.node.is_open) {
-      this.node.is_open = false;
-      $button = this.getButton();
-      $button.addClass('jqtree-closed');
-      $button.html('');
-      $button.append(this.tree_widget.renderer.closed_icon_element.cloneNode(false));
-      doClose = (function(_this) {
-        return function() {
-          var $li, $span;
-          $li = _this.getLi();
-          $li.addClass('jqtree-closed');
-          $span = _this.getSpan();
-          $span.attr('aria-expanded', 'false');
-          return _this.tree_widget._triggerEvent('tree.close', {
-            node: _this.node
-          });
-        };
-      })(this);
-      if (slide) {
-        return this.getUl().slideUp('fast', doClose);
-      } else {
-        this.getUl().hide();
-        return doClose();
-      }
-    }
-  };
-
-  FolderElement.prototype.getButton = function() {
-    return this.$element.children('.jqtree-element').find('a.jqtree-toggler');
-  };
-
-  FolderElement.prototype.addDropHint = function(position) {
-    if (!this.node.is_open && position === Position.INSIDE) {
-      return new BorderDropHint(this.$element);
-    } else {
-      return new GhostDropHint(this.node, this.$element, position);
-    }
-  };
-
-  return FolderElement;
-
-})(NodeElement);
-
-BorderDropHint = (function() {
-  function BorderDropHint($element) {
-    var $div, width;
-    $div = $element.children('.jqtree-element');
-    width = $element.width() - 4;
-    this.$hint = $('<span class="jqtree-border"></span>');
-    $div.append(this.$hint);
-    this.$hint.css({
-      width: width,
-      height: $div.outerHeight() - 4
-    });
-  }
-
-  BorderDropHint.prototype.remove = function() {
-    return this.$hint.remove();
-  };
-
-  return BorderDropHint;
-
-})();
-
-GhostDropHint = (function() {
-  function GhostDropHint(node, $element, position) {
-    this.$element = $element;
-    this.node = node;
-    this.$ghost = $('<li class="jqtree_common jqtree-ghost"><span class="jqtree_common jqtree-circle"></span><span class="jqtree_common jqtree-line"></span></li>');
-    if (position === Position.AFTER) {
-      this.moveAfter();
-    } else if (position === Position.BEFORE) {
-      this.moveBefore();
-    } else if (position === Position.INSIDE) {
-      if (node.isFolder() && node.is_open) {
-        this.moveInsideOpenFolder();
-      } else {
-        this.moveInside();
-      }
-    }
-  }
-
-  GhostDropHint.prototype.remove = function() {
-    return this.$ghost.remove();
-  };
-
-  GhostDropHint.prototype.moveAfter = function() {
-    return this.$element.after(this.$ghost);
-  };
-
-  GhostDropHint.prototype.moveBefore = function() {
-    return this.$element.before(this.$ghost);
-  };
-
-  GhostDropHint.prototype.moveInsideOpenFolder = function() {
-    return $(this.node.children[0].element).before(this.$ghost);
-  };
-
-  GhostDropHint.prototype.moveInside = function() {
-    this.$element.after(this.$ghost);
-    return this.$ghost.addClass('jqtree-inside');
-  };
-
-  return GhostDropHint;
-
-})();
-
-module.exports = {
-  BorderDropHint: BorderDropHint,
-  FolderElement: FolderElement,
-  GhostDropHint: GhostDropHint,
-  NodeElement: NodeElement
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 14 */
+/***/ (function(module, exports) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {
-/*
-Copyright 2013 Marco Braak
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
  */
-var $, SimpleWidget,
-  slice = [].slice;
+function identity(value) {
+  return value;
+}
 
-$ = jQuery;
+module.exports = identity;
 
-SimpleWidget = (function() {
-  SimpleWidget.prototype.defaults = {};
-
-  function SimpleWidget(el, options) {
-    this.$el = $(el);
-    this.options = $.extend({}, this.defaults, options);
-  }
-
-  SimpleWidget.prototype.destroy = function() {
-    return this._deinit();
-  };
-
-  SimpleWidget.prototype._init = function() {
-    return null;
-  };
-
-  SimpleWidget.prototype._deinit = function() {
-    return null;
-  };
-
-  SimpleWidget.register = function(widget_class, widget_name) {
-    var callFunction, createWidget, destroyWidget, getDataKey, getWidgetData;
-    getDataKey = function() {
-      return "simple_widget_" + widget_name;
-    };
-    getWidgetData = function(el, data_key) {
-      var widget;
-      widget = $.data(el, data_key);
-      if (widget && (widget instanceof SimpleWidget)) {
-        return widget;
-      } else {
-        return null;
-      }
-    };
-    createWidget = function($el, options) {
-      var data_key, el, existing_widget, i, len, widget;
-      data_key = getDataKey();
-      for (i = 0, len = $el.length; i < len; i++) {
-        el = $el[i];
-        existing_widget = getWidgetData(el, data_key);
-        if (!existing_widget) {
-          widget = new widget_class(el, options);
-          if (!$.data(el, data_key)) {
-            $.data(el, data_key, widget);
-          }
-          widget._init();
-        }
-      }
-      return $el;
-    };
-    destroyWidget = function($el) {
-      var data_key, el, i, len, results, widget;
-      data_key = getDataKey();
-      results = [];
-      for (i = 0, len = $el.length; i < len; i++) {
-        el = $el[i];
-        widget = getWidgetData(el, data_key);
-        if (widget) {
-          widget.destroy();
-        }
-        results.push($.removeData(el, data_key));
-      }
-      return results;
-    };
-    callFunction = function($el, function_name, args) {
-      var el, i, len, result, widget, widget_function;
-      result = null;
-      for (i = 0, len = $el.length; i < len; i++) {
-        el = $el[i];
-        widget = $.data(el, getDataKey());
-        if (widget && (widget instanceof SimpleWidget)) {
-          widget_function = widget[function_name];
-          if (widget_function && (typeof widget_function === 'function')) {
-            result = widget_function.apply(widget, args);
-          }
-        }
-      }
-      return result;
-    };
-    return $.fn[widget_name] = function() {
-      var $el, args, argument1, function_name, options;
-      argument1 = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-      $el = this;
-      if (argument1 === void 0 || typeof argument1 === 'object') {
-        options = argument1;
-        return createWidget($el, options);
-      } else if (typeof argument1 === 'string' && argument1[0] !== '_') {
-        function_name = argument1;
-        if (function_name === 'destroy') {
-          return destroyWidget($el);
-        } else if (function_name === 'get_widget_class') {
-          return widget_class;
-        } else {
-          return callFunction($el, function_name, args);
-        }
-      }
-    };
-  };
-
-  return SimpleWidget;
-
-})();
-
-module.exports = SimpleWidget;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(52),
+    isObject = __webpack_require__(16);
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -12167,172 +11372,43 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 13 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap__ = __webpack_require__(34);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jqtree__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jqtree___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jqtree__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__jqTreeContextMenu__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_without__ = __webpack_require__(131);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_without___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_without__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_category__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__trees_category__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__trees_teamCategory__ = __webpack_require__(128);
 
 
 
 
-
-
-
-
-var $tree = $('#tree');
-
-var deleteNode = function deleteNode(node) {
-
-    __WEBPACK_IMPORTED_MODULE_4__api_category__["a" /* removeCategory */](node.id);
-
-    $tree.tree('removeNode', node);
-};
-
-var addNode = function addNode(node) {
-
-    var name = prompt("Name of category?");
-
-    __WEBPACK_IMPORTED_MODULE_4__api_category__["b" /* addCategory */](node.id, name).then(function (response) {
-
-        var data = response.data.data;
-
-        $tree.tree('appendNode', {
-            name: data.name,
-            id: data.id
-        }, node);
-
-        $tree.tree('openNode', node);
-    });
-};
-
-var renameNode = function renameNode(node) {
-
-    var name = prompt("New name", node.name);
-
-    __WEBPACK_IMPORTED_MODULE_4__api_category__["c" /* renameCategory */](node.id, name).then(function (response) {
-
-        var data = response.data.data;
-        $tree.tree('updateNode', node, data.name);
-    });
-};
-
-var moveNode = function moveNode(moveInfo) {
-
-    var movedNode = moveInfo.moved_node;
-    var targetNode = moveInfo.target_node;
-
-    switch (moveInfo.position) {
-        case 'before':
-            {
-                return __WEBPACK_IMPORTED_MODULE_4__api_category__["d" /* moveBefore */](movedNode.id, targetNode.id);
-            }break;
-        case 'after':
-            {
-                return __WEBPACK_IMPORTED_MODULE_4__api_category__["e" /* moveAfter */](movedNode.id, targetNode.id);
-            }break;
-        case 'inside':
-            {
-                return moveToFirstChild(movedNode, targetNode);
-            }break;
-    }
-
-    return new Promise();
-};
-
-var moveToFirstChild = function moveToFirstChild(node, parent) {
-
-    //We have the parent (in target).
-    //If the parent has any children, we need to change the index to the id of the first child.
-    //Otherwise we keep the parent, and have no index.
-    if (parent.children.length) {
-        return __WEBPACK_IMPORTED_MODULE_4__api_category__["d" /* moveBefore */](node.id, parent.children[0].id);
-    } else {
-        return __WEBPACK_IMPORTED_MODULE_4__api_category__["f" /* moveInto */](node.id, parent.id);
-    }
-};
-
-var getAncestors = function getAncestors(node) {
-    var ancestors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-    return !node.id ? ancestors : getAncestors(node.parent, ancestors.concat(node.id));
-};
-
-$tree.tree({
-    dragAndDrop: true,
-    usecontextmenu: true
-});
-
-var init = function init(_) {
-    if ($tree.data('selected')) {
-
-        var node = $tree.tree('getNodeById', $tree.data('selected'));
-        var open_nodes = getAncestors(node);
-        $tree.tree('setState', { open_nodes: open_nodes, selected_node: [node.id] });
-    }
-};
-
-$tree.bind('tree.move', function (e) {
-
-    e.preventDefault();
-
-    var moveInfo = e.move_info;
-
-    moveNode(moveInfo).then(function (response) {
-        e.move_info.do_move();
-    });
-});
-
-//TODO: use querystring merge rather than replace
-$tree.bind('tree.click', function (e) {
-
-    var path = $tree.data('link');
-    var parts = __WEBPACK_IMPORTED_MODULE_3_lodash_without___default()(path.split('/'), "");
-    parts = parts.concat(e.node.id);
-    window.location.pathname = parts.join('/');
-});
-
-$tree.bind('tree.init', init);
-
-$tree.jqTreeContextMenu($('#myMenu'), {
-    "rename": renameNode,
-    "delete": deleteNode,
-    "add": addNode
-});
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 15 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(21);
 
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
-var bind = __webpack_require__(9);
-var Axios = __webpack_require__(18);
-var defaults = __webpack_require__(3);
+var utils = __webpack_require__(0);
+var bind = __webpack_require__(12);
+var Axios = __webpack_require__(23);
+var defaults = __webpack_require__(5);
 
 /**
  * Create an instance of Axios
@@ -12365,15 +11441,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(6);
-axios.CancelToken = __webpack_require__(17);
-axios.isCancel = __webpack_require__(7);
+axios.Cancel = __webpack_require__(9);
+axios.CancelToken = __webpack_require__(22);
+axios.isCancel = __webpack_require__(10);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(32);
+axios.spread = __webpack_require__(37);
 
 module.exports = axios;
 
@@ -12382,13 +11458,13 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 17 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(6);
+var Cancel = __webpack_require__(9);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -12446,18 +11522,18 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 18 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(3);
-var utils = __webpack_require__(1);
-var InterceptorManager = __webpack_require__(19);
-var dispatchRequest = __webpack_require__(20);
-var isAbsoluteURL = __webpack_require__(28);
-var combineURLs = __webpack_require__(26);
+var defaults = __webpack_require__(5);
+var utils = __webpack_require__(0);
+var InterceptorManager = __webpack_require__(24);
+var dispatchRequest = __webpack_require__(25);
+var isAbsoluteURL = __webpack_require__(33);
+var combineURLs = __webpack_require__(31);
 
 /**
  * Create a new instance of Axios
@@ -12538,13 +11614,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 19 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -12597,16 +11673,16 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 20 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
-var transformData = __webpack_require__(23);
-var isCancel = __webpack_require__(7);
-var defaults = __webpack_require__(3);
+var utils = __webpack_require__(0);
+var transformData = __webpack_require__(28);
+var isCancel = __webpack_require__(10);
+var defaults = __webpack_require__(5);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -12683,7 +11759,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 21 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12709,13 +11785,13 @@ module.exports = function enhanceError(error, config, code, response) {
 
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(8);
+var createError = __webpack_require__(11);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -12741,13 +11817,13 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 23 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 /**
  * Transform the data for a request or a response
@@ -12768,7 +11844,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 24 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12811,13 +11887,13 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 25 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -12886,7 +11962,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 26 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12905,13 +11981,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 27 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -12965,7 +12041,7 @@ module.exports = (
 
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12986,13 +12062,13 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 29 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -13061,13 +12137,13 @@ module.exports = (
 
 
 /***/ }),
-/* 30 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -13080,13 +12156,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 31 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 /**
  * Parse headers into an object
@@ -13124,7 +12200,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 32 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13158,11 +12234,11 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 33 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return addCategory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return removeCategory; });
@@ -13213,7 +12289,7 @@ var moveAfter = function moveAfter(id, node) {
 };
 
 /***/ }),
-/* 34 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {
@@ -13222,10 +12298,10 @@ var moveAfter = function moveAfter(id, node) {
  * for JavaScript based Bootstrap features such as modals and tabs. This
  * code may be modified to fit the specific needs of your application.
  */
-__webpack_require__(36);
-__webpack_require__(47);
+__webpack_require__(40);
+__webpack_require__(98);
 
-window.$ = window.jQuery = __webpack_require__(0);
+window.$ = window.jQuery = __webpack_require__(1);
 
 $.ajaxSetup({
     headers: {
@@ -13234,213 +12310,10 @@ $.ajaxSetup({
 });
 
 $("select").selectize();
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(jQuery) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-(function ($) {
-	if (!$.fn.tree) {
-		throw "Error jqTree is not loaded.";
-	}
-
-	$.fn.jqTreeContextMenu = function (menuElement, callbacks) {
-		//
-		// TODO:
-		// * Make sure the useContextMenu option is set in jqTree, either complain or set it automatically
-		// * Make menu fade in/out
-		//
-		var self = this;
-		var $el = this;
-
-		// The jQuery object of the menu div.
-		var $menuEl = menuElement;
-
-		// This hash holds all menu items that should be disabled for a specific node.
-		var nodeToDisabledMenuItems = {};
-
-		// Hide the menu div.
-		$menuEl.hide();
-
-		// Disable system context menu from beeing displayed.
-		$el.bind("contextmenu", function (e) {
-			e.preventDefault();
-			return false;
-		});
-
-		// Handle the contextmenu event sent from jqTree when user clicks right mouse button.
-		$el.bind('tree.contextmenu', function (event) {
-			var x = event.click_event.pageX;
-			var y = event.click_event.pageY;
-			var yPadding = 5;
-			var xPadding = 5;
-			var menuHeight = $menuEl.height();
-			var menuWidth = $menuEl.width();
-			var windowHeight = $(window).height();
-			var windowWidth = $(window).width();
-
-			if (menuHeight + y + yPadding > windowHeight) {
-				// Make sure the whole menu is rendered within the viewport. 
-				y = y - menuHeight;
-			}
-			if (menuWidth + x + xPadding > windowWidth) {
-				// Make sure the whole menu is rendered within the viewport. 
-				x = x - menuWidth;
-			}
-
-			// Handle disabling and enabling of menu items on specific nodes.
-			if (Object.keys(nodeToDisabledMenuItems).length > 0) {
-				if (event.node.name in nodeToDisabledMenuItems) {
-					var nodeName = event.node.name;
-					var items = nodeToDisabledMenuItems[nodeName];
-					if (items.length === 0) {
-						$menuEl.find('li').addClass('disabled');
-						$menuEl.find('li > a').unbind('click');
-					} else {
-						$menuEl.find('li > a').each(function () {
-							$(this).closest('li').removeClass('disabled');
-							var hrefValue = $(this).attr('href');
-							var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
-							if ($.inArray(value, items) > -1) {
-								$(this).closest('li').addClass('disabled');
-								$(this).unbind('click');
-							}
-						});
-					}
-				} else {
-					$menuEl.find('li.disabled').removeClass('disabled');
-				}
-			}
-
-			// Must call show before we set the offset (offset can not be set on display: none elements).
-			$menuEl.show();
-
-			$menuEl.offset({ left: x, top: y });
-
-			var dismissContextMenu = function dismissContextMenu() {
-				$(document).unbind('click.jqtreecontextmenu');
-				$el.unbind('tree.click.jqtreecontextmenu');
-				$menuEl.hide();
-			};
-			// Make it possible to dismiss context menu by clicking somewhere in the document.
-			$(document).bind('click.jqtreecontextmenu', function () {
-				dismissContextMenu();
-			});
-
-			// Dismiss context menu if another node in the tree is clicked.
-			$el.bind('tree.click.jqtreecontextmenu', function (e) {
-				dismissContextMenu();
-			});
-
-			// Make selection follow the node that was right clicked on.
-			var selectedNode = $el.tree('getSelectedNode');
-			if (selectedNode !== event.node) {
-				$el.tree('selectNode', event.node);
-			}
-
-			// Handle click on menu items, if it's not disabled.
-			var menuItems = $menuEl.find('li:not(.disabled) a');
-			if (menuItems.length !== 0) {
-				menuItems.unbind('click');
-				menuItems.click(function (e) {
-					e.stopImmediatePropagation();
-					dismissContextMenu();
-					var hrefAnchor = e.currentTarget.attributes.href.nodeValue;
-					var funcKey = hrefAnchor.slice(hrefAnchor.indexOf("#") + 1, hrefAnchor.length);
-					var callbackFn = callbacks[funcKey];
-					if (callbackFn) {
-						callbackFn(event.node);
-					}
-					return false;
-				});
-			}
-		});
-
-		this.disable = function () {
-			if (arguments.length === 0) {
-				// Called as: api.disable()
-				$menuEl.find('li:not(.disabled)').addClass('disabled');
-				$menuEl.find('li a').unbind('click');
-				nodeToDisabledMenuItems = {};
-			} else if (arguments.length === 1) {
-				// Called as: api.disable(['edit','remove'])
-				var items = arguments[0];
-				if ((typeof items === "undefined" ? "undefined" : _typeof(items)) !== 'object') {
-					return;
-				}
-				$menuEl.find('li > a').each(function () {
-					var hrefValue = $(this).attr('href');
-					var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
-					if ($.inArray(value, items) > -1) {
-						$(this).closest('li').addClass('disabled');
-						$(this).unbind('click');
-					}
-				});
-				nodeToDisabledMenuItems = {};
-			} else if (arguments.length === 2) {
-				// Called as: api.disable(nodeName, ['edit','remove'])
-				var nodeName = arguments[0];
-				var items = arguments[1];
-				nodeToDisabledMenuItems[nodeName] = items;
-			}
-		};
-
-		this.enable = function () {
-			if (arguments.length === 0) {
-				// Called as: api.enable()
-				$menuEl.find('li.disabled').removeClass('disabled');
-				nodeToDisabledMenuItems = {};
-			} else if (arguments.length === 1) {
-				// Called as: api.enable(['edit','remove'])
-				var items = arguments[0];
-				if ((typeof items === "undefined" ? "undefined" : _typeof(items)) !== 'object') {
-					return;
-				}
-
-				$menuEl.find('li > a').each(function () {
-					var hrefValue = $(this).attr('href');
-					var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
-					if ($.inArray(value, items) > -1) {
-						$(this).closest('li').removeClass('disabled');
-					}
-				});
-
-				nodeToDisabledMenuItems = {};
-			} else if (arguments.length === 2) {
-				// Called as: api.enable(nodeName, ['edit','remove'])
-				var nodeName = arguments[0];
-				var items = arguments[1];
-				if (items.length === 0) {
-					delete nodeToDisabledMenuItems[nodeName];
-				} else {
-					var disabledItems = nodeToDisabledMenuItems[nodeName];
-					for (var i = 0; i < items.length; i++) {
-						var idx = disabledItems.indexOf(items[i]);
-						if (idx > -1) {
-							disabledItems.splice(idx, 1);
-						}
-					}
-					if (disabledItems.length === 0) {
-						delete nodeToDisabledMenuItems[nodeName];
-					} else {
-						nodeToDisabledMenuItems[nodeName] = disabledItems;
-					}
-				}
-				if (Object.keys(nodeToDisabledMenuItems).length === 0) {
-					$menuEl.find('li.disabled').removeClass('disabled');
-				}
-			}
-		};
-		return this;
-	};
-})(jQuery);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*!
@@ -15821,2680 +14694,1662 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, DragAndDropHandler, DragElement, HitAreasGenerator, Position, VisibleNodeIterator, node_module, util,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-node_module = __webpack_require__(4);
-
-util = __webpack_require__(2);
-
-Position = node_module.Position;
-
-$ = jQuery;
-
-DragAndDropHandler = (function() {
-  function DragAndDropHandler(tree_widget) {
-    this.tree_widget = tree_widget;
-    this.hovered_area = null;
-    this.$ghost = null;
-    this.hit_areas = [];
-    this.is_dragging = false;
-    this.current_item = null;
-  }
-
-  DragAndDropHandler.prototype.mouseCapture = function(position_info) {
-    var $element, node_element;
-    $element = $(position_info.target);
-    if (!this.mustCaptureElement($element)) {
-      return null;
-    }
-    if (this.tree_widget.options.onIsMoveHandle && !this.tree_widget.options.onIsMoveHandle($element)) {
-      return null;
-    }
-    node_element = this.tree_widget._getNodeElement($element);
-    if (node_element && this.tree_widget.options.onCanMove) {
-      if (!this.tree_widget.options.onCanMove(node_element.node)) {
-        node_element = null;
-      }
-    }
-    this.current_item = node_element;
-    return this.current_item !== null;
-  };
-
-  DragAndDropHandler.prototype.mouseStart = function(position_info) {
-    var node, node_name, offset;
-    this.refresh();
-    offset = $(position_info.target).offset();
-    node = this.current_item.node;
-    if (this.tree_widget.options.autoEscape) {
-      node_name = util.html_escape(node.name);
-    } else {
-      node_name = node.name;
-    }
-    this.drag_element = new DragElement(node_name, position_info.page_x - offset.left, position_info.page_y - offset.top, this.tree_widget.element);
-    this.is_dragging = true;
-    this.current_item.$element.addClass('jqtree-moving');
-    return true;
-  };
-
-  DragAndDropHandler.prototype.mouseDrag = function(position_info) {
-    var area, can_move_to;
-    this.drag_element.move(position_info.page_x, position_info.page_y);
-    area = this.findHoveredArea(position_info.page_x, position_info.page_y);
-    can_move_to = this.canMoveToArea(area);
-    if (can_move_to && area) {
-      if (!area.node.isFolder()) {
-        this.stopOpenFolderTimer();
-      }
-      if (this.hovered_area !== area) {
-        this.hovered_area = area;
-        if (this.mustOpenFolderTimer(area)) {
-          this.startOpenFolderTimer(area.node);
-        } else {
-          this.stopOpenFolderTimer();
-        }
-        this.updateDropHint();
-      }
-    } else {
-      this.removeHover();
-      this.removeDropHint();
-      this.stopOpenFolderTimer();
-    }
-    if (!area) {
-      if (this.tree_widget.options.onDragMove != null) {
-        this.tree_widget.options.onDragMove(this.current_item.node, position_info.original_event);
-      }
-    }
-    return true;
-  };
-
-  DragAndDropHandler.prototype.mustCaptureElement = function($element) {
-    return !$element.is('input,select,textarea');
-  };
-
-  DragAndDropHandler.prototype.canMoveToArea = function(area) {
-    var position_name;
-    if (!area) {
-      return false;
-    } else if (this.tree_widget.options.onCanMoveTo) {
-      position_name = Position.getName(area.position);
-      return this.tree_widget.options.onCanMoveTo(this.current_item.node, area.node, position_name);
-    } else {
-      return true;
-    }
-  };
-
-  DragAndDropHandler.prototype.mouseStop = function(position_info) {
-    var current_item;
-    this.moveItem(position_info);
-    this.clear();
-    this.removeHover();
-    this.removeDropHint();
-    this.removeHitAreas();
-    current_item = this.current_item;
-    if (this.current_item) {
-      this.current_item.$element.removeClass('jqtree-moving');
-      this.current_item = null;
-    }
-    this.is_dragging = false;
-    if (!this.hovered_area && current_item) {
-      if (this.tree_widget.options.onDragStop != null) {
-        this.tree_widget.options.onDragStop(current_item.node, position_info.original_event);
-      }
-    }
-    return false;
-  };
-
-  DragAndDropHandler.prototype.refresh = function() {
-    this.removeHitAreas();
-    if (this.current_item) {
-      this.generateHitAreas();
-      this.current_item = this.tree_widget._getNodeElementForNode(this.current_item.node);
-      if (this.is_dragging) {
-        return this.current_item.$element.addClass('jqtree-moving');
-      }
-    }
-  };
-
-  DragAndDropHandler.prototype.removeHitAreas = function() {
-    return this.hit_areas = [];
-  };
-
-  DragAndDropHandler.prototype.clear = function() {
-    this.drag_element.remove();
-    return this.drag_element = null;
-  };
-
-  DragAndDropHandler.prototype.removeDropHint = function() {
-    if (this.previous_ghost) {
-      return this.previous_ghost.remove();
-    }
-  };
-
-  DragAndDropHandler.prototype.removeHover = function() {
-    return this.hovered_area = null;
-  };
-
-  DragAndDropHandler.prototype.generateHitAreas = function() {
-    var hit_areas_generator;
-    hit_areas_generator = new HitAreasGenerator(this.tree_widget.tree, this.current_item.node, this.getTreeDimensions().bottom);
-    return this.hit_areas = hit_areas_generator.generate();
-  };
-
-  DragAndDropHandler.prototype.findHoveredArea = function(x, y) {
-    var area, dimensions, high, low, mid;
-    dimensions = this.getTreeDimensions();
-    if (x < dimensions.left || y < dimensions.top || x > dimensions.right || y > dimensions.bottom) {
-      return null;
-    }
-    low = 0;
-    high = this.hit_areas.length;
-    while (low < high) {
-      mid = (low + high) >> 1;
-      area = this.hit_areas[mid];
-      if (y < area.top) {
-        high = mid;
-      } else if (y > area.bottom) {
-        low = mid + 1;
-      } else {
-        return area;
-      }
-    }
-    return null;
-  };
-
-  DragAndDropHandler.prototype.mustOpenFolderTimer = function(area) {
-    var node;
-    node = area.node;
-    return node.isFolder() && !node.is_open && area.position === Position.INSIDE;
-  };
-
-  DragAndDropHandler.prototype.updateDropHint = function() {
-    var node_element;
-    if (!this.hovered_area) {
-      return;
-    }
-    this.removeDropHint();
-    node_element = this.tree_widget._getNodeElementForNode(this.hovered_area.node);
-    return this.previous_ghost = node_element.addDropHint(this.hovered_area.position);
-  };
-
-  DragAndDropHandler.prototype.startOpenFolderTimer = function(folder) {
-    var openFolder;
-    openFolder = (function(_this) {
-      return function() {
-        return _this.tree_widget._openNode(folder, _this.tree_widget.options.slide, function() {
-          _this.refresh();
-          return _this.updateDropHint();
-        });
-      };
-    })(this);
-    this.stopOpenFolderTimer();
-    return this.open_folder_timer = setTimeout(openFolder, this.tree_widget.options.openFolderDelay);
-  };
-
-  DragAndDropHandler.prototype.stopOpenFolderTimer = function() {
-    if (this.open_folder_timer) {
-      clearTimeout(this.open_folder_timer);
-      return this.open_folder_timer = null;
-    }
-  };
-
-  DragAndDropHandler.prototype.moveItem = function(position_info) {
-    var doMove, event, moved_node, position, previous_parent, target_node;
-    if (this.hovered_area && this.hovered_area.position !== Position.NONE && this.canMoveToArea(this.hovered_area)) {
-      moved_node = this.current_item.node;
-      target_node = this.hovered_area.node;
-      position = this.hovered_area.position;
-      previous_parent = moved_node.parent;
-      if (position === Position.INSIDE) {
-        this.hovered_area.node.is_open = true;
-      }
-      doMove = (function(_this) {
-        return function() {
-          _this.tree_widget.tree.moveNode(moved_node, target_node, position);
-          _this.tree_widget.element.empty();
-          return _this.tree_widget._refreshElements();
-        };
-      })(this);
-      event = this.tree_widget._triggerEvent('tree.move', {
-        move_info: {
-          moved_node: moved_node,
-          target_node: target_node,
-          position: Position.getName(position),
-          previous_parent: previous_parent,
-          do_move: doMove,
-          original_event: position_info.original_event
-        }
-      });
-      if (!event.isDefaultPrevented()) {
-        return doMove();
-      }
-    }
-  };
-
-  DragAndDropHandler.prototype.getTreeDimensions = function() {
-    var offset;
-    offset = this.tree_widget.element.offset();
-    return {
-      left: offset.left,
-      top: offset.top,
-      right: offset.left + this.tree_widget.element.width(),
-      bottom: offset.top + this.tree_widget.element.height() + 16
-    };
-  };
-
-  return DragAndDropHandler;
-
-})();
-
-VisibleNodeIterator = (function() {
-  function VisibleNodeIterator(tree) {
-    this.tree = tree;
-  }
-
-  VisibleNodeIterator.prototype.iterate = function() {
-    var _iterateNode, is_first_node;
-    is_first_node = true;
-    _iterateNode = (function(_this) {
-      return function(node, next_node) {
-        var $element, child, children_length, i, j, len, must_iterate_inside, ref;
-        must_iterate_inside = (node.is_open || !node.element) && node.hasChildren();
-        if (node.element) {
-          $element = $(node.element);
-          if (!$element.is(':visible')) {
-            return;
-          }
-          if (is_first_node) {
-            _this.handleFirstNode(node, $element);
-            is_first_node = false;
-          }
-          if (!node.hasChildren()) {
-            _this.handleNode(node, next_node, $element);
-          } else if (node.is_open) {
-            if (!_this.handleOpenFolder(node, $element)) {
-              must_iterate_inside = false;
-            }
-          } else {
-            _this.handleClosedFolder(node, next_node, $element);
-          }
-        }
-        if (must_iterate_inside) {
-          children_length = node.children.length;
-          ref = node.children;
-          for (i = j = 0, len = ref.length; j < len; i = ++j) {
-            child = ref[i];
-            if (i === (children_length - 1)) {
-              _iterateNode(node.children[i], null);
-            } else {
-              _iterateNode(node.children[i], node.children[i + 1]);
-            }
-          }
-          if (node.is_open) {
-            return _this.handleAfterOpenFolder(node, next_node, $element);
-          }
-        }
-      };
-    })(this);
-    return _iterateNode(this.tree, null);
-  };
-
-  VisibleNodeIterator.prototype.handleNode = function(node, next_node, $element) {};
-
-  VisibleNodeIterator.prototype.handleOpenFolder = function(node, $element) {};
-
-  VisibleNodeIterator.prototype.handleClosedFolder = function(node, next_node, $element) {};
-
-  VisibleNodeIterator.prototype.handleAfterOpenFolder = function(node, next_node, $element) {};
-
-  VisibleNodeIterator.prototype.handleFirstNode = function(node, $element) {};
-
-  return VisibleNodeIterator;
-
-})();
-
-HitAreasGenerator = (function(superClass) {
-  extend(HitAreasGenerator, superClass);
-
-  function HitAreasGenerator(tree, current_node, tree_bottom) {
-    HitAreasGenerator.__super__.constructor.call(this, tree);
-    this.current_node = current_node;
-    this.tree_bottom = tree_bottom;
-  }
-
-  HitAreasGenerator.prototype.generate = function() {
-    this.positions = [];
-    this.last_top = 0;
-    this.iterate();
-    return this.generateHitAreas(this.positions);
-  };
-
-  HitAreasGenerator.prototype.getTop = function($element) {
-    return $element.offset().top;
-  };
-
-  HitAreasGenerator.prototype.addPosition = function(node, position, top) {
-    var area;
-    area = {
-      top: top,
-      node: node,
-      position: position
-    };
-    this.positions.push(area);
-    return this.last_top = top;
-  };
-
-  HitAreasGenerator.prototype.handleNode = function(node, next_node, $element) {
-    var top;
-    top = this.getTop($element);
-    if (node === this.current_node) {
-      this.addPosition(node, Position.NONE, top);
-    } else {
-      this.addPosition(node, Position.INSIDE, top);
-    }
-    if (next_node === this.current_node || node === this.current_node) {
-      return this.addPosition(node, Position.NONE, top);
-    } else {
-      return this.addPosition(node, Position.AFTER, top);
-    }
-  };
-
-  HitAreasGenerator.prototype.handleOpenFolder = function(node, $element) {
-    if (node === this.current_node) {
-      return false;
-    }
-    if (node.children[0] !== this.current_node) {
-      this.addPosition(node, Position.INSIDE, this.getTop($element));
-    }
-    return true;
-  };
-
-  HitAreasGenerator.prototype.handleClosedFolder = function(node, next_node, $element) {
-    var top;
-    top = this.getTop($element);
-    if (node === this.current_node) {
-      return this.addPosition(node, Position.NONE, top);
-    } else {
-      this.addPosition(node, Position.INSIDE, top);
-      if (next_node !== this.current_node) {
-        return this.addPosition(node, Position.AFTER, top);
-      }
-    }
-  };
-
-  HitAreasGenerator.prototype.handleFirstNode = function(node, $element) {
-    if (node !== this.current_node) {
-      return this.addPosition(node, Position.BEFORE, this.getTop($(node.element)));
-    }
-  };
-
-  HitAreasGenerator.prototype.handleAfterOpenFolder = function(node, next_node, $element) {
-    if (node === this.current_node.node || next_node === this.current_node.node) {
-      return this.addPosition(node, Position.NONE, this.last_top);
-    } else {
-      return this.addPosition(node, Position.AFTER, this.last_top);
-    }
-  };
-
-  HitAreasGenerator.prototype.generateHitAreas = function(positions) {
-    var group, hit_areas, j, len, position, previous_top;
-    previous_top = -1;
-    group = [];
-    hit_areas = [];
-    for (j = 0, len = positions.length; j < len; j++) {
-      position = positions[j];
-      if (position.top !== previous_top && group.length) {
-        if (group.length) {
-          this.generateHitAreasForGroup(hit_areas, group, previous_top, position.top);
-        }
-        previous_top = position.top;
-        group = [];
-      }
-      group.push(position);
-    }
-    this.generateHitAreasForGroup(hit_areas, group, previous_top, this.tree_bottom);
-    return hit_areas;
-  };
-
-  HitAreasGenerator.prototype.generateHitAreasForGroup = function(hit_areas, positions_in_group, top, bottom) {
-    var area_height, area_top, i, position, position_count;
-    position_count = Math.min(positions_in_group.length, 4);
-    area_height = Math.round((bottom - top) / position_count);
-    area_top = top;
-    i = 0;
-    while (i < position_count) {
-      position = positions_in_group[i];
-      hit_areas.push({
-        top: area_top,
-        bottom: area_top + area_height,
-        node: position.node,
-        position: position.position
-      });
-      area_top += area_height;
-      i += 1;
-    }
-    return null;
-  };
-
-  return HitAreasGenerator;
-
-})(VisibleNodeIterator);
-
-DragElement = (function() {
-  function DragElement(node_name, offset_x, offset_y, $tree) {
-    this.offset_x = offset_x;
-    this.offset_y = offset_y;
-    this.$element = $("<span class=\"jqtree-title jqtree-dragging\">" + node_name + "</span>");
-    this.$element.css("position", "absolute");
-    $tree.append(this.$element);
-  }
-
-  DragElement.prototype.move = function(page_x, page_y) {
-    return this.$element.offset({
-      left: page_x - this.offset_x,
-      top: page_y - this.offset_y
-    });
-  };
-
-  DragElement.prototype.remove = function() {
-    return this.$element.remove();
-  };
-
-  return DragElement;
-
-})();
-
-module.exports = {
-  DragAndDropHandler: DragAndDropHandler,
-  DragElement: DragElement,
-  HitAreasGenerator: HitAreasGenerator
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, ElementsRenderer, NodeElement, html_escape, node_element, util;
-
-node_element = __webpack_require__(10);
-
-NodeElement = node_element.NodeElement;
-
-util = __webpack_require__(2);
-
-html_escape = util.html_escape;
-
-$ = jQuery;
-
-ElementsRenderer = (function() {
-  function ElementsRenderer(tree_widget) {
-    this.tree_widget = tree_widget;
-    this.opened_icon_element = this.createButtonElement(tree_widget.options.openedIcon);
-    this.closed_icon_element = this.createButtonElement(tree_widget.options.closedIcon);
-  }
-
-  ElementsRenderer.prototype.render = function(from_node) {
-    if (from_node && from_node.parent) {
-      return this.renderFromNode(from_node);
-    } else {
-      return this.renderFromRoot();
-    }
-  };
-
-  ElementsRenderer.prototype.renderFromRoot = function() {
-    var $element;
-    $element = this.tree_widget.element;
-    $element.empty();
-    return this.createDomElements($element[0], this.tree_widget.tree.children, true, true, 1);
-  };
-
-  ElementsRenderer.prototype.renderFromNode = function(node) {
-    var $previous_li, li;
-    $previous_li = $(node.element);
-    li = this.createLi(node, node.getLevel());
-    this.attachNodeData(node, li);
-    $previous_li.after(li);
-    $previous_li.remove();
-    if (node.children) {
-      return this.createDomElements(li, node.children, false, false, node.getLevel() + 1);
-    }
-  };
-
-  ElementsRenderer.prototype.createDomElements = function(element, children, is_root_node, is_open, level) {
-    var child, i, len, li, ul;
-    ul = this.createUl(is_root_node);
-    element.appendChild(ul);
-    for (i = 0, len = children.length; i < len; i++) {
-      child = children[i];
-      li = this.createLi(child, level);
-      ul.appendChild(li);
-      this.attachNodeData(child, li);
-      if (child.hasChildren()) {
-        this.createDomElements(li, child.children, false, child.is_open, level + 1);
-      }
-    }
-    return null;
-  };
-
-  ElementsRenderer.prototype.attachNodeData = function(node, li) {
-    node.element = li;
-    return $(li).data('node', node);
-  };
-
-  ElementsRenderer.prototype.createUl = function(is_root_node) {
-    var class_string, role, ul;
-    if (!is_root_node) {
-      class_string = '';
-      role = 'group';
-    } else {
-      class_string = 'jqtree-tree';
-      role = 'tree';
-      if (this.tree_widget.options.rtl) {
-        class_string += ' jqtree-rtl';
-      }
-    }
-    ul = document.createElement('ul');
-    ul.className = "jqtree_common " + class_string;
-    ul.setAttribute('role', role);
-    return ul;
-  };
-
-  ElementsRenderer.prototype.createLi = function(node, level) {
-    var is_selected, li;
-    is_selected = this.tree_widget.select_node_handler && this.tree_widget.select_node_handler.isNodeSelected(node);
-    if (node.isFolder()) {
-      li = this.createFolderLi(node, level, is_selected);
-    } else {
-      li = this.createNodeLi(node, level, is_selected);
-    }
-    if (this.tree_widget.options.onCreateLi) {
-      this.tree_widget.options.onCreateLi(node, $(li));
-    }
-    return li;
-  };
-
-  ElementsRenderer.prototype.createFolderLi = function(node, level, is_selected) {
-    var button_classes, button_link, div, folder_classes, icon_element, is_folder, li;
-    button_classes = this.getButtonClasses(node);
-    folder_classes = this.getFolderClasses(node, is_selected);
-    if (node.is_open) {
-      icon_element = this.opened_icon_element;
-    } else {
-      icon_element = this.closed_icon_element;
-    }
-    li = document.createElement('li');
-    li.className = "jqtree_common " + folder_classes;
-    li.setAttribute('role', 'presentation');
-    div = document.createElement('div');
-    div.className = "jqtree-element jqtree_common";
-    div.setAttribute('role', 'presentation');
-    li.appendChild(div);
-    button_link = document.createElement('a');
-    button_link.className = button_classes;
-    button_link.appendChild(icon_element.cloneNode(false));
-    button_link.setAttribute('role', 'presentation');
-    button_link.setAttribute('aria-hidden', 'true');
-    if (this.tree_widget.options.buttonLeft) {
-      div.appendChild(button_link);
-    }
-    div.appendChild(this.createTitleSpan(node.name, level, is_selected, node.is_open, is_folder = true));
-    if (!this.tree_widget.options.buttonLeft) {
-      div.appendChild(button_link);
-    }
-    return li;
-  };
-
-  ElementsRenderer.prototype.createNodeLi = function(node, level, is_selected) {
-    var class_string, div, is_folder, li, li_classes;
-    li_classes = ['jqtree_common'];
-    if (is_selected) {
-      li_classes.push('jqtree-selected');
-    }
-    class_string = li_classes.join(' ');
-    li = document.createElement('li');
-    li.className = class_string;
-    li.setAttribute('role', 'presentation');
-    div = document.createElement('div');
-    div.className = "jqtree-element jqtree_common";
-    div.setAttribute('role', 'presentation');
-    li.appendChild(div);
-    div.appendChild(this.createTitleSpan(node.name, level, is_selected, node.is_open, is_folder = false));
-    return li;
-  };
-
-  ElementsRenderer.prototype.createTitleSpan = function(node_name, level, is_selected, is_open, is_folder) {
-    var classes, title_span;
-    title_span = document.createElement('span');
-    classes = "jqtree-title jqtree_common";
-    if (is_folder) {
-      classes += " jqtree-title-folder";
-    }
-    title_span.className = classes;
-    title_span.setAttribute('role', 'treeitem');
-    title_span.setAttribute('aria-level', level);
-    title_span.setAttribute('aria-selected', util.getBoolString(is_selected));
-    title_span.setAttribute('aria-expanded', util.getBoolString(is_open));
-    if (is_selected) {
-      title_span.setAttribute('tabindex', 0);
-    }
-    title_span.innerHTML = this.escapeIfNecessary(node_name);
-    return title_span;
-  };
-
-  ElementsRenderer.prototype.getButtonClasses = function(node) {
-    var classes;
-    classes = ['jqtree-toggler', 'jqtree_common'];
-    if (!node.is_open) {
-      classes.push('jqtree-closed');
-    }
-    if (this.tree_widget.options.buttonLeft) {
-      classes.push('jqtree-toggler-left');
-    } else {
-      classes.push('jqtree-toggler-right');
-    }
-    return classes.join(' ');
-  };
-
-  ElementsRenderer.prototype.getFolderClasses = function(node, is_selected) {
-    var classes;
-    classes = ['jqtree-folder'];
-    if (!node.is_open) {
-      classes.push('jqtree-closed');
-    }
-    if (is_selected) {
-      classes.push('jqtree-selected');
-    }
-    if (node.is_loading) {
-      classes.push('jqtree-loading');
-    }
-    return classes.join(' ');
-  };
-
-  ElementsRenderer.prototype.escapeIfNecessary = function(value) {
-    if (this.tree_widget.options.autoEscape) {
-      return html_escape(value);
-    } else {
-      return value;
-    }
-  };
-
-  ElementsRenderer.prototype.createButtonElement = function(value) {
-    var div;
-    if (typeof value === 'string') {
-      div = document.createElement('div');
-      div.innerHTML = value;
-      return document.createTextNode(div.innerHTML);
-    } else {
-      return $(value)[0];
-    }
-  };
-
-  return ElementsRenderer;
-
-})();
-
-module.exports = ElementsRenderer;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, KeyHandler,
-  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-$ = jQuery;
-
-KeyHandler = (function() {
-  var DOWN, LEFT, RIGHT, UP;
-
-  LEFT = 37;
-
-  UP = 38;
-
-  RIGHT = 39;
-
-  DOWN = 40;
-
-  function KeyHandler(tree_widget) {
-    this.selectNode = bind(this.selectNode, this);
-    this.tree_widget = tree_widget;
-    if (tree_widget.options.keyboardSupport) {
-      $(document).bind('keydown.jqtree', $.proxy(this.handleKeyDown, this));
-    }
-  }
-
-  KeyHandler.prototype.deinit = function() {
-    return $(document).unbind('keydown.jqtree');
-  };
-
-  KeyHandler.prototype.moveDown = function() {
-    var node;
-    node = this.tree_widget.getSelectedNode();
-    if (node) {
-      return this.selectNode(node.getNextNode());
-    } else {
-      return false;
-    }
-  };
-
-  KeyHandler.prototype.moveUp = function() {
-    var node;
-    node = this.tree_widget.getSelectedNode();
-    if (node) {
-      return this.selectNode(node.getPreviousNode());
-    } else {
-      return false;
-    }
-  };
-
-  KeyHandler.prototype.moveRight = function() {
-    var node;
-    node = this.tree_widget.getSelectedNode();
-    if (!node) {
-      return true;
-    } else if (!node.isFolder()) {
-      return true;
-    } else {
-      if (node.is_open) {
-        return this.selectNode(node.getNextNode());
-      } else {
-        this.tree_widget.openNode(node);
-        return false;
-      }
-    }
-  };
-
-  KeyHandler.prototype.moveLeft = function() {
-    var node;
-    node = this.tree_widget.getSelectedNode();
-    if (!node) {
-      return true;
-    } else if (node.isFolder() && node.is_open) {
-      this.tree_widget.closeNode(node);
-      return false;
-    } else {
-      return this.selectNode(node.getParent());
-    }
-  };
-
-  KeyHandler.prototype.handleKeyDown = function(e) {
-    var key;
-    if (!this.tree_widget.options.keyboardSupport) {
-      return true;
-    }
-    if ($(document.activeElement).is('textarea,input,select')) {
-      return true;
-    }
-    if (!this.tree_widget.getSelectedNode()) {
-      return true;
-    }
-    key = e.which;
-    switch (key) {
-      case DOWN:
-        return this.moveDown();
-      case UP:
-        return this.moveUp();
-      case RIGHT:
-        return this.moveRight();
-      case LEFT:
-        return this.moveLeft();
-    }
-    return true;
-  };
-
-  KeyHandler.prototype.selectNode = function(node) {
-    if (!node) {
-      return true;
-    } else {
-      this.tree_widget.selectNode(node);
-      if (this.tree_widget.scroll_handler && (!this.tree_widget.scroll_handler.isScrolledIntoView($(node.element).find('.jqtree-element')))) {
-        this.tree_widget.scrollToNode(node);
-      }
-      return false;
-    }
-  };
-
-  return KeyHandler;
-
-})();
-
-module.exports = KeyHandler;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(jQuery) {
-/*
-This widget does the same a the mouse widget in jqueryui.
- */
-var $, MouseWidget, SimpleWidget,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-SimpleWidget = __webpack_require__(11);
-
-$ = jQuery;
-
-MouseWidget = (function(superClass) {
-  extend(MouseWidget, superClass);
-
-  function MouseWidget() {
-    return MouseWidget.__super__.constructor.apply(this, arguments);
-  }
-
-  MouseWidget.is_mouse_handled = false;
-
-  MouseWidget.prototype._init = function() {
-    this.$el.bind('mousedown.mousewidget', $.proxy(this._mouseDown, this));
-    this.$el.bind('touchstart.mousewidget', $.proxy(this._touchStart, this));
-    this.is_mouse_started = false;
-    this.mouse_delay = 0;
-    this._mouse_delay_timer = null;
-    this._is_mouse_delay_met = true;
-    return this.mouse_down_info = null;
-  };
-
-  MouseWidget.prototype._deinit = function() {
-    var $document;
-    this.$el.unbind('mousedown.mousewidget');
-    this.$el.unbind('touchstart.mousewidget');
-    $document = $(document);
-    $document.unbind('mousemove.mousewidget');
-    return $document.unbind('mouseup.mousewidget');
-  };
-
-  MouseWidget.prototype._mouseDown = function(e) {
-    var result;
-    if (e.which !== 1) {
-      return;
-    }
-    result = this._handleMouseDown(e, this._getPositionInfo(e));
-    if (result) {
-      e.preventDefault();
-    }
-    return result;
-  };
-
-  MouseWidget.prototype._handleMouseDown = function(e, position_info) {
-    if (MouseWidget.is_mouse_handled) {
-      return;
-    }
-    if (this.is_mouse_started) {
-      this._handleMouseUp(position_info);
-    }
-    this.mouse_down_info = position_info;
-    if (!this._mouseCapture(position_info)) {
-      return;
-    }
-    this._handleStartMouse();
-    this.is_mouse_handled = true;
-    return true;
-  };
-
-  MouseWidget.prototype._handleStartMouse = function() {
-    var $document;
-    $document = $(document);
-    $document.bind('mousemove.mousewidget', $.proxy(this._mouseMove, this));
-    $document.bind('touchmove.mousewidget', $.proxy(this._touchMove, this));
-    $document.bind('mouseup.mousewidget', $.proxy(this._mouseUp, this));
-    $document.bind('touchend.mousewidget', $.proxy(this._touchEnd, this));
-    if (this.mouse_delay) {
-      return this._startMouseDelayTimer();
-    }
-  };
-
-  MouseWidget.prototype._startMouseDelayTimer = function() {
-    if (this._mouse_delay_timer) {
-      clearTimeout(this._mouse_delay_timer);
-    }
-    this._mouse_delay_timer = setTimeout((function(_this) {
-      return function() {
-        return _this._is_mouse_delay_met = true;
-      };
-    })(this), this.mouse_delay);
-    return this._is_mouse_delay_met = false;
-  };
-
-  MouseWidget.prototype._mouseMove = function(e) {
-    return this._handleMouseMove(e, this._getPositionInfo(e));
-  };
-
-  MouseWidget.prototype._handleMouseMove = function(e, position_info) {
-    if (this.is_mouse_started) {
-      this._mouseDrag(position_info);
-      return e.preventDefault();
-    }
-    if (this.mouse_delay && !this._is_mouse_delay_met) {
-      return true;
-    }
-    this.is_mouse_started = this._mouseStart(this.mouse_down_info) !== false;
-    if (this.is_mouse_started) {
-      this._mouseDrag(position_info);
-    } else {
-      this._handleMouseUp(position_info);
-    }
-    return !this.is_mouse_started;
-  };
-
-  MouseWidget.prototype._getPositionInfo = function(e) {
-    return {
-      page_x: e.pageX,
-      page_y: e.pageY,
-      target: e.target,
-      original_event: e
-    };
-  };
-
-  MouseWidget.prototype._mouseUp = function(e) {
-    return this._handleMouseUp(this._getPositionInfo(e));
-  };
-
-  MouseWidget.prototype._handleMouseUp = function(position_info) {
-    var $document;
-    $document = $(document);
-    $document.unbind('mousemove.mousewidget');
-    $document.unbind('touchmove.mousewidget');
-    $document.unbind('mouseup.mousewidget');
-    $document.unbind('touchend.mousewidget');
-    if (this.is_mouse_started) {
-      this.is_mouse_started = false;
-      this._mouseStop(position_info);
-    }
-  };
-
-  MouseWidget.prototype._mouseCapture = function(position_info) {
-    return true;
-  };
-
-  MouseWidget.prototype._mouseStart = function(position_info) {
-    return null;
-  };
-
-  MouseWidget.prototype._mouseDrag = function(position_info) {
-    return null;
-  };
-
-  MouseWidget.prototype._mouseStop = function(position_info) {
-    return null;
-  };
-
-  MouseWidget.prototype.setMouseDelay = function(mouse_delay) {
-    return this.mouse_delay = mouse_delay;
-  };
-
-  MouseWidget.prototype._touchStart = function(e) {
-    var touch;
-    if (e.originalEvent.touches.length > 1) {
-      return;
-    }
-    touch = e.originalEvent.changedTouches[0];
-    return this._handleMouseDown(e, this._getPositionInfo(touch));
-  };
-
-  MouseWidget.prototype._touchMove = function(e) {
-    var touch;
-    if (e.originalEvent.touches.length > 1) {
-      return;
-    }
-    touch = e.originalEvent.changedTouches[0];
-    return this._handleMouseMove(e, this._getPositionInfo(touch));
-  };
-
-  MouseWidget.prototype._touchEnd = function(e) {
-    var touch;
-    if (e.originalEvent.touches.length > 1) {
-      return;
-    }
-    touch = e.originalEvent.changedTouches[0];
-    return this._handleMouseUp(this._getPositionInfo(touch));
-  };
-
-  return MouseWidget;
-
-})(SimpleWidget);
-
-module.exports = MouseWidget;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, SaveStateHandler, indexOf, isInt, util;
+var hashClear = __webpack_require__(65),
+    hashDelete = __webpack_require__(66),
+    hashGet = __webpack_require__(67),
+    hashHas = __webpack_require__(68),
+    hashSet = __webpack_require__(69);
 
-util = __webpack_require__(2);
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
 
-indexOf = util.indexOf;
-
-isInt = util.isInt;
-
-$ = jQuery;
-
-SaveStateHandler = (function() {
-  function SaveStateHandler(tree_widget) {
-    this.tree_widget = tree_widget;
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
   }
+}
 
-  SaveStateHandler.prototype.saveState = function() {
-    var state;
-    state = JSON.stringify(this.getState());
-    if (this.tree_widget.options.onSetStateFromStorage) {
-      return this.tree_widget.options.onSetStateFromStorage(state);
-    } else if (this.supportsLocalStorage()) {
-      return localStorage.setItem(this.getCookieName(), state);
-    } else if ($.cookie) {
-      $.cookie.raw = true;
-      return $.cookie(this.getCookieName(), state, {
-        path: '/'
-      });
-    }
-  };
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
 
-  SaveStateHandler.prototype.getStateFromStorage = function() {
-    var json_data;
-    json_data = this._loadFromStorage();
-    if (json_data) {
-      return this._parseState(json_data);
-    } else {
-      return null;
-    }
-  };
+module.exports = Hash;
 
-  SaveStateHandler.prototype._parseState = function(json_data) {
-    var state;
-    state = $.parseJSON(json_data);
-    if (state && state.selected_node && isInt(state.selected_node)) {
-      state.selected_node = [state.selected_node];
-    }
-    return state;
-  };
-
-  SaveStateHandler.prototype._loadFromStorage = function() {
-    if (this.tree_widget.options.onGetStateFromStorage) {
-      return this.tree_widget.options.onGetStateFromStorage();
-    } else if (this.supportsLocalStorage()) {
-      return localStorage.getItem(this.getCookieName());
-    } else if ($.cookie) {
-      $.cookie.raw = true;
-      return $.cookie(this.getCookieName());
-    } else {
-      return null;
-    }
-  };
-
-  SaveStateHandler.prototype.getState = function() {
-    var getOpenNodeIds, getSelectedNodeIds;
-    getOpenNodeIds = (function(_this) {
-      return function() {
-        var open_nodes;
-        open_nodes = [];
-        _this.tree_widget.tree.iterate(function(node) {
-          if (node.is_open && node.id && node.hasChildren()) {
-            open_nodes.push(node.id);
-          }
-          return true;
-        });
-        return open_nodes;
-      };
-    })(this);
-    getSelectedNodeIds = (function(_this) {
-      return function() {
-        var n;
-        return (function() {
-          var i, len, ref, results;
-          ref = this.tree_widget.getSelectedNodes();
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            n = ref[i];
-            results.push(n.id);
-          }
-          return results;
-        }).call(_this);
-      };
-    })(this);
-    return {
-      open_nodes: getOpenNodeIds(),
-      selected_node: getSelectedNodeIds()
-    };
-  };
-
-  SaveStateHandler.prototype.setInitialState = function(state) {
-    var must_load_on_demand;
-    if (!state) {
-      return false;
-    } else {
-      must_load_on_demand = this._openInitialNodes(state.open_nodes);
-      this._selectInitialNodes(state.selected_node);
-      return must_load_on_demand;
-    }
-  };
-
-  SaveStateHandler.prototype._openInitialNodes = function(node_ids) {
-    var i, len, must_load_on_demand, node, node_id;
-    must_load_on_demand = false;
-    for (i = 0, len = node_ids.length; i < len; i++) {
-      node_id = node_ids[i];
-      node = this.tree_widget.getNodeById(node_id);
-      if (node) {
-        if (!node.load_on_demand) {
-          node.is_open = true;
-        } else {
-          must_load_on_demand = true;
-        }
-      }
-    }
-    return must_load_on_demand;
-  };
-
-  SaveStateHandler.prototype._selectInitialNodes = function(node_ids) {
-    var i, len, node, node_id, select_count;
-    select_count = 0;
-    for (i = 0, len = node_ids.length; i < len; i++) {
-      node_id = node_ids[i];
-      node = this.tree_widget.getNodeById(node_id);
-      if (node) {
-        select_count += 1;
-        this.tree_widget.select_node_handler.addToSelection(node);
-      }
-    }
-    return select_count !== 0;
-  };
-
-  SaveStateHandler.prototype.setInitialStateOnDemand = function(state, cb_finished) {
-    if (state) {
-      return this._setInitialStateOnDemand(state.open_nodes, state.selected_node, cb_finished);
-    } else {
-      return cb_finished();
-    }
-  };
-
-  SaveStateHandler.prototype._setInitialStateOnDemand = function(node_ids, selected_nodes, cb_finished) {
-    var loadAndOpenNode, loading_count, openNodes;
-    loading_count = 0;
-    openNodes = (function(_this) {
-      return function() {
-        var i, len, new_nodes_ids, node, node_id;
-        new_nodes_ids = [];
-        for (i = 0, len = node_ids.length; i < len; i++) {
-          node_id = node_ids[i];
-          node = _this.tree_widget.getNodeById(node_id);
-          if (!node) {
-            new_nodes_ids.push(node_id);
-          } else {
-            if (!node.is_loading) {
-              if (node.load_on_demand) {
-                loadAndOpenNode(node);
-              } else {
-                _this.tree_widget._openNode(node, false);
-              }
-            }
-          }
-        }
-        node_ids = new_nodes_ids;
-        if (_this._selectInitialNodes(selected_nodes)) {
-          _this.tree_widget._refreshElements();
-        }
-        if (loading_count === 0) {
-          return cb_finished();
-        }
-      };
-    })(this);
-    loadAndOpenNode = (function(_this) {
-      return function(node) {
-        loading_count += 1;
-        return _this.tree_widget._openNode(node, false, function() {
-          loading_count -= 1;
-          return openNodes();
-        });
-      };
-    })(this);
-    return openNodes();
-  };
-
-  SaveStateHandler.prototype.getCookieName = function() {
-    if (typeof this.tree_widget.options.saveState === 'string') {
-      return this.tree_widget.options.saveState;
-    } else {
-      return 'tree';
-    }
-  };
-
-  SaveStateHandler.prototype.supportsLocalStorage = function() {
-    var testSupport;
-    testSupport = function() {
-      var error, key;
-      if (typeof localStorage === "undefined" || localStorage === null) {
-        return false;
-      } else {
-        try {
-          key = '_storage_test';
-          sessionStorage.setItem(key, true);
-          sessionStorage.removeItem(key);
-        } catch (error1) {
-          error = error1;
-          return false;
-        }
-        return true;
-      }
-    };
-    if (this._supportsLocalStorage == null) {
-      this._supportsLocalStorage = testSupport();
-    }
-    return this._supportsLocalStorage;
-  };
-
-  SaveStateHandler.prototype.getNodeIdToBeSelected = function() {
-    var state;
-    state = this.getStateFromStorage();
-    if (state && state.selected_node) {
-      return state.selected_node[0];
-    } else {
-      return null;
-    }
-  };
-
-  return SaveStateHandler;
-
-})();
-
-module.exports = SaveStateHandler;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, ScrollHandler;
+var listCacheClear = __webpack_require__(72),
+    listCacheDelete = __webpack_require__(73),
+    listCacheGet = __webpack_require__(74),
+    listCacheHas = __webpack_require__(75),
+    listCacheSet = __webpack_require__(76);
 
-$ = jQuery;
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
 
-ScrollHandler = (function() {
-  function ScrollHandler(tree_widget) {
-    this.tree_widget = tree_widget;
-    this.previous_top = -1;
-    this.is_initialized = false;
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
   }
+}
 
-  ScrollHandler.prototype._initScrollParent = function() {
-    var $scroll_parent, getParentWithOverflow, setDocumentAsScrollParent;
-    getParentWithOverflow = (function(_this) {
-      return function() {
-        var css_values, el, hasOverFlow, i, len, ref;
-        css_values = ['overflow', 'overflow-y'];
-        hasOverFlow = function(el) {
-          var css_value, i, len, ref;
-          for (i = 0, len = css_values.length; i < len; i++) {
-            css_value = css_values[i];
-            if ((ref = $.css(el, css_value)) === 'auto' || ref === 'scroll') {
-              return true;
-            }
-          }
-          return false;
-        };
-        if (hasOverFlow(_this.tree_widget.$el[0])) {
-          return _this.tree_widget.$el;
-        }
-        ref = _this.tree_widget.$el.parents();
-        for (i = 0, len = ref.length; i < len; i++) {
-          el = ref[i];
-          if (hasOverFlow(el)) {
-            return $(el);
-          }
-        }
-        return null;
-      };
-    })(this);
-    setDocumentAsScrollParent = (function(_this) {
-      return function() {
-        _this.scroll_parent_top = 0;
-        return _this.$scroll_parent = null;
-      };
-    })(this);
-    if (this.tree_widget.$el.css('position') === 'fixed') {
-      setDocumentAsScrollParent();
-    }
-    $scroll_parent = getParentWithOverflow();
-    if ($scroll_parent && $scroll_parent.length && $scroll_parent[0].tagName !== 'HTML') {
-      this.$scroll_parent = $scroll_parent;
-      this.scroll_parent_top = this.$scroll_parent.offset().top;
-    } else {
-      setDocumentAsScrollParent();
-    }
-    return this.is_initialized = true;
-  };
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
 
-  ScrollHandler.prototype._ensureInit = function() {
-    if (!this.is_initialized) {
-      return this._initScrollParent();
-    }
-  };
+module.exports = ListCache;
 
-  ScrollHandler.prototype.checkScrolling = function() {
-    var hovered_area;
-    this._ensureInit();
-    hovered_area = this.tree_widget.dnd_handler.hovered_area;
-    if (hovered_area && hovered_area.top !== this.previous_top) {
-      this.previous_top = hovered_area.top;
-      if (this.$scroll_parent) {
-        return this._handleScrollingWithScrollParent(hovered_area);
-      } else {
-        return this._handleScrollingWithDocument(hovered_area);
-      }
-    }
-  };
-
-  ScrollHandler.prototype._handleScrollingWithScrollParent = function(area) {
-    var distance_bottom;
-    distance_bottom = this.scroll_parent_top + this.$scroll_parent[0].offsetHeight - area.bottom;
-    if (distance_bottom < 20) {
-      this.$scroll_parent[0].scrollTop += 20;
-      this.tree_widget.refreshHitAreas();
-      return this.previous_top = -1;
-    } else if ((area.top - this.scroll_parent_top) < 20) {
-      this.$scroll_parent[0].scrollTop -= 20;
-      this.tree_widget.refreshHitAreas();
-      return this.previous_top = -1;
-    }
-  };
-
-  ScrollHandler.prototype._handleScrollingWithDocument = function(area) {
-    var distance_top;
-    distance_top = area.top - $(document).scrollTop();
-    if (distance_top < 20) {
-      return $(document).scrollTop($(document).scrollTop() - 20);
-    } else if ($(window).height() - (area.bottom - $(document).scrollTop()) < 20) {
-      return $(document).scrollTop($(document).scrollTop() + 20);
-    }
-  };
-
-  ScrollHandler.prototype.scrollTo = function(top) {
-    var tree_top;
-    this._ensureInit();
-    if (this.$scroll_parent) {
-      return this.$scroll_parent[0].scrollTop = top;
-    } else {
-      tree_top = this.tree_widget.$el.offset().top;
-      return $(document).scrollTop(top + tree_top);
-    }
-  };
-
-  ScrollHandler.prototype.isScrolledIntoView = function(element) {
-    var $element, element_bottom, element_top, view_bottom, view_top;
-    this._ensureInit();
-    $element = $(element);
-    if (this.$scroll_parent) {
-      view_top = 0;
-      view_bottom = this.$scroll_parent.height();
-      element_top = $element.offset().top - this.scroll_parent_top;
-      element_bottom = element_top + $element.height();
-    } else {
-      view_top = $(window).scrollTop();
-      view_bottom = view_top + $(window).height();
-      element_top = $element.offset().top;
-      element_bottom = element_top + $element.height();
-    }
-    return (element_bottom <= view_bottom) && (element_top >= view_top);
-  };
-
-  return ScrollHandler;
-
-})();
-
-module.exports = ScrollHandler;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, SelectNodeHandler;
+var getNative = __webpack_require__(6),
+    root = __webpack_require__(7);
 
-$ = jQuery;
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map');
 
-SelectNodeHandler = (function() {
-  function SelectNodeHandler(tree_widget) {
-    this.tree_widget = tree_widget;
-    this.clear();
-  }
+module.exports = Map;
 
-  SelectNodeHandler.prototype.getSelectedNode = function() {
-    var selected_nodes;
-    selected_nodes = this.getSelectedNodes();
-    if (selected_nodes.length) {
-      return selected_nodes[0];
-    } else {
-      return false;
-    }
-  };
-
-  SelectNodeHandler.prototype.getSelectedNodes = function() {
-    var id, node, selected_nodes;
-    if (this.selected_single_node) {
-      return [this.selected_single_node];
-    } else {
-      selected_nodes = [];
-      for (id in this.selected_nodes) {
-        node = this.tree_widget.getNodeById(id);
-        if (node) {
-          selected_nodes.push(node);
-        }
-      }
-      return selected_nodes;
-    }
-  };
-
-  SelectNodeHandler.prototype.getSelectedNodesUnder = function(parent) {
-    var id, node, selected_nodes;
-    if (this.selected_single_node) {
-      if (parent.isParentOf(this.selected_single_node)) {
-        return [this.selected_single_node];
-      } else {
-        return [];
-      }
-    } else {
-      selected_nodes = [];
-      for (id in this.selected_nodes) {
-        node = this.tree_widget.getNodeById(id);
-        if (node && parent.isParentOf(node)) {
-          selected_nodes.push(node);
-        }
-      }
-      return selected_nodes;
-    }
-  };
-
-  SelectNodeHandler.prototype.isNodeSelected = function(node) {
-    if (!node) {
-      return false;
-    } else if (node.id) {
-      if (this.selected_nodes[node.id]) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (this.selected_single_node) {
-      return this.selected_single_node.element === node.element;
-    } else {
-      return false;
-    }
-  };
-
-  SelectNodeHandler.prototype.clear = function() {
-    this.selected_nodes = {};
-    return this.selected_single_node = null;
-  };
-
-  SelectNodeHandler.prototype.removeFromSelection = function(node, include_children) {
-    if (include_children == null) {
-      include_children = false;
-    }
-    if (!node.id) {
-      if (this.selected_single_node && node.element === this.selected_single_node.element) {
-        return this.selected_single_node = null;
-      }
-    } else {
-      delete this.selected_nodes[node.id];
-      if (include_children) {
-        return node.iterate((function(_this) {
-          return function(n) {
-            delete _this.selected_nodes[node.id];
-            return true;
-          };
-        })(this));
-      }
-    }
-  };
-
-  SelectNodeHandler.prototype.addToSelection = function(node) {
-    if (node.id) {
-      return this.selected_nodes[node.id] = true;
-    } else {
-      return this.selected_single_node = node;
-    }
-  };
-
-  return SelectNodeHandler;
-
-})();
-
-module.exports = SelectNodeHandler;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(jQuery) {var $, BorderDropHint, DragAndDropHandler, DragElement, ElementsRenderer, FolderElement, GhostDropHint, HitAreasGenerator, JqTreeWidget, KeyHandler, MouseWidget, Node, NodeElement, Position, SaveStateHandler, ScrollHandler, SelectNodeHandler, SimpleWidget, __version__, drag_and_drop_handler, isFunction, node_module, ref, util_module,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var mapCacheClear = __webpack_require__(77),
+    mapCacheDelete = __webpack_require__(78),
+    mapCacheGet = __webpack_require__(79),
+    mapCacheHas = __webpack_require__(80),
+    mapCacheSet = __webpack_require__(81);
 
-__version__ = __webpack_require__(45);
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
 
-drag_and_drop_handler = __webpack_require__(37);
-
-ElementsRenderer = __webpack_require__(38);
-
-KeyHandler = __webpack_require__(39);
-
-MouseWidget = __webpack_require__(40);
-
-SaveStateHandler = __webpack_require__(41);
-
-ScrollHandler = __webpack_require__(42);
-
-SelectNodeHandler = __webpack_require__(43);
-
-SimpleWidget = __webpack_require__(11);
-
-node_module = __webpack_require__(4);
-
-Node = node_module.Node;
-
-Position = node_module.Position;
-
-util_module = __webpack_require__(2);
-
-isFunction = util_module.isFunction;
-
-ref = __webpack_require__(10), BorderDropHint = ref.BorderDropHint, FolderElement = ref.FolderElement, GhostDropHint = ref.GhostDropHint, NodeElement = ref.NodeElement;
-
-DragAndDropHandler = drag_and_drop_handler.DragAndDropHandler, DragElement = drag_and_drop_handler.DragElement, HitAreasGenerator = drag_and_drop_handler.HitAreasGenerator;
-
-$ = jQuery;
-
-JqTreeWidget = (function(superClass) {
-  extend(JqTreeWidget, superClass);
-
-  function JqTreeWidget() {
-    return JqTreeWidget.__super__.constructor.apply(this, arguments);
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
   }
+}
 
-  JqTreeWidget.prototype.BorderDropHint = BorderDropHint;
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
 
-  JqTreeWidget.prototype.DragElement = DragElement;
+module.exports = MapCache;
 
-  JqTreeWidget.prototype.DragAndDropHandler = DragAndDropHandler;
-
-  JqTreeWidget.prototype.ElementsRenderer = ElementsRenderer;
-
-  JqTreeWidget.prototype.GhostDropHint = GhostDropHint;
-
-  JqTreeWidget.prototype.HitAreasGenerator = HitAreasGenerator;
-
-  JqTreeWidget.prototype.Node = Node;
-
-  JqTreeWidget.prototype.SaveStateHandler = SaveStateHandler;
-
-  JqTreeWidget.prototype.ScrollHandler = ScrollHandler;
-
-  JqTreeWidget.prototype.SelectNodeHandler = SelectNodeHandler;
-
-  JqTreeWidget.prototype.defaults = {
-    autoOpen: false,
-    saveState: false,
-    dragAndDrop: false,
-    selectable: true,
-    useContextMenu: true,
-    onCanSelectNode: null,
-    onSetStateFromStorage: null,
-    onGetStateFromStorage: null,
-    onCreateLi: null,
-    onIsMoveHandle: null,
-    onCanMove: null,
-    onCanMoveTo: null,
-    onLoadFailed: null,
-    autoEscape: true,
-    dataUrl: null,
-    closedIcon: null,
-    openedIcon: '&#x25bc;',
-    slide: true,
-    nodeClass: Node,
-    dataFilter: null,
-    keyboardSupport: true,
-    openFolderDelay: 500,
-    rtl: null,
-    onDragMove: null,
-    onDragStop: null,
-    buttonLeft: true,
-    onLoading: null
-  };
-
-  JqTreeWidget.prototype.toggle = function(node, slide) {
-    if (slide == null) {
-      slide = null;
-    }
-    if (slide === null) {
-      slide = this.options.slide;
-    }
-    if (node.is_open) {
-      this.closeNode(node, slide);
-    } else {
-      this.openNode(node, slide);
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.getTree = function() {
-    return this.tree;
-  };
-
-  JqTreeWidget.prototype.selectNode = function(node) {
-    this._selectNode(node, false);
-    return this.element;
-  };
-
-  JqTreeWidget.prototype._selectNode = function(node, must_toggle) {
-    var canSelect, deselected_node, openParents, saveState;
-    if (must_toggle == null) {
-      must_toggle = false;
-    }
-    if (!this.select_node_handler) {
-      return;
-    }
-    canSelect = (function(_this) {
-      return function() {
-        if (_this.options.onCanSelectNode) {
-          return _this.options.selectable && _this.options.onCanSelectNode(node);
-        } else {
-          return _this.options.selectable;
-        }
-      };
-    })(this);
-    openParents = (function(_this) {
-      return function() {
-        var parent;
-        parent = node.parent;
-        if (parent && parent.parent && !parent.is_open) {
-          return _this.openNode(parent, false);
-        }
-      };
-    })(this);
-    saveState = (function(_this) {
-      return function() {
-        if (_this.options.saveState) {
-          return _this.save_state_handler.saveState();
-        }
-      };
-    })(this);
-    if (!node) {
-      this._deselectCurrentNode();
-      saveState();
-      return;
-    }
-    if (!canSelect()) {
-      return;
-    }
-    if (this.select_node_handler.isNodeSelected(node)) {
-      if (must_toggle) {
-        this._deselectCurrentNode();
-        this._triggerEvent('tree.select', {
-          node: null,
-          previous_node: node
-        });
-      }
-    } else {
-      deselected_node = this.getSelectedNode();
-      this._deselectCurrentNode();
-      this.addToSelection(node);
-      this._triggerEvent('tree.select', {
-        node: node,
-        deselected_node: deselected_node
-      });
-      openParents();
-    }
-    return saveState();
-  };
-
-  JqTreeWidget.prototype.getSelectedNode = function() {
-    if (this.select_node_handler) {
-      return this.select_node_handler.getSelectedNode();
-    } else {
-      return null;
-    }
-  };
-
-  JqTreeWidget.prototype.toJson = function() {
-    return JSON.stringify(this.tree.getData());
-  };
-
-  JqTreeWidget.prototype.loadData = function(data, parent_node) {
-    this._loadData(data, parent_node);
-    return this.element;
-  };
-
-
-  /*
-  signatures:
-  - loadDataFromUrl(url, parent_node=null, on_finished=null)
-      loadDataFromUrl('/my_data');
-      loadDataFromUrl('/my_data', node1);
-      loadDataFromUrl('/my_data', node1, function() { console.log('finished'); });
-      loadDataFromUrl('/my_data', null, function() { console.log('finished'); });
-  
-  - loadDataFromUrl(parent_node=null, on_finished=null)
-      loadDataFromUrl();
-      loadDataFromUrl(node1);
-      loadDataFromUrl(null, function() { console.log('finished'); });
-      loadDataFromUrl(node1, function() { console.log('finished'); });
-   */
-
-  JqTreeWidget.prototype.loadDataFromUrl = function(param1, param2, param3) {
-    if ($.type(param1) === 'string') {
-      this._loadDataFromUrl(param1, param2, param3);
-    } else {
-      this._loadDataFromUrl(null, param1, param2);
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.reload = function(on_finished) {
-    this._loadDataFromUrl(null, null, on_finished);
-    return this.element;
-  };
-
-  JqTreeWidget.prototype._loadDataFromUrl = function(url_info, parent_node, on_finished) {
-    var $el, addLoadingClass, handeLoadData, handleError, handleSuccess, loadDataFromUrlInfo, parseUrlInfo, removeLoadingClass;
-    $el = null;
-    addLoadingClass = (function(_this) {
-      return function() {
-        if (parent_node) {
-          $el = $(parent_node.element);
-        } else {
-          $el = _this.element;
-        }
-        $el.addClass('jqtree-loading');
-        return _this._notifyLoading(true, parent_node, $el);
-      };
-    })(this);
-    removeLoadingClass = (function(_this) {
-      return function() {
-        if ($el) {
-          $el.removeClass('jqtree-loading');
-          return _this._notifyLoading(false, parent_node, $el);
-        }
-      };
-    })(this);
-    parseUrlInfo = function() {
-      if ($.type(url_info) === 'string') {
-        return {
-          url: url_info
-        };
-      }
-      if (!url_info.method) {
-        url_info.method = 'get';
-      }
-      return url_info;
-    };
-    handeLoadData = (function(_this) {
-      return function(data) {
-        removeLoadingClass();
-        _this._loadData(data, parent_node);
-        if (on_finished && $.isFunction(on_finished)) {
-          return on_finished();
-        }
-      };
-    })(this);
-    handleSuccess = (function(_this) {
-      return function(response) {
-        var data;
-        if ($.isArray(response) || typeof response === 'object') {
-          data = response;
-        } else if (data != null) {
-          data = $.parseJSON(response);
-        } else {
-          data = [];
-        }
-        if (_this.options.dataFilter) {
-          data = _this.options.dataFilter(data);
-        }
-        return handeLoadData(data);
-      };
-    })(this);
-    handleError = (function(_this) {
-      return function(response) {
-        removeLoadingClass();
-        if (_this.options.onLoadFailed) {
-          return _this.options.onLoadFailed(response);
-        }
-      };
-    })(this);
-    loadDataFromUrlInfo = function() {
-      url_info = parseUrlInfo();
-      return $.ajax($.extend({}, url_info, {
-        method: url_info.method != null ? url_info.method.toUpperCase() : 'GET',
-        cache: false,
-        dataType: 'json',
-        success: handleSuccess,
-        error: handleError
-      }));
-    };
-    if (!url_info) {
-      url_info = this._getDataUrlInfo(parent_node);
-    }
-    addLoadingClass();
-    if (!url_info) {
-      removeLoadingClass();
-    } else if ($.isArray(url_info)) {
-      handeLoadData(url_info);
-    } else {
-      loadDataFromUrlInfo();
-    }
-  };
-
-  JqTreeWidget.prototype._loadData = function(data, parent_node) {
-    var deselectNodes, loadSubtree;
-    if (parent_node == null) {
-      parent_node = null;
-    }
-    deselectNodes = (function(_this) {
-      return function() {
-        var i, len, n, selected_nodes_under_parent;
-        if (_this.select_node_handler) {
-          selected_nodes_under_parent = _this.select_node_handler.getSelectedNodesUnder(parent_node);
-          for (i = 0, len = selected_nodes_under_parent.length; i < len; i++) {
-            n = selected_nodes_under_parent[i];
-            _this.select_node_handler.removeFromSelection(n);
-          }
-        }
-        return null;
-      };
-    })(this);
-    loadSubtree = (function(_this) {
-      return function() {
-        parent_node.loadFromData(data);
-        parent_node.load_on_demand = false;
-        parent_node.is_loading = false;
-        return _this._refreshElements(parent_node);
-      };
-    })(this);
-    if (!data) {
-      return;
-    }
-    this._triggerEvent('tree.load_data', {
-      tree_data: data
-    });
-    if (!parent_node) {
-      this._initTree(data);
-    } else {
-      deselectNodes();
-      loadSubtree();
-    }
-    if (this.isDragging()) {
-      return this.dnd_handler.refresh();
-    }
-  };
-
-  JqTreeWidget.prototype.getNodeById = function(node_id) {
-    return this.tree.getNodeById(node_id);
-  };
-
-  JqTreeWidget.prototype.getNodeByName = function(name) {
-    return this.tree.getNodeByName(name);
-  };
-
-  JqTreeWidget.prototype.getNodesByProperty = function(key, value) {
-    return this.tree.getNodesByProperty(key, value);
-  };
-
-  JqTreeWidget.prototype.getNodeByHtmlElement = function(element) {
-    return this._getNode($(element));
-  };
-
-  JqTreeWidget.prototype.getNodeByCallback = function(callback) {
-    return this.tree.getNodeByCallback(callback);
-  };
-
-  JqTreeWidget.prototype.openNode = function(node, slide_param, on_finished_param) {
-    var on_finished, parseParams, ref1, slide;
-    if (slide_param == null) {
-      slide_param = null;
-    }
-    if (on_finished_param == null) {
-      on_finished_param = null;
-    }
-    parseParams = (function(_this) {
-      return function() {
-        var on_finished, slide;
-        if (isFunction(slide_param)) {
-          on_finished = slide_param;
-          slide = null;
-        } else {
-          slide = slide_param;
-          on_finished = on_finished_param;
-        }
-        if (slide === null) {
-          slide = _this.options.slide;
-        }
-        return [slide, on_finished];
-      };
-    })(this);
-    ref1 = parseParams(), slide = ref1[0], on_finished = ref1[1];
-    if (node) {
-      this._openNode(node, slide, on_finished);
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype._openNode = function(node, slide, on_finished) {
-    var doOpenNode, parent;
-    if (slide == null) {
-      slide = true;
-    }
-    doOpenNode = (function(_this) {
-      return function(_node, _slide, _on_finished) {
-        var folder_element;
-        folder_element = new FolderElement(_node, _this);
-        return folder_element.open(_on_finished, _slide);
-      };
-    })(this);
-    if (node.isFolder()) {
-      if (node.load_on_demand) {
-        return this._loadFolderOnDemand(node, slide, on_finished);
-      } else {
-        parent = node.parent;
-        while (parent) {
-          if (parent.parent) {
-            doOpenNode(parent, false, null);
-          }
-          parent = parent.parent;
-        }
-        doOpenNode(node, slide, on_finished);
-        return this._saveState();
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._loadFolderOnDemand = function(node, slide, on_finished) {
-    if (slide == null) {
-      slide = true;
-    }
-    node.is_loading = true;
-    return this._loadDataFromUrl(null, node, (function(_this) {
-      return function() {
-        return _this._openNode(node, slide, on_finished);
-      };
-    })(this));
-  };
-
-  JqTreeWidget.prototype.closeNode = function(node, slide) {
-    if (slide == null) {
-      slide = null;
-    }
-    if (slide === null) {
-      slide = this.options.slide;
-    }
-    if (node.isFolder()) {
-      new FolderElement(node, this).close(slide);
-      this._saveState();
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.isDragging = function() {
-    if (this.dnd_handler) {
-      return this.dnd_handler.is_dragging;
-    } else {
-      return false;
-    }
-  };
-
-  JqTreeWidget.prototype.refreshHitAreas = function() {
-    this.dnd_handler.refresh();
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.addNodeAfter = function(new_node_info, existing_node) {
-    var new_node;
-    new_node = existing_node.addAfter(new_node_info);
-    this._refreshElements(existing_node.parent);
-    return new_node;
-  };
-
-  JqTreeWidget.prototype.addNodeBefore = function(new_node_info, existing_node) {
-    var new_node;
-    new_node = existing_node.addBefore(new_node_info);
-    this._refreshElements(existing_node.parent);
-    return new_node;
-  };
-
-  JqTreeWidget.prototype.addParentNode = function(new_node_info, existing_node) {
-    var new_node;
-    new_node = existing_node.addParent(new_node_info);
-    this._refreshElements(new_node.parent);
-    return new_node;
-  };
-
-  JqTreeWidget.prototype.removeNode = function(node) {
-    var parent;
-    parent = node.parent;
-    if (parent) {
-      this.select_node_handler.removeFromSelection(node, true);
-      node.remove();
-      this._refreshElements(parent);
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.appendNode = function(new_node_info, parent_node) {
-    var node;
-    parent_node = parent_node || this.tree;
-    node = parent_node.append(new_node_info);
-    this._refreshElements(parent_node);
-    return node;
-  };
-
-  JqTreeWidget.prototype.prependNode = function(new_node_info, parent_node) {
-    var node;
-    if (!parent_node) {
-      parent_node = this.tree;
-    }
-    node = parent_node.prepend(new_node_info);
-    this._refreshElements(parent_node);
-    return node;
-  };
-
-  JqTreeWidget.prototype.updateNode = function(node, data) {
-    var id_is_changed;
-    id_is_changed = data.id && data.id !== node.id;
-    if (id_is_changed) {
-      this.tree.removeNodeFromIndex(node);
-    }
-    node.setData(data);
-    if (id_is_changed) {
-      this.tree.addNodeToIndex(node);
-    }
-    if (typeof data === 'object' && data.children) {
-      node.removeChildren();
-      if (data.children.length) {
-        node.loadFromData(data.children);
-      }
-    }
-    this.renderer.renderFromNode(node);
-    this._selectCurrentNode();
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.moveNode = function(node, target_node, position) {
-    var position_index;
-    position_index = Position.nameToIndex(position);
-    this.tree.moveNode(node, target_node, position_index);
-    this._refreshElements();
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.getStateFromStorage = function() {
-    return this.save_state_handler.getStateFromStorage();
-  };
-
-  JqTreeWidget.prototype.addToSelection = function(node) {
-    if (node) {
-      this.select_node_handler.addToSelection(node);
-      this._getNodeElementForNode(node).select();
-      this._saveState();
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.getSelectedNodes = function() {
-    return this.select_node_handler.getSelectedNodes();
-  };
-
-  JqTreeWidget.prototype.isNodeSelected = function(node) {
-    return this.select_node_handler.isNodeSelected(node);
-  };
-
-  JqTreeWidget.prototype.removeFromSelection = function(node) {
-    this.select_node_handler.removeFromSelection(node);
-    this._getNodeElementForNode(node).deselect();
-    this._saveState();
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.scrollToNode = function(node) {
-    var $element, top;
-    $element = $(node.element);
-    top = $element.offset().top - this.$el.offset().top;
-    this.scroll_handler.scrollTo(top);
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.getState = function() {
-    return this.save_state_handler.getState();
-  };
-
-  JqTreeWidget.prototype.setState = function(state) {
-    this.save_state_handler.setInitialState(state);
-    this._refreshElements();
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.setOption = function(option, value) {
-    this.options[option] = value;
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.moveDown = function() {
-    if (this.key_handler) {
-      this.key_handler.moveDown();
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.moveUp = function() {
-    if (this.key_handler) {
-      this.key_handler.moveUp();
-    }
-    return this.element;
-  };
-
-  JqTreeWidget.prototype.getVersion = function() {
-    return __version__;
-  };
-
-  JqTreeWidget.prototype._init = function() {
-    JqTreeWidget.__super__._init.call(this);
-    this.element = this.$el;
-    this.mouse_delay = 300;
-    this.is_initialized = false;
-    this.options.rtl = this._getRtlOption();
-    if (!this.options.closedIcon) {
-      this.options.closedIcon = this._getDefaultClosedIcon();
-    }
-    this.renderer = new ElementsRenderer(this);
-    if (SaveStateHandler != null) {
-      this.save_state_handler = new SaveStateHandler(this);
-    } else {
-      this.options.saveState = false;
-    }
-    if (SelectNodeHandler != null) {
-      this.select_node_handler = new SelectNodeHandler(this);
-    }
-    if (DragAndDropHandler != null) {
-      this.dnd_handler = new DragAndDropHandler(this);
-    } else {
-      this.options.dragAndDrop = false;
-    }
-    if (ScrollHandler != null) {
-      this.scroll_handler = new ScrollHandler(this);
-    }
-    if ((KeyHandler != null) && (SelectNodeHandler != null)) {
-      this.key_handler = new KeyHandler(this);
-    }
-    this._initData();
-    this.element.click($.proxy(this._click, this));
-    this.element.dblclick($.proxy(this._dblclick, this));
-    if (this.options.useContextMenu) {
-      return this.element.bind('contextmenu', $.proxy(this._contextmenu, this));
-    }
-  };
-
-  JqTreeWidget.prototype._deinit = function() {
-    this.element.empty();
-    this.element.unbind();
-    if (this.key_handler) {
-      this.key_handler.deinit();
-    }
-    this.tree = null;
-    return JqTreeWidget.__super__._deinit.call(this);
-  };
-
-  JqTreeWidget.prototype._initData = function() {
-    var data_url;
-    if (this.options.data) {
-      return this._loadData(this.options.data);
-    } else {
-      data_url = this._getDataUrlInfo();
-      if (data_url) {
-        return this._loadDataFromUrl();
-      } else {
-        return this._loadData([]);
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._getDataUrlInfo = function(node) {
-    var data_url, getUrlFromString;
-    data_url = this.options.dataUrl || this.element.data('url');
-    getUrlFromString = (function(_this) {
-      return function() {
-        var data, selected_node_id, url_info;
-        url_info = {
-          url: data_url
-        };
-        if (node && node.id) {
-          data = {
-            node: node.id
-          };
-          url_info['data'] = data;
-        } else {
-          selected_node_id = _this._getNodeIdToBeSelected();
-          if (selected_node_id) {
-            data = {
-              selected_node: selected_node_id
-            };
-            url_info['data'] = data;
-          }
-        }
-        return url_info;
-      };
-    })(this);
-    if ($.isFunction(data_url)) {
-      return data_url(node);
-    } else if ($.type(data_url) === 'string') {
-      return getUrlFromString();
-    } else {
-      return data_url;
-    }
-  };
-
-  JqTreeWidget.prototype._getNodeIdToBeSelected = function() {
-    if (this.options.saveState) {
-      return this.save_state_handler.getNodeIdToBeSelected();
-    } else {
-      return null;
-    }
-  };
-
-  JqTreeWidget.prototype._initTree = function(data) {
-    var doInit, must_load_on_demand;
-    doInit = (function(_this) {
-      return function() {
-        if (!_this.is_initialized) {
-          _this.is_initialized = true;
-          return _this._triggerEvent('tree.init');
-        }
-      };
-    })(this);
-    this.tree = new this.options.nodeClass(null, true, this.options.nodeClass);
-    if (this.select_node_handler) {
-      this.select_node_handler.clear();
-    }
-    this.tree.loadFromData(data);
-    must_load_on_demand = this._setInitialState();
-    this._refreshElements();
-    if (!must_load_on_demand) {
-      return doInit();
-    } else {
-      return this._setInitialStateOnDemand(doInit);
-    }
-  };
-
-  JqTreeWidget.prototype._setInitialState = function() {
-    var autoOpenNodes, is_restored, must_load_on_demand, ref1, restoreState;
-    restoreState = (function(_this) {
-      return function() {
-        var must_load_on_demand, state;
-        if (!(_this.options.saveState && _this.save_state_handler)) {
-          return [false, false];
-        } else {
-          state = _this.save_state_handler.getStateFromStorage();
-          if (!state) {
-            return [false, false];
-          } else {
-            must_load_on_demand = _this.save_state_handler.setInitialState(state);
-            return [true, must_load_on_demand];
-          }
-        }
-      };
-    })(this);
-    autoOpenNodes = (function(_this) {
-      return function() {
-        var max_level, must_load_on_demand;
-        if (_this.options.autoOpen === false) {
-          return false;
-        }
-        max_level = _this._getAutoOpenMaxLevel();
-        must_load_on_demand = false;
-        _this.tree.iterate(function(node, level) {
-          if (node.load_on_demand) {
-            must_load_on_demand = true;
-            return false;
-          } else if (!node.hasChildren()) {
-            return false;
-          } else {
-            node.is_open = true;
-            return level !== max_level;
-          }
-        });
-        return must_load_on_demand;
-      };
-    })(this);
-    ref1 = restoreState(), is_restored = ref1[0], must_load_on_demand = ref1[1];
-    if (!is_restored) {
-      must_load_on_demand = autoOpenNodes();
-    }
-    return must_load_on_demand;
-  };
-
-  JqTreeWidget.prototype._setInitialStateOnDemand = function(cb_finished) {
-    var autoOpenNodes, restoreState;
-    restoreState = (function(_this) {
-      return function() {
-        var state;
-        if (!(_this.options.saveState && _this.save_state_handler)) {
-          return false;
-        } else {
-          state = _this.save_state_handler.getStateFromStorage();
-          if (!state) {
-            return false;
-          } else {
-            _this.save_state_handler.setInitialStateOnDemand(state, cb_finished);
-            return true;
-          }
-        }
-      };
-    })(this);
-    autoOpenNodes = (function(_this) {
-      return function() {
-        var loadAndOpenNode, loading_count, max_level, openNodes;
-        max_level = _this._getAutoOpenMaxLevel();
-        loading_count = 0;
-        loadAndOpenNode = function(node) {
-          loading_count += 1;
-          return _this._openNode(node, false, function() {
-            loading_count -= 1;
-            return openNodes();
-          });
-        };
-        openNodes = function() {
-          _this.tree.iterate(function(node, level) {
-            if (node.load_on_demand) {
-              if (!node.is_loading) {
-                loadAndOpenNode(node);
-              }
-              return false;
-            } else {
-              _this._openNode(node, false);
-              return level !== max_level;
-            }
-          });
-          if (loading_count === 0) {
-            return cb_finished();
-          }
-        };
-        return openNodes();
-      };
-    })(this);
-    if (!restoreState()) {
-      return autoOpenNodes();
-    }
-  };
-
-  JqTreeWidget.prototype._getAutoOpenMaxLevel = function() {
-    if (this.options.autoOpen === true) {
-      return -1;
-    } else {
-      return parseInt(this.options.autoOpen);
-    }
-  };
-
-
-  /*
-  Redraw the tree or part of the tree.
-   * from_node: redraw this subtree
-   */
-
-  JqTreeWidget.prototype._refreshElements = function(from_node) {
-    if (from_node == null) {
-      from_node = null;
-    }
-    this.renderer.render(from_node);
-    return this._triggerEvent('tree.refresh');
-  };
-
-  JqTreeWidget.prototype._click = function(e) {
-    var click_target, event, node;
-    click_target = this._getClickTarget(e.target);
-    if (click_target) {
-      if (click_target.type === 'button') {
-        this.toggle(click_target.node, this.options.slide);
-        e.preventDefault();
-        return e.stopPropagation();
-      } else if (click_target.type === 'label') {
-        node = click_target.node;
-        event = this._triggerEvent('tree.click', {
-          node: node,
-          click_event: e
-        });
-        if (!event.isDefaultPrevented()) {
-          return this._selectNode(node, true);
-        }
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._dblclick = function(e) {
-    var click_target;
-    click_target = this._getClickTarget(e.target);
-    if (click_target && click_target.type === 'label') {
-      return this._triggerEvent('tree.dblclick', {
-        node: click_target.node,
-        click_event: e
-      });
-    }
-  };
-
-  JqTreeWidget.prototype._getClickTarget = function(element) {
-    var $button, $el, $target, node;
-    $target = $(element);
-    $button = $target.closest('.jqtree-toggler');
-    if ($button.length) {
-      node = this._getNode($button);
-      if (node) {
-        return {
-          type: 'button',
-          node: node
-        };
-      }
-    } else {
-      $el = $target.closest('.jqtree-element');
-      if ($el.length) {
-        node = this._getNode($el);
-        if (node) {
-          return {
-            type: 'label',
-            node: node
-          };
-        }
-      }
-    }
-    return null;
-  };
-
-  JqTreeWidget.prototype._getNode = function($element) {
-    var $li;
-    $li = $element.closest('li.jqtree_common');
-    if ($li.length === 0) {
-      return null;
-    } else {
-      return $li.data('node');
-    }
-  };
-
-  JqTreeWidget.prototype._getNodeElementForNode = function(node) {
-    if (node.isFolder()) {
-      return new FolderElement(node, this);
-    } else {
-      return new NodeElement(node, this);
-    }
-  };
-
-  JqTreeWidget.prototype._getNodeElement = function($element) {
-    var node;
-    node = this._getNode($element);
-    if (node) {
-      return this._getNodeElementForNode(node);
-    } else {
-      return null;
-    }
-  };
-
-  JqTreeWidget.prototype._contextmenu = function(e) {
-    var $div, node;
-    $div = $(e.target).closest('ul.jqtree-tree .jqtree-element');
-    if ($div.length) {
-      node = this._getNode($div);
-      if (node) {
-        e.preventDefault();
-        e.stopPropagation();
-        this._triggerEvent('tree.contextmenu', {
-          node: node,
-          click_event: e
-        });
-        return false;
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._saveState = function() {
-    if (this.options.saveState) {
-      return this.save_state_handler.saveState();
-    }
-  };
-
-  JqTreeWidget.prototype._mouseCapture = function(position_info) {
-    if (this.options.dragAndDrop) {
-      return this.dnd_handler.mouseCapture(position_info);
-    } else {
-      return false;
-    }
-  };
-
-  JqTreeWidget.prototype._mouseStart = function(position_info) {
-    if (this.options.dragAndDrop) {
-      return this.dnd_handler.mouseStart(position_info);
-    } else {
-      return false;
-    }
-  };
-
-  JqTreeWidget.prototype._mouseDrag = function(position_info) {
-    var result;
-    if (this.options.dragAndDrop) {
-      result = this.dnd_handler.mouseDrag(position_info);
-      if (this.scroll_handler) {
-        this.scroll_handler.checkScrolling();
-      }
-      return result;
-    } else {
-      return false;
-    }
-  };
-
-  JqTreeWidget.prototype._mouseStop = function(position_info) {
-    if (this.options.dragAndDrop) {
-      return this.dnd_handler.mouseStop(position_info);
-    } else {
-      return false;
-    }
-  };
-
-  JqTreeWidget.prototype._triggerEvent = function(event_name, values) {
-    var event;
-    event = $.Event(event_name);
-    $.extend(event, values);
-    this.element.trigger(event);
-    return event;
-  };
-
-  JqTreeWidget.prototype.testGenerateHitAreas = function(moving_node) {
-    this.dnd_handler.current_item = this._getNodeElementForNode(moving_node);
-    this.dnd_handler.generateHitAreas();
-    return this.dnd_handler.hit_areas;
-  };
-
-  JqTreeWidget.prototype._selectCurrentNode = function() {
-    var node, node_element;
-    node = this.getSelectedNode();
-    if (node) {
-      node_element = this._getNodeElementForNode(node);
-      if (node_element) {
-        return node_element.select();
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._deselectCurrentNode = function() {
-    var node;
-    node = this.getSelectedNode();
-    if (node) {
-      return this.removeFromSelection(node);
-    }
-  };
-
-  JqTreeWidget.prototype._getDefaultClosedIcon = function() {
-    if (this.options.rtl) {
-      return '&#x25c0;';
-    } else {
-      return '&#x25ba;';
-    }
-  };
-
-  JqTreeWidget.prototype._getRtlOption = function() {
-    var data_rtl;
-    if (this.options.rtl !== null) {
-      return this.options.rtl;
-    } else {
-      data_rtl = this.element.data('rtl');
-      if ((data_rtl != null) && data_rtl !== false) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  };
-
-  JqTreeWidget.prototype._notifyLoading = function(is_loading, node, $el) {
-    if (this.options.onLoading) {
-      return this.options.onLoading(is_loading, node, $el);
-    }
-  };
-
-  return JqTreeWidget;
-
-})(MouseWidget);
-
-JqTreeWidget.getModule = function(name) {
-  var modules;
-  modules = {
-    'node': node_module,
-    'util': util_module,
-    'drag_and_drop_handler': drag_and_drop_handler
-  };
-  return modules[name];
-};
-
-SimpleWidget.register(JqTreeWidget, 'tree');
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 45 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = '1.3.7';
+var MapCache = __webpack_require__(44),
+    setCacheAdd = __webpack_require__(84),
+    setCacheHas = __webpack_require__(85);
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+module.exports = SetCache;
 
 
 /***/ }),
 /* 46 */
+/***/ (function(module, exports) {
+
+/**
+ * A faster alternative to `Function#apply`, this function invokes `func`
+ * with the `this` binding of `thisArg` and the arguments of `args`.
+ *
+ * @private
+ * @param {Function} func The function to invoke.
+ * @param {*} thisArg The `this` binding of `func`.
+ * @param {Array} args The arguments to invoke `func` with.
+ * @returns {*} Returns the result of `func`.
+ */
+function apply(func, thisArg, args) {
+  switch (args.length) {
+    case 0: return func.call(thisArg);
+    case 1: return func.call(thisArg, args[0]);
+    case 2: return func.call(thisArg, args[0], args[1]);
+    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+  }
+  return func.apply(thisArg, args);
+}
+
+module.exports = apply;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIndexOf = __webpack_require__(53);
+
+/**
+ * A specialized version of `_.includes` for arrays without support for
+ * specifying an index to search from.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludes(array, value) {
+  var length = array == null ? 0 : array.length;
+  return !!length && baseIndexOf(array, value, 0) > -1;
+}
+
+module.exports = arrayIncludes;
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports) {
+
+/**
+ * This function is like `arrayIncludes` except that it accepts a comparator.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @param {Function} comparator The comparator invoked per element.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludesWith(array, value, comparator) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (comparator(value, array[index])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = arrayIncludesWith;
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var SetCache = __webpack_require__(45),
+    arrayIncludes = __webpack_require__(47),
+    arrayIncludesWith = __webpack_require__(48),
+    arrayMap = __webpack_require__(49),
+    baseUnary = __webpack_require__(58),
+    cacheHas = __webpack_require__(59);
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of methods like `_.difference` without support
+ * for excluding multiple arrays or iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Array} values The values to exclude.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new array of filtered values.
+ */
+function baseDifference(array, values, iteratee, comparator) {
+  var index = -1,
+      includes = arrayIncludes,
+      isCommon = true,
+      length = array.length,
+      result = [],
+      valuesLength = values.length;
+
+  if (!length) {
+    return result;
+  }
+  if (iteratee) {
+    values = arrayMap(values, baseUnary(iteratee));
+  }
+  if (comparator) {
+    includes = arrayIncludesWith;
+    isCommon = false;
+  }
+  else if (values.length >= LARGE_ARRAY_SIZE) {
+    includes = cacheHas;
+    isCommon = false;
+    values = new SetCache(values);
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index],
+        computed = iteratee == null ? value : iteratee(value);
+
+    value = (comparator || value !== 0) ? value : 0;
+    if (isCommon && computed === computed) {
+      var valuesIndex = valuesLength;
+      while (valuesIndex--) {
+        if (values[valuesIndex] === computed) {
+          continue outer;
+        }
+      }
+      result.push(value);
+    }
+    else if (!includes(values, computed, comparator)) {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+module.exports = baseDifference;
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseFindIndex;
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(13),
+    getRawTag = __webpack_require__(63),
+    objectToString = __webpack_require__(82);
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFindIndex = __webpack_require__(51),
+    baseIsNaN = __webpack_require__(54),
+    strictIndexOf = __webpack_require__(88);
+
+/**
+ * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOf(array, value, fromIndex) {
+  return value === value
+    ? strictIndexOf(array, value, fromIndex)
+    : baseFindIndex(array, baseIsNaN, fromIndex);
+}
+
+module.exports = baseIndexOf;
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.isNaN` without support for number objects.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ */
+function baseIsNaN(value) {
+  return value !== value;
+}
+
+module.exports = baseIsNaN;
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFunction = __webpack_require__(15),
+    isMasked = __webpack_require__(71),
+    isObject = __webpack_require__(16),
+    toSource = __webpack_require__(89);
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+module.exports = baseIsNative;
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var identity = __webpack_require__(14),
+    overRest = __webpack_require__(83),
+    setToString = __webpack_require__(86);
+
+/**
+ * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @returns {Function} Returns the new function.
+ */
+function baseRest(func, start) {
+  return setToString(overRest(func, start, identity), func + '');
+}
+
+module.exports = baseRest;
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var constant = __webpack_require__(90),
+    defineProperty = __webpack_require__(61),
+    identity = __webpack_require__(14);
+
+/**
+ * The base implementation of `setToString` without support for hot loop shorting.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var baseSetToString = !defineProperty ? identity : function(func, string) {
+  return defineProperty(func, 'toString', {
+    'configurable': true,
+    'enumerable': false,
+    'value': constant(string),
+    'writable': true
+  });
+};
+
+module.exports = baseSetToString;
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+module.exports = cacheHas;
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(7);
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+module.exports = coreJsData;
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(6);
+
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+module.exports = defineProperty;
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(100)))
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(13);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports) {
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+module.exports = getValue;
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(4);
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+module.exports = hashClear;
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports) {
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = hashDelete;
+
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(4);
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+module.exports = hashGet;
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(4);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+}
+
+module.exports = hashHas;
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(4);
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+module.exports = hashSet;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+module.exports = isKeyable;
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var coreJsData = __webpack_require__(60);
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+module.exports = isMasked;
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+module.exports = listCacheClear;
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(2);
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+module.exports = listCacheDelete;
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(2);
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+module.exports = listCacheGet;
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(2);
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+module.exports = listCacheHas;
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(2);
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+module.exports = listCacheSet;
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Hash = __webpack_require__(41),
+    ListCache = __webpack_require__(42),
+    Map = __webpack_require__(43);
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+module.exports = mapCacheClear;
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(3);
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = mapCacheDelete;
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(3);
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+module.exports = mapCacheGet;
+
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(3);
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+module.exports = mapCacheHas;
+
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(3);
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+module.exports = mapCacheSet;
+
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var apply = __webpack_require__(46);
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * A specialized version of `baseRest` which transforms the rest array.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @param {Function} transform The rest array transform.
+ * @returns {Function} Returns the new function.
+ */
+function overRest(func, start, transform) {
+  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+  return function() {
+    var args = arguments,
+        index = -1,
+        length = nativeMax(args.length - start, 0),
+        array = Array(length);
+
+    while (++index < length) {
+      array[index] = args[start + index];
+    }
+    index = -1;
+    var otherArgs = Array(start + 1);
+    while (++index < start) {
+      otherArgs[index] = args[index];
+    }
+    otherArgs[start] = transform(array);
+    return apply(func, this, otherArgs);
+  };
+}
+
+module.exports = overRest;
+
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports) {
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+module.exports = setCacheAdd;
+
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+module.exports = setCacheHas;
+
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseSetToString = __webpack_require__(57),
+    shortOut = __webpack_require__(87);
+
+/**
+ * Sets the `toString` method of `func` to return `string`.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var setToString = shortOut(baseSetToString);
+
+module.exports = setToString;
+
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports) {
+
+/** Used to detect hot functions by number of calls within a span of milliseconds. */
+var HOT_COUNT = 800,
+    HOT_SPAN = 16;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeNow = Date.now;
+
+/**
+ * Creates a function that'll short out and invoke `identity` instead
+ * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+ * milliseconds.
+ *
+ * @private
+ * @param {Function} func The function to restrict.
+ * @returns {Function} Returns the new shortable function.
+ */
+function shortOut(func) {
+  var count = 0,
+      lastCalled = 0;
+
+  return function() {
+    var stamp = nativeNow(),
+        remaining = HOT_SPAN - (stamp - lastCalled);
+
+    lastCalled = stamp;
+    if (remaining > 0) {
+      if (++count >= HOT_COUNT) {
+        return arguments[0];
+      }
+    } else {
+      count = 0;
+    }
+    return func.apply(undefined, arguments);
+  };
+}
+
+module.exports = shortOut;
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.indexOf` which performs strict equality
+ * comparisons of values, i.e. `===`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function strictIndexOf(array, value, fromIndex) {
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (array[index] === value) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = strictIndexOf;
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+module.exports = toSource;
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
+
+/**
+ * Creates a function that returns `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {*} value The value to return from the new function.
+ * @returns {Function} Returns the new constant function.
+ * @example
+ *
+ * var objects = _.times(2, _.constant({ 'a': 1 }));
+ *
+ * console.log(objects);
+ * // => [{ 'a': 1 }, { 'a': 1 }]
+ *
+ * console.log(objects[0] === objects[1]);
+ * // => true
+ */
+function constant(value) {
+  return function() {
+    return value;
+  };
+}
+
+module.exports = constant;
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports) {
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+module.exports = eq;
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFunction = __webpack_require__(15),
+    isLength = __webpack_require__(94);
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isArrayLike = __webpack_require__(92),
+    isObjectLike = __webpack_require__(95);
+
+/**
+ * This method is like `_.isArrayLike` except that it also checks if `value`
+ * is an object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array-like object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArrayLikeObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLikeObject(document.body.children);
+ * // => true
+ *
+ * _.isArrayLikeObject('abc');
+ * // => false
+ *
+ * _.isArrayLikeObject(_.noop);
+ * // => false
+ */
+function isArrayLikeObject(value) {
+  return isObjectLike(value) && isArrayLike(value);
+}
+
+module.exports = isArrayLikeObject;
+
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports) {
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseDifference = __webpack_require__(50),
+    baseRest = __webpack_require__(56),
+    isArrayLikeObject = __webpack_require__(93);
+
+/**
+ * Creates an array excluding all given values using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * **Note:** Unlike `_.pull`, this method returns a new array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @param {...*} [values] The values to exclude.
+ * @returns {Array} Returns the new array of filtered values.
+ * @see _.difference, _.xor
+ * @example
+ *
+ * _.without([2, 1, 2, 3], 1, 2);
+ * // => [3]
+ */
+var without = baseRest(function(array, values) {
+  return isArrayLikeObject(array)
+    ? baseDifference(array, values)
+    : [];
+});
+
+module.exports = without;
+
+
+/***/ }),
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18638,7 +16493,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 }));
 
 /***/ }),
-/* 47 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18662,7 +16517,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 (function(root, factory) {
 	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0),__webpack_require__(48),__webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1),__webpack_require__(99),__webpack_require__(97)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -21839,7 +19694,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 }));
 
 /***/ }),
-/* 48 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -22345,33 +20200,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 }));
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(13);
-module.exports = __webpack_require__(14);
-
-
-/***/ }),
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */
+/* 100 */
 /***/ (function(module, exports) {
 
 var g;
@@ -22398,1877 +20230,4200 @@ module.exports = g;
 
 
 /***/ }),
-/* 66 */,
-/* 67 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eq = __webpack_require__(126);
+__webpack_require__(18);
+module.exports = __webpack_require__(19);
 
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
+
+/***/ }),
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */
+/***/ (function(module, exports) {
+
+var _indexOf, getBoolString, html_escape, indexOf, isFunction, isInt;
+
+_indexOf = function(array, item) {
+  var i, j, len, value;
+  for (i = j = 0, len = array.length; j < len; i = ++j) {
+    value = array[i];
+    if (value === item) {
+      return i;
     }
   }
   return -1;
-}
-
-module.exports = assocIndexOf;
-
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isKeyable = __webpack_require__(105);
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-module.exports = getMapData;
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var getNative = __webpack_require__(70);
-
-/* Built-in method references that are verified to be native. */
-var nativeCreate = getNative(Object, 'create');
-
-module.exports = nativeCreate;
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsNative = __webpack_require__(90),
-    getValue = __webpack_require__(99);
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var freeGlobal = __webpack_require__(97);
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(71);
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports) {
-
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(87),
-    isObject = __webpack_require__(75);
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-module.exports = isFunction;
-
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-module.exports = isObject;
-
-
-/***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var hashClear = __webpack_require__(100),
-    hashDelete = __webpack_require__(101),
-    hashGet = __webpack_require__(102),
-    hashHas = __webpack_require__(103),
-    hashSet = __webpack_require__(104);
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-module.exports = Hash;
-
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var listCacheClear = __webpack_require__(107),
-    listCacheDelete = __webpack_require__(108),
-    listCacheGet = __webpack_require__(109),
-    listCacheHas = __webpack_require__(110),
-    listCacheSet = __webpack_require__(111);
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-module.exports = ListCache;
-
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var getNative = __webpack_require__(70),
-    root = __webpack_require__(71);
-
-/* Built-in method references that are verified to be native. */
-var Map = getNative(root, 'Map');
-
-module.exports = Map;
-
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var mapCacheClear = __webpack_require__(112),
-    mapCacheDelete = __webpack_require__(113),
-    mapCacheGet = __webpack_require__(114),
-    mapCacheHas = __webpack_require__(115),
-    mapCacheSet = __webpack_require__(116);
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-module.exports = MapCache;
-
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var MapCache = __webpack_require__(79),
-    setCacheAdd = __webpack_require__(119),
-    setCacheHas = __webpack_require__(120);
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values == null ? 0 : values.length;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-module.exports = SetCache;
-
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports) {
-
-/**
- * A faster alternative to `Function#apply`, this function invokes `func`
- * with the `this` binding of `thisArg` and the arguments of `args`.
- *
- * @private
- * @param {Function} func The function to invoke.
- * @param {*} thisArg The `this` binding of `func`.
- * @param {Array} args The arguments to invoke `func` with.
- * @returns {*} Returns the result of `func`.
- */
-function apply(func, thisArg, args) {
-  switch (args.length) {
-    case 0: return func.call(thisArg);
-    case 1: return func.call(thisArg, args[0]);
-    case 2: return func.call(thisArg, args[0], args[1]);
-    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-  }
-  return func.apply(thisArg, args);
-}
-
-module.exports = apply;
-
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIndexOf = __webpack_require__(88);
-
-/**
- * A specialized version of `_.includes` for arrays without support for
- * specifying an index to search from.
- *
- * @private
- * @param {Array} [array] The array to inspect.
- * @param {*} target The value to search for.
- * @returns {boolean} Returns `true` if `target` is found, else `false`.
- */
-function arrayIncludes(array, value) {
-  var length = array == null ? 0 : array.length;
-  return !!length && baseIndexOf(array, value, 0) > -1;
-}
-
-module.exports = arrayIncludes;
-
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports) {
-
-/**
- * This function is like `arrayIncludes` except that it accepts a comparator.
- *
- * @private
- * @param {Array} [array] The array to inspect.
- * @param {*} target The value to search for.
- * @param {Function} comparator The comparator invoked per element.
- * @returns {boolean} Returns `true` if `target` is found, else `false`.
- */
-function arrayIncludesWith(array, value, comparator) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (comparator(value, array[index])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-module.exports = arrayIncludesWith;
-
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports) {
-
-/**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
-
-module.exports = arrayMap;
-
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var SetCache = __webpack_require__(80),
-    arrayIncludes = __webpack_require__(82),
-    arrayIncludesWith = __webpack_require__(83),
-    arrayMap = __webpack_require__(84),
-    baseUnary = __webpack_require__(93),
-    cacheHas = __webpack_require__(94);
-
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/**
- * The base implementation of methods like `_.difference` without support
- * for excluding multiple arrays or iteratee shorthands.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Array} values The values to exclude.
- * @param {Function} [iteratee] The iteratee invoked per element.
- * @param {Function} [comparator] The comparator invoked per element.
- * @returns {Array} Returns the new array of filtered values.
- */
-function baseDifference(array, values, iteratee, comparator) {
-  var index = -1,
-      includes = arrayIncludes,
-      isCommon = true,
-      length = array.length,
-      result = [],
-      valuesLength = values.length;
-
-  if (!length) {
-    return result;
-  }
-  if (iteratee) {
-    values = arrayMap(values, baseUnary(iteratee));
-  }
-  if (comparator) {
-    includes = arrayIncludesWith;
-    isCommon = false;
-  }
-  else if (values.length >= LARGE_ARRAY_SIZE) {
-    includes = cacheHas;
-    isCommon = false;
-    values = new SetCache(values);
-  }
-  outer:
-  while (++index < length) {
-    var value = array[index],
-        computed = iteratee == null ? value : iteratee(value);
-
-    value = (comparator || value !== 0) ? value : 0;
-    if (isCommon && computed === computed) {
-      var valuesIndex = valuesLength;
-      while (valuesIndex--) {
-        if (values[valuesIndex] === computed) {
-          continue outer;
-        }
-      }
-      result.push(value);
-    }
-    else if (!includes(values, computed, comparator)) {
-      result.push(value);
-    }
-  }
-  return result;
-}
-
-module.exports = baseDifference;
-
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports) {
-
-/**
- * The base implementation of `_.findIndex` and `_.findLastIndex` without
- * support for iteratee shorthands.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} predicate The function invoked per iteration.
- * @param {number} fromIndex The index to search from.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseFindIndex(array, predicate, fromIndex, fromRight) {
-  var length = array.length,
-      index = fromIndex + (fromRight ? 1 : -1);
-
-  while ((fromRight ? index-- : ++index < length)) {
-    if (predicate(array[index], index, array)) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-module.exports = baseFindIndex;
-
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(72),
-    getRawTag = __webpack_require__(98),
-    objectToString = __webpack_require__(117);
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseFindIndex = __webpack_require__(86),
-    baseIsNaN = __webpack_require__(89),
-    strictIndexOf = __webpack_require__(123);
-
-/**
- * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} value The value to search for.
- * @param {number} fromIndex The index to search from.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseIndexOf(array, value, fromIndex) {
-  return value === value
-    ? strictIndexOf(array, value, fromIndex)
-    : baseFindIndex(array, baseIsNaN, fromIndex);
-}
-
-module.exports = baseIndexOf;
-
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports) {
-
-/**
- * The base implementation of `_.isNaN` without support for number objects.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
- */
-function baseIsNaN(value) {
-  return value !== value;
-}
-
-module.exports = baseIsNaN;
-
-
-/***/ }),
-/* 90 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isFunction = __webpack_require__(74),
-    isMasked = __webpack_require__(106),
-    isObject = __webpack_require__(75),
-    toSource = __webpack_require__(124);
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Used for built-in method references. */
-var funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-module.exports = baseIsNative;
-
-
-/***/ }),
-/* 91 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var identity = __webpack_require__(73),
-    overRest = __webpack_require__(118),
-    setToString = __webpack_require__(121);
-
-/**
- * The base implementation of `_.rest` which doesn't validate or coerce arguments.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @returns {Function} Returns the new function.
- */
-function baseRest(func, start) {
-  return setToString(overRest(func, start, identity), func + '');
-}
-
-module.exports = baseRest;
-
-
-/***/ }),
-/* 92 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var constant = __webpack_require__(125),
-    defineProperty = __webpack_require__(96),
-    identity = __webpack_require__(73);
-
-/**
- * The base implementation of `setToString` without support for hot loop shorting.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
- */
-var baseSetToString = !defineProperty ? identity : function(func, string) {
-  return defineProperty(func, 'toString', {
-    'configurable': true,
-    'enumerable': false,
-    'value': constant(string),
-    'writable': true
-  });
 };
 
-module.exports = baseSetToString;
-
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports) {
-
-/**
- * The base implementation of `_.unary` without support for storing metadata.
- *
- * @private
- * @param {Function} func The function to cap arguments for.
- * @returns {Function} Returns the new capped function.
- */
-function baseUnary(func) {
-  return function(value) {
-    return func(value);
-  };
-}
-
-module.exports = baseUnary;
-
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if a `cache` value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-module.exports = cacheHas;
-
-
-/***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(71);
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-module.exports = coreJsData;
-
-
-/***/ }),
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var getNative = __webpack_require__(70);
-
-var defineProperty = (function() {
-  try {
-    var func = getNative(Object, 'defineProperty');
-    func({}, '', {});
-    return func;
-  } catch (e) {}
-}());
-
-module.exports = defineProperty;
-
-
-/***/ }),
-/* 97 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-module.exports = freeGlobal;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(65)))
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(72);
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-module.exports = getRawTag;
-
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports) {
-
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-module.exports = getValue;
-
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var nativeCreate = __webpack_require__(69);
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-  this.size = 0;
-}
-
-module.exports = hashClear;
-
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports) {
-
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  var result = this.has(key) && delete this.__data__[key];
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-module.exports = hashDelete;
-
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var nativeCreate = __webpack_require__(69);
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-module.exports = hashGet;
-
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var nativeCreate = __webpack_require__(69);
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-}
-
-module.exports = hashHas;
-
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var nativeCreate = __webpack_require__(69);
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  this.size += this.has(key) ? 0 : 1;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-module.exports = hashSet;
-
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-module.exports = isKeyable;
-
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var coreJsData = __webpack_require__(95);
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-module.exports = isMasked;
-
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports) {
-
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-  this.size = 0;
-}
-
-module.exports = listCacheClear;
-
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var assocIndexOf = __webpack_require__(67);
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype;
-
-/** Built-in value references. */
-var splice = arrayProto.splice;
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
+indexOf = function(array, item) {
+  if (array.indexOf) {
+    return array.indexOf(item);
   } else {
-    splice.call(data, index, 1);
+    return _indexOf(array, item);
   }
-  --this.size;
-  return true;
-}
+};
 
-module.exports = listCacheDelete;
+isInt = function(n) {
+  return typeof n === 'number' && n % 1 === 0;
+};
 
+isFunction = function(v) {
+  return typeof v === 'function';
+};
 
-/***/ }),
-/* 109 */
-/***/ (function(module, exports, __webpack_require__) {
+html_escape = function(string) {
+  return ('' + string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
+};
 
-var assocIndexOf = __webpack_require__(67);
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-module.exports = listCacheGet;
-
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var assocIndexOf = __webpack_require__(67);
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-module.exports = listCacheHas;
-
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var assocIndexOf = __webpack_require__(67);
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    ++this.size;
-    data.push([key, value]);
+getBoolString = function(value) {
+  if (value) {
+    return 'true';
   } else {
-    data[index][1] = value;
+    return 'false';
   }
-  return this;
-}
+};
 
-module.exports = listCacheSet;
+module.exports = {
+  _indexOf: _indexOf,
+  getBoolString: getBoolString,
+  html_escape: html_escape,
+  indexOf: indexOf,
+  isInt: isInt,
+  isFunction: isFunction
+};
 
 
 /***/ }),
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Hash = __webpack_require__(76),
-    ListCache = __webpack_require__(77),
-    Map = __webpack_require__(78);
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, Node, Position;
 
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.size = 0;
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
+$ = jQuery;
+
+Position = {
+  getName: function(position) {
+    return Position.strings[position - 1];
+  },
+  nameToIndex: function(name) {
+    var i, j, ref;
+    for (i = j = 1, ref = Position.strings.length; 1 <= ref ? j <= ref : j >= ref; i = 1 <= ref ? ++j : --j) {
+      if (Position.strings[i - 1] === name) {
+        return i;
+      }
+    }
+    return 0;
+  }
+};
+
+Position.BEFORE = 1;
+
+Position.AFTER = 2;
+
+Position.INSIDE = 3;
+
+Position.NONE = 4;
+
+Position.strings = ['before', 'after', 'inside', 'none'];
+
+Node = (function() {
+  function Node(o, is_root, node_class) {
+    if (is_root == null) {
+      is_root = false;
+    }
+    if (node_class == null) {
+      node_class = Node;
+    }
+    this.name = '';
+    this.setData(o);
+    this.children = [];
+    this.parent = null;
+    if (is_root) {
+      this.id_mapping = {};
+      this.tree = this;
+      this.node_class = node_class;
+    }
+  }
+
+  Node.prototype.setData = function(o) {
+
+    /*
+    Set the data of this node.
+    
+    setData(string): set the name of the node
+    setdata(object): set attributes of the node
+    
+    Examples:
+        setdata('node1')
+    
+        setData({ name: 'node1', id: 1});
+    
+        setData({ name: 'node2', id: 2, color: 'green'});
+    
+    * This is an internal function; it is not in the docs
+    * Does not remove existing node values
+     */
+    var key, setName, value;
+    setName = (function(_this) {
+      return function(name) {
+        if (name !== null) {
+          return _this.name = name;
+        }
+      };
+    })(this);
+    if (typeof o !== 'object') {
+      setName(o);
+    } else {
+      for (key in o) {
+        value = o[key];
+        if (key === 'label') {
+          setName(value);
+        } else if (key !== 'children') {
+          this[key] = value;
+        }
+      }
+    }
+    return null;
   };
-}
 
-module.exports = mapCacheClear;
+  Node.prototype.initFromData = function(data) {
+    var addChildren, addNode;
+    addNode = (function(_this) {
+      return function(node_data) {
+        _this.setData(node_data);
+        if (node_data.children) {
+          return addChildren(node_data.children);
+        }
+      };
+    })(this);
+    addChildren = (function(_this) {
+      return function(children_data) {
+        var child, j, len, node;
+        for (j = 0, len = children_data.length; j < len; j++) {
+          child = children_data[j];
+          node = new _this.tree.node_class('');
+          node.initFromData(child);
+          _this.addChild(node);
+        }
+        return null;
+      };
+    })(this);
+    addNode(data);
+    return null;
+  };
 
+
+  /*
+  Create tree from data.
+  
+  Structure of data is:
+  [
+      {
+          label: 'node1',
+          children: [
+              { label: 'child1' },
+              { label: 'child2' }
+          ]
+      },
+      {
+          label: 'node2'
+      }
+  ]
+   */
+
+  Node.prototype.loadFromData = function(data) {
+    var j, len, node, o;
+    this.removeChildren();
+    for (j = 0, len = data.length; j < len; j++) {
+      o = data[j];
+      node = new this.tree.node_class(o);
+      this.addChild(node);
+      if (typeof o === 'object' && o.children) {
+        node.loadFromData(o.children);
+      }
+    }
+    return null;
+  };
+
+
+  /*
+  Add child.
+  
+  tree.addChild(
+      new Node('child1')
+  );
+   */
+
+  Node.prototype.addChild = function(node) {
+    this.children.push(node);
+    return node._setParent(this);
+  };
+
+
+  /*
+  Add child at position. Index starts at 0.
+  
+  tree.addChildAtPosition(
+      new Node('abc'),
+      1
+  );
+   */
+
+  Node.prototype.addChildAtPosition = function(node, index) {
+    this.children.splice(index, 0, node);
+    return node._setParent(this);
+  };
+
+  Node.prototype._setParent = function(parent) {
+    this.parent = parent;
+    this.tree = parent.tree;
+    return this.tree.addNodeToIndex(this);
+  };
+
+
+  /*
+  Remove child. This also removes the children of the node.
+  
+  tree.removeChild(tree.children[0]);
+   */
+
+  Node.prototype.removeChild = function(node) {
+    node.removeChildren();
+    return this._removeChild(node);
+  };
+
+  Node.prototype._removeChild = function(node) {
+    this.children.splice(this.getChildIndex(node), 1);
+    return this.tree.removeNodeFromIndex(node);
+  };
+
+
+  /*
+  Get child index.
+  
+  var index = getChildIndex(node);
+   */
+
+  Node.prototype.getChildIndex = function(node) {
+    return $.inArray(node, this.children);
+  };
+
+
+  /*
+  Does the tree have children?
+  
+  if (tree.hasChildren()) {
+      //
+  }
+   */
+
+  Node.prototype.hasChildren = function() {
+    return this.children.length !== 0;
+  };
+
+  Node.prototype.isFolder = function() {
+    return this.hasChildren() || this.load_on_demand;
+  };
+
+
+  /*
+  Iterate over all the nodes in the tree.
+  
+  Calls callback with (node, level).
+  
+  The callback must return true to continue the iteration on current node.
+  
+  tree.iterate(
+      function(node, level) {
+         console.log(node.name);
+  
+         // stop iteration after level 2
+         return (level <= 2);
+      }
+  );
+   */
+
+  Node.prototype.iterate = function(callback) {
+    var _iterate;
+    _iterate = function(node, level) {
+      var child, j, len, ref, result;
+      if (node.children) {
+        ref = node.children;
+        for (j = 0, len = ref.length; j < len; j++) {
+          child = ref[j];
+          result = callback(child, level);
+          if (result && child.hasChildren()) {
+            _iterate(child, level + 1);
+          }
+        }
+        return null;
+      }
+    };
+    _iterate(this, 0);
+    return null;
+  };
+
+
+  /*
+  Move node relative to another node.
+  
+  Argument position: Position.BEFORE, Position.AFTER or Position.Inside
+  
+  // move node1 after node2
+  tree.moveNode(node1, node2, Position.AFTER);
+   */
+
+  Node.prototype.moveNode = function(moved_node, target_node, position) {
+    if (moved_node.isParentOf(target_node)) {
+      return;
+    }
+    moved_node.parent._removeChild(moved_node);
+    if (position === Position.AFTER) {
+      return target_node.parent.addChildAtPosition(moved_node, target_node.parent.getChildIndex(target_node) + 1);
+    } else if (position === Position.BEFORE) {
+      return target_node.parent.addChildAtPosition(moved_node, target_node.parent.getChildIndex(target_node));
+    } else if (position === Position.INSIDE) {
+      return target_node.addChildAtPosition(moved_node, 0);
+    }
+  };
+
+
+  /*
+  Get the tree as data.
+   */
+
+  Node.prototype.getData = function(include_parent) {
+    var getDataFromNodes;
+    if (include_parent == null) {
+      include_parent = false;
+    }
+    getDataFromNodes = function(nodes) {
+      var data, j, k, len, node, tmp_node, v;
+      data = [];
+      for (j = 0, len = nodes.length; j < len; j++) {
+        node = nodes[j];
+        tmp_node = {};
+        for (k in node) {
+          v = node[k];
+          if ((k !== 'parent' && k !== 'children' && k !== 'element' && k !== 'tree') && Object.prototype.hasOwnProperty.call(node, k)) {
+            tmp_node[k] = v;
+          }
+        }
+        if (node.hasChildren()) {
+          tmp_node.children = getDataFromNodes(node.children);
+        }
+        data.push(tmp_node);
+      }
+      return data;
+    };
+    if (include_parent) {
+      return getDataFromNodes([this]);
+    } else {
+      return getDataFromNodes(this.children);
+    }
+  };
+
+  Node.prototype.getNodeByName = function(name) {
+    return this.getNodeByCallback(function(node) {
+      return node.name === name;
+    });
+  };
+
+  Node.prototype.getNodeByCallback = function(callback) {
+    var result;
+    result = null;
+    this.iterate(function(node) {
+      if (callback(node)) {
+        result = node;
+        return false;
+      } else {
+        return true;
+      }
+    });
+    return result;
+  };
+
+  Node.prototype.addAfter = function(node_info) {
+    var child_index, node;
+    if (!this.parent) {
+      return null;
+    } else {
+      node = new this.tree.node_class(node_info);
+      child_index = this.parent.getChildIndex(this);
+      this.parent.addChildAtPosition(node, child_index + 1);
+      if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
+        node.loadFromData(node_info.children);
+      }
+      return node;
+    }
+  };
+
+  Node.prototype.addBefore = function(node_info) {
+    var child_index, node;
+    if (!this.parent) {
+      return null;
+    } else {
+      node = new this.tree.node_class(node_info);
+      child_index = this.parent.getChildIndex(this);
+      this.parent.addChildAtPosition(node, child_index);
+      if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
+        node.loadFromData(node_info.children);
+      }
+      return node;
+    }
+  };
+
+  Node.prototype.addParent = function(node_info) {
+    var child, j, len, new_parent, original_parent, ref;
+    if (!this.parent) {
+      return null;
+    } else {
+      new_parent = new this.tree.node_class(node_info);
+      new_parent._setParent(this.tree);
+      original_parent = this.parent;
+      ref = original_parent.children;
+      for (j = 0, len = ref.length; j < len; j++) {
+        child = ref[j];
+        new_parent.addChild(child);
+      }
+      original_parent.children = [];
+      original_parent.addChild(new_parent);
+      return new_parent;
+    }
+  };
+
+  Node.prototype.remove = function() {
+    if (this.parent) {
+      this.parent.removeChild(this);
+      return this.parent = null;
+    }
+  };
+
+  Node.prototype.append = function(node_info) {
+    var node;
+    node = new this.tree.node_class(node_info);
+    this.addChild(node);
+    if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
+      node.loadFromData(node_info.children);
+    }
+    return node;
+  };
+
+  Node.prototype.prepend = function(node_info) {
+    var node;
+    node = new this.tree.node_class(node_info);
+    this.addChildAtPosition(node, 0);
+    if (typeof node_info === 'object' && node_info.children && node_info.children.length) {
+      node.loadFromData(node_info.children);
+    }
+    return node;
+  };
+
+  Node.prototype.isParentOf = function(node) {
+    var parent;
+    parent = node.parent;
+    while (parent) {
+      if (parent === this) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+    return false;
+  };
+
+  Node.prototype.getLevel = function() {
+    var level, node;
+    level = 0;
+    node = this;
+    while (node.parent) {
+      level += 1;
+      node = node.parent;
+    }
+    return level;
+  };
+
+  Node.prototype.getNodeById = function(node_id) {
+    return this.id_mapping[node_id];
+  };
+
+  Node.prototype.addNodeToIndex = function(node) {
+    if (node.id != null) {
+      return this.id_mapping[node.id] = node;
+    }
+  };
+
+  Node.prototype.removeNodeFromIndex = function(node) {
+    if (node.id != null) {
+      return delete this.id_mapping[node.id];
+    }
+  };
+
+  Node.prototype.removeChildren = function() {
+    this.iterate((function(_this) {
+      return function(child) {
+        _this.tree.removeNodeFromIndex(child);
+        return true;
+      };
+    })(this));
+    return this.children = [];
+  };
+
+  Node.prototype.getPreviousSibling = function() {
+    var previous_index;
+    if (!this.parent) {
+      return null;
+    } else {
+      previous_index = this.parent.getChildIndex(this) - 1;
+      if (previous_index >= 0) {
+        return this.parent.children[previous_index];
+      } else {
+        return null;
+      }
+    }
+  };
+
+  Node.prototype.getNextSibling = function() {
+    var next_index;
+    if (!this.parent) {
+      return null;
+    } else {
+      next_index = this.parent.getChildIndex(this) + 1;
+      if (next_index < this.parent.children.length) {
+        return this.parent.children[next_index];
+      } else {
+        return null;
+      }
+    }
+  };
+
+  Node.prototype.getNodesByProperty = function(key, value) {
+    return this.filter(function(node) {
+      return node[key] === value;
+    });
+  };
+
+  Node.prototype.filter = function(f) {
+    var result;
+    result = [];
+    this.iterate(function(node) {
+      if (f(node)) {
+        result.push(node);
+      }
+      return true;
+    });
+    return result;
+  };
+
+  Node.prototype.getNextNode = function(include_children) {
+    var next_sibling;
+    if (include_children == null) {
+      include_children = true;
+    }
+    if (include_children && this.hasChildren() && this.is_open) {
+      return this.children[0];
+    } else {
+      if (!this.parent) {
+        return null;
+      } else {
+        next_sibling = this.getNextSibling();
+        if (next_sibling) {
+          return next_sibling;
+        } else {
+          return this.parent.getNextNode(false);
+        }
+      }
+    }
+  };
+
+  Node.prototype.getPreviousNode = function() {
+    var previous_sibling;
+    if (!this.parent) {
+      return null;
+    } else {
+      previous_sibling = this.getPreviousSibling();
+      if (previous_sibling) {
+        if (!previous_sibling.hasChildren() || !previous_sibling.is_open) {
+          return previous_sibling;
+        } else {
+          return previous_sibling.getLastChild();
+        }
+      } else {
+        return this.getParent();
+      }
+    }
+  };
+
+  Node.prototype.getParent = function() {
+    if (!this.parent) {
+      return null;
+    } else if (!this.parent.parent) {
+      return null;
+    } else {
+      return this.parent;
+    }
+  };
+
+  Node.prototype.getLastChild = function() {
+    var last_child;
+    if (!this.hasChildren()) {
+      return null;
+    } else {
+      last_child = this.children[this.children.length - 1];
+      if (!last_child.hasChildren() || !last_child.is_open) {
+        return last_child;
+      } else {
+        return last_child.getLastChild();
+      }
+    }
+  };
+
+  return Node;
+
+})();
+
+module.exports = {
+  Node: Node,
+  Position: Position
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(68);
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, BorderDropHint, FolderElement, GhostDropHint, NodeElement, Position, node,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  var result = getMapData(this, key)['delete'](key);
-  this.size -= result ? 1 : 0;
-  return result;
-}
+node = __webpack_require__(112);
 
-module.exports = mapCacheDelete;
+Position = node.Position;
 
+$ = jQuery;
+
+NodeElement = (function() {
+  function NodeElement(node, tree_widget) {
+    this.init(node, tree_widget);
+  }
+
+  NodeElement.prototype.init = function(node, tree_widget) {
+    this.node = node;
+    this.tree_widget = tree_widget;
+    if (!node.element) {
+      node.element = this.tree_widget.element;
+    }
+    return this.$element = $(node.element);
+  };
+
+  NodeElement.prototype.getUl = function() {
+    return this.$element.children('ul:first');
+  };
+
+  NodeElement.prototype.getSpan = function() {
+    return this.$element.children('.jqtree-element').find('span.jqtree-title');
+  };
+
+  NodeElement.prototype.getLi = function() {
+    return this.$element;
+  };
+
+  NodeElement.prototype.addDropHint = function(position) {
+    if (position === Position.INSIDE) {
+      return new BorderDropHint(this.$element);
+    } else {
+      return new GhostDropHint(this.node, this.$element, position);
+    }
+  };
+
+  NodeElement.prototype.select = function() {
+    var $li, $span;
+    $li = this.getLi();
+    $li.addClass('jqtree-selected');
+    $li.attr('aria-selected', 'true');
+    $span = this.getSpan();
+    return $span.attr('tabindex', 0);
+  };
+
+  NodeElement.prototype.deselect = function() {
+    var $li, $span;
+    $li = this.getLi();
+    $li.removeClass('jqtree-selected');
+    $li.attr('aria-selected', 'false');
+    $span = this.getSpan();
+    return $span.attr('tabindex', -1);
+  };
+
+  return NodeElement;
+
+})();
+
+FolderElement = (function(superClass) {
+  extend(FolderElement, superClass);
+
+  function FolderElement() {
+    return FolderElement.__super__.constructor.apply(this, arguments);
+  }
+
+  FolderElement.prototype.open = function(on_finished, slide) {
+    var $button, doOpen;
+    if (slide == null) {
+      slide = true;
+    }
+    if (!this.node.is_open) {
+      this.node.is_open = true;
+      $button = this.getButton();
+      $button.removeClass('jqtree-closed');
+      $button.html('');
+      $button.append(this.tree_widget.renderer.opened_icon_element.cloneNode(false));
+      doOpen = (function(_this) {
+        return function() {
+          var $li, $span;
+          $li = _this.getLi();
+          $li.removeClass('jqtree-closed');
+          $span = _this.getSpan();
+          $span.attr('aria-expanded', 'true');
+          if (on_finished) {
+            on_finished(_this.node);
+          }
+          return _this.tree_widget._triggerEvent('tree.open', {
+            node: _this.node
+          });
+        };
+      })(this);
+      if (slide) {
+        return this.getUl().slideDown('fast', doOpen);
+      } else {
+        this.getUl().show();
+        return doOpen();
+      }
+    }
+  };
+
+  FolderElement.prototype.close = function(slide) {
+    var $button, doClose;
+    if (slide == null) {
+      slide = true;
+    }
+    if (this.node.is_open) {
+      this.node.is_open = false;
+      $button = this.getButton();
+      $button.addClass('jqtree-closed');
+      $button.html('');
+      $button.append(this.tree_widget.renderer.closed_icon_element.cloneNode(false));
+      doClose = (function(_this) {
+        return function() {
+          var $li, $span;
+          $li = _this.getLi();
+          $li.addClass('jqtree-closed');
+          $span = _this.getSpan();
+          $span.attr('aria-expanded', 'false');
+          return _this.tree_widget._triggerEvent('tree.close', {
+            node: _this.node
+          });
+        };
+      })(this);
+      if (slide) {
+        return this.getUl().slideUp('fast', doClose);
+      } else {
+        this.getUl().hide();
+        return doClose();
+      }
+    }
+  };
+
+  FolderElement.prototype.getButton = function() {
+    return this.$element.children('.jqtree-element').find('a.jqtree-toggler');
+  };
+
+  FolderElement.prototype.addDropHint = function(position) {
+    if (!this.node.is_open && position === Position.INSIDE) {
+      return new BorderDropHint(this.$element);
+    } else {
+      return new GhostDropHint(this.node, this.$element, position);
+    }
+  };
+
+  return FolderElement;
+
+})(NodeElement);
+
+BorderDropHint = (function() {
+  function BorderDropHint($element) {
+    var $div, width;
+    $div = $element.children('.jqtree-element');
+    width = $element.width() - 4;
+    this.$hint = $('<span class="jqtree-border"></span>');
+    $div.append(this.$hint);
+    this.$hint.css({
+      width: width,
+      height: $div.outerHeight() - 4
+    });
+  }
+
+  BorderDropHint.prototype.remove = function() {
+    return this.$hint.remove();
+  };
+
+  return BorderDropHint;
+
+})();
+
+GhostDropHint = (function() {
+  function GhostDropHint(node, $element, position) {
+    this.$element = $element;
+    this.node = node;
+    this.$ghost = $('<li class="jqtree_common jqtree-ghost"><span class="jqtree_common jqtree-circle"></span><span class="jqtree_common jqtree-line"></span></li>');
+    if (position === Position.AFTER) {
+      this.moveAfter();
+    } else if (position === Position.BEFORE) {
+      this.moveBefore();
+    } else if (position === Position.INSIDE) {
+      if (node.isFolder() && node.is_open) {
+        this.moveInsideOpenFolder();
+      } else {
+        this.moveInside();
+      }
+    }
+  }
+
+  GhostDropHint.prototype.remove = function() {
+    return this.$ghost.remove();
+  };
+
+  GhostDropHint.prototype.moveAfter = function() {
+    return this.$element.after(this.$ghost);
+  };
+
+  GhostDropHint.prototype.moveBefore = function() {
+    return this.$element.before(this.$ghost);
+  };
+
+  GhostDropHint.prototype.moveInsideOpenFolder = function() {
+    return $(this.node.children[0].element).before(this.$ghost);
+  };
+
+  GhostDropHint.prototype.moveInside = function() {
+    this.$element.after(this.$ghost);
+    return this.$ghost.addClass('jqtree-inside');
+  };
+
+  return GhostDropHint;
+
+})();
+
+module.exports = {
+  BorderDropHint: BorderDropHint,
+  FolderElement: FolderElement,
+  GhostDropHint: GhostDropHint,
+  NodeElement: NodeElement
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(68);
+/* WEBPACK VAR INJECTION */(function(jQuery) {
+/*
+Copyright 2013 Marco Braak
 
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
+var $, SimpleWidget,
+  slice = [].slice;
 
-module.exports = mapCacheGet;
+$ = jQuery;
 
+SimpleWidget = (function() {
+  SimpleWidget.prototype.defaults = {};
+
+  function SimpleWidget(el, options) {
+    this.$el = $(el);
+    this.options = $.extend({}, this.defaults, options);
+  }
+
+  SimpleWidget.prototype.destroy = function() {
+    return this._deinit();
+  };
+
+  SimpleWidget.prototype._init = function() {
+    return null;
+  };
+
+  SimpleWidget.prototype._deinit = function() {
+    return null;
+  };
+
+  SimpleWidget.register = function(widget_class, widget_name) {
+    var callFunction, createWidget, destroyWidget, getDataKey, getWidgetData;
+    getDataKey = function() {
+      return "simple_widget_" + widget_name;
+    };
+    getWidgetData = function(el, data_key) {
+      var widget;
+      widget = $.data(el, data_key);
+      if (widget && (widget instanceof SimpleWidget)) {
+        return widget;
+      } else {
+        return null;
+      }
+    };
+    createWidget = function($el, options) {
+      var data_key, el, existing_widget, i, len, widget;
+      data_key = getDataKey();
+      for (i = 0, len = $el.length; i < len; i++) {
+        el = $el[i];
+        existing_widget = getWidgetData(el, data_key);
+        if (!existing_widget) {
+          widget = new widget_class(el, options);
+          if (!$.data(el, data_key)) {
+            $.data(el, data_key, widget);
+          }
+          widget._init();
+        }
+      }
+      return $el;
+    };
+    destroyWidget = function($el) {
+      var data_key, el, i, len, results, widget;
+      data_key = getDataKey();
+      results = [];
+      for (i = 0, len = $el.length; i < len; i++) {
+        el = $el[i];
+        widget = getWidgetData(el, data_key);
+        if (widget) {
+          widget.destroy();
+        }
+        results.push($.removeData(el, data_key));
+      }
+      return results;
+    };
+    callFunction = function($el, function_name, args) {
+      var el, i, len, result, widget, widget_function;
+      result = null;
+      for (i = 0, len = $el.length; i < len; i++) {
+        el = $el[i];
+        widget = $.data(el, getDataKey());
+        if (widget && (widget instanceof SimpleWidget)) {
+          widget_function = widget[function_name];
+          if (widget_function && (typeof widget_function === 'function')) {
+            result = widget_function.apply(widget, args);
+          }
+        }
+      }
+      return result;
+    };
+    return $.fn[widget_name] = function() {
+      var $el, args, argument1, function_name, options;
+      argument1 = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      $el = this;
+      if (argument1 === void 0 || typeof argument1 === 'object') {
+        options = argument1;
+        return createWidget($el, options);
+      } else if (typeof argument1 === 'string' && argument1[0] !== '_') {
+        function_name = argument1;
+        if (function_name === 'destroy') {
+          return destroyWidget($el);
+        } else if (function_name === 'get_widget_class') {
+          return widget_class;
+        } else {
+          return callFunction($el, function_name, args);
+        }
+      }
+    };
+  };
+
+  return SimpleWidget;
+
+})();
+
+module.exports = SimpleWidget;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 115 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var getMapData = __webpack_require__(68);
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jqtree__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jqtree___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jqtree__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__jqTreeContextMenu__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__jqTreeContextMenu___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__jqTreeContextMenu__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_without__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_without___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_without__);
 
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
 
-module.exports = mapCacheHas;
 
+
+
+var settings = {};
+var $tree = void 0;
+
+var defaults = {
+    deleteNode: function deleteNode(node) {},
+    addNode: function addNode(node, name) {},
+    renameNode: function renameNode(node, name) {},
+    moveBefore: function moveBefore(node, target) {},
+    moveAfter: function moveAfter(node, target) {},
+    moveInto: function moveInto(node, target) {}
+};
+
+var init = function init(selector, options) {
+    $tree = $(selector);
+
+    addHandlers($tree);
+
+    settings = $.extend(defaults, options);
+};
+
+var deleteNode = function deleteNode(node) {
+
+    settings.deleteNode(node);
+
+    $tree.tree('removeNode', node);
+};
+
+var addNode = function addNode(node) {
+
+    var name = prompt("Name of category?");
+
+    settings.addNode(node.id, name).then(function (response) {
+
+        var data = response.data.data;
+
+        $tree.tree('appendNode', {
+            name: data.name,
+            id: data.id
+        }, node);
+
+        $tree.tree('openNode', node);
+    });
+};
+
+var renameNode = function renameNode(node) {
+
+    var name = prompt("New name", node.name);
+
+    settings.renameNode(node.id, name).then(function (response) {
+
+        var data = response.data.data;
+        $tree.tree('updateNode', node, data.name);
+    });
+};
+
+var moveNode = function moveNode(moveInfo) {
+
+    var movedNode = moveInfo.moved_node;
+    var targetNode = moveInfo.target_node;
+
+    switch (moveInfo.position) {
+        case 'before':
+            {
+                return settings.moveBefore(movedNode.id, targetNode.id);
+            }break;
+        case 'after':
+            {
+                return settings.moveAfter(movedNode.id, targetNode.id);
+            }break;
+        case 'inside':
+            {
+                return moveToFirstChild(movedNode, targetNode);
+            }break;
+    }
+
+    return new Promise();
+};
+
+var moveToFirstChild = function moveToFirstChild(node, parent) {
+
+    //We have the parent (in target).
+    //If the parent has any children, we need to change the index to the id of the first child.
+    //Otherwise we keep the parent, and have no index.
+    if (parent.children.length) {
+        return settings.moveBefore(node.id, parent.children[0].id);
+    } else {
+        return settings.moveInto(node.id, parent.id);
+    }
+};
+
+var getAncestors = function getAncestors(node) {
+    var ancestors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+    return !node.id ? ancestors : getAncestors(node.parent, ancestors.concat(node.id));
+};
+
+var initialize = function initialize(_) {
+    if ($tree.data('selected')) {
+
+        var node = $tree.tree('getNodeById', $tree.data('selected'));
+        var open_nodes = getAncestors(node);
+        $tree.tree('setState', { open_nodes: open_nodes, selected_node: [node.id] });
+    }
+};
+
+var addHandlers = function addHandlers($tree) {
+
+    $tree.tree({
+        dragAndDrop: true,
+        usecontextmenu: true
+    });
+
+    $tree.bind('tree.move', function (e) {
+
+        e.preventDefault();
+
+        var moveInfo = e.move_info;
+
+        moveNode(moveInfo).then(function (response) {
+            e.move_info.do_move();
+        });
+    });
+
+    $tree.bind('tree.click', function (e) {
+
+        var path = $tree.data('link');
+        var parts = __WEBPACK_IMPORTED_MODULE_2_lodash_without___default()(path.split('/'), "");
+        parts = parts.concat(e.node.id);
+        window.location.pathname = parts.join('/');
+    });
+
+    $tree.bind('tree.init', initialize);
+
+    $tree.jqTreeContextMenu($('#myMenu'), {
+        "rename": renameNode,
+        "delete": deleteNode,
+        "add": addNode
+    });
+};
+
+/* harmony default export */ __webpack_exports__["a"] = init;
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
 
 /***/ }),
 /* 116 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var getMapData = __webpack_require__(68);
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(115);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_category__ = __webpack_require__(38);
 
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  var data = getMapData(this, key),
-      size = data.size;
 
-  data.set(key, value);
-  this.size += data.size == size ? 0 : 1;
-  return this;
+
+var $tree = $('#tree');
+
+var options = {
+    deleteNode: function deleteNode(node) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["a" /* removeCategory */](node);
+    },
+    addNode: function addNode(node, name) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["b" /* addCategory */](node, name);
+    },
+    renameNode: function renameNode(node, name) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["c" /* renameCategory */](node, name);
+    },
+    moveBefore: function moveBefore(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["d" /* moveBefore */](node, target);
+    },
+    moveAfter: function moveAfter(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["e" /* moveAfter */](node, target);
+    },
+    moveInto: function moveInto(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_category__["f" /* moveInto */](node, target);
+    }
+};
+
+if ($tree.length) {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])($tree, options);
 }
-
-module.exports = mapCacheSet;
-
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
 
 /***/ }),
 /* 117 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
+/* WEBPACK VAR INJECTION */(function(jQuery) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
+(function ($) {
+	if (!$.fn.tree) {
+		throw "Error jqTree is not loaded.";
+	}
 
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
+	$.fn.jqTreeContextMenu = function (menuElement, callbacks) {
+		//
+		// TODO:
+		// * Make sure the useContextMenu option is set in jqTree, either complain or set it automatically
+		// * Make menu fade in/out
+		//
+		var self = this;
+		var $el = this;
 
-module.exports = objectToString;
+		// The jQuery object of the menu div.
+		var $menuEl = menuElement;
 
+		// This hash holds all menu items that should be disabled for a specific node.
+		var nodeToDisabledMenuItems = {};
+
+		// Hide the menu div.
+		$menuEl.hide();
+
+		// Disable system context menu from beeing displayed.
+		$el.bind("contextmenu", function (e) {
+			e.preventDefault();
+			return false;
+		});
+
+		// Handle the contextmenu event sent from jqTree when user clicks right mouse button.
+		$el.bind('tree.contextmenu', function (event) {
+			var x = event.click_event.pageX;
+			var y = event.click_event.pageY;
+			var yPadding = 5;
+			var xPadding = 5;
+			var menuHeight = $menuEl.height();
+			var menuWidth = $menuEl.width();
+			var windowHeight = $(window).height();
+			var windowWidth = $(window).width();
+
+			if (menuHeight + y + yPadding > windowHeight) {
+				// Make sure the whole menu is rendered within the viewport. 
+				y = y - menuHeight;
+			}
+			if (menuWidth + x + xPadding > windowWidth) {
+				// Make sure the whole menu is rendered within the viewport. 
+				x = x - menuWidth;
+			}
+
+			// Handle disabling and enabling of menu items on specific nodes.
+			if (Object.keys(nodeToDisabledMenuItems).length > 0) {
+				if (event.node.name in nodeToDisabledMenuItems) {
+					var nodeName = event.node.name;
+					var items = nodeToDisabledMenuItems[nodeName];
+					if (items.length === 0) {
+						$menuEl.find('li').addClass('disabled');
+						$menuEl.find('li > a').unbind('click');
+					} else {
+						$menuEl.find('li > a').each(function () {
+							$(this).closest('li').removeClass('disabled');
+							var hrefValue = $(this).attr('href');
+							var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
+							if ($.inArray(value, items) > -1) {
+								$(this).closest('li').addClass('disabled');
+								$(this).unbind('click');
+							}
+						});
+					}
+				} else {
+					$menuEl.find('li.disabled').removeClass('disabled');
+				}
+			}
+
+			// Must call show before we set the offset (offset can not be set on display: none elements).
+			$menuEl.show();
+
+			$menuEl.offset({ left: x, top: y });
+
+			var dismissContextMenu = function dismissContextMenu() {
+				$(document).unbind('click.jqtreecontextmenu');
+				$el.unbind('tree.click.jqtreecontextmenu');
+				$menuEl.hide();
+			};
+			// Make it possible to dismiss context menu by clicking somewhere in the document.
+			$(document).bind('click.jqtreecontextmenu', function () {
+				dismissContextMenu();
+			});
+
+			// Dismiss context menu if another node in the tree is clicked.
+			$el.bind('tree.click.jqtreecontextmenu', function (e) {
+				dismissContextMenu();
+			});
+
+			// Make selection follow the node that was right clicked on.
+			var selectedNode = $el.tree('getSelectedNode');
+			if (selectedNode !== event.node) {
+				$el.tree('selectNode', event.node);
+			}
+
+			// Handle click on menu items, if it's not disabled.
+			var menuItems = $menuEl.find('li:not(.disabled) a');
+			if (menuItems.length !== 0) {
+				menuItems.unbind('click');
+				menuItems.click(function (e) {
+					e.stopImmediatePropagation();
+					dismissContextMenu();
+					var hrefAnchor = e.currentTarget.attributes.href.nodeValue;
+					var funcKey = hrefAnchor.slice(hrefAnchor.indexOf("#") + 1, hrefAnchor.length);
+					var callbackFn = callbacks[funcKey];
+					if (callbackFn) {
+						callbackFn(event.node);
+					}
+					return false;
+				});
+			}
+		});
+
+		this.disable = function () {
+			if (arguments.length === 0) {
+				// Called as: api.disable()
+				$menuEl.find('li:not(.disabled)').addClass('disabled');
+				$menuEl.find('li a').unbind('click');
+				nodeToDisabledMenuItems = {};
+			} else if (arguments.length === 1) {
+				// Called as: api.disable(['edit','remove'])
+				var items = arguments[0];
+				if ((typeof items === "undefined" ? "undefined" : _typeof(items)) !== 'object') {
+					return;
+				}
+				$menuEl.find('li > a').each(function () {
+					var hrefValue = $(this).attr('href');
+					var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
+					if ($.inArray(value, items) > -1) {
+						$(this).closest('li').addClass('disabled');
+						$(this).unbind('click');
+					}
+				});
+				nodeToDisabledMenuItems = {};
+			} else if (arguments.length === 2) {
+				// Called as: api.disable(nodeName, ['edit','remove'])
+				var nodeName = arguments[0];
+				var items = arguments[1];
+				nodeToDisabledMenuItems[nodeName] = items;
+			}
+		};
+
+		this.enable = function () {
+			if (arguments.length === 0) {
+				// Called as: api.enable()
+				$menuEl.find('li.disabled').removeClass('disabled');
+				nodeToDisabledMenuItems = {};
+			} else if (arguments.length === 1) {
+				// Called as: api.enable(['edit','remove'])
+				var items = arguments[0];
+				if ((typeof items === "undefined" ? "undefined" : _typeof(items)) !== 'object') {
+					return;
+				}
+
+				$menuEl.find('li > a').each(function () {
+					var hrefValue = $(this).attr('href');
+					var value = hrefValue.slice(hrefValue.indexOf("#") + 1, hrefValue.length);
+					if ($.inArray(value, items) > -1) {
+						$(this).closest('li').removeClass('disabled');
+					}
+				});
+
+				nodeToDisabledMenuItems = {};
+			} else if (arguments.length === 2) {
+				// Called as: api.enable(nodeName, ['edit','remove'])
+				var nodeName = arguments[0];
+				var items = arguments[1];
+				if (items.length === 0) {
+					delete nodeToDisabledMenuItems[nodeName];
+				} else {
+					var disabledItems = nodeToDisabledMenuItems[nodeName];
+					for (var i = 0; i < items.length; i++) {
+						var idx = disabledItems.indexOf(items[i]);
+						if (idx > -1) {
+							disabledItems.splice(idx, 1);
+						}
+					}
+					if (disabledItems.length === 0) {
+						delete nodeToDisabledMenuItems[nodeName];
+					} else {
+						nodeToDisabledMenuItems[nodeName] = disabledItems;
+					}
+				}
+				if (Object.keys(nodeToDisabledMenuItems).length === 0) {
+					$menuEl.find('li.disabled').removeClass('disabled');
+				}
+			}
+		};
+		return this;
+	};
+})(jQuery);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(81);
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, DragAndDropHandler, DragElement, HitAreasGenerator, Position, VisibleNodeIterator, node_module, util,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max;
+node_module = __webpack_require__(112);
 
-/**
- * A specialized version of `baseRest` which transforms the rest array.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @param {Function} transform The rest array transform.
- * @returns {Function} Returns the new function.
- */
-function overRest(func, start, transform) {
-  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-  return function() {
-    var args = arguments,
-        index = -1,
-        length = nativeMax(args.length - start, 0),
-        array = Array(length);
+util = __webpack_require__(111);
 
-    while (++index < length) {
-      array[index] = args[start + index];
+Position = node_module.Position;
+
+$ = jQuery;
+
+DragAndDropHandler = (function() {
+  function DragAndDropHandler(tree_widget) {
+    this.tree_widget = tree_widget;
+    this.hovered_area = null;
+    this.$ghost = null;
+    this.hit_areas = [];
+    this.is_dragging = false;
+    this.current_item = null;
+  }
+
+  DragAndDropHandler.prototype.mouseCapture = function(position_info) {
+    var $element, node_element;
+    $element = $(position_info.target);
+    if (!this.mustCaptureElement($element)) {
+      return null;
     }
-    index = -1;
-    var otherArgs = Array(start + 1);
-    while (++index < start) {
-      otherArgs[index] = args[index];
+    if (this.tree_widget.options.onIsMoveHandle && !this.tree_widget.options.onIsMoveHandle($element)) {
+      return null;
     }
-    otherArgs[start] = transform(array);
-    return apply(func, this, otherArgs);
+    node_element = this.tree_widget._getNodeElement($element);
+    if (node_element && this.tree_widget.options.onCanMove) {
+      if (!this.tree_widget.options.onCanMove(node_element.node)) {
+        node_element = null;
+      }
+    }
+    this.current_item = node_element;
+    return this.current_item !== null;
   };
-}
 
-module.exports = overRest;
+  DragAndDropHandler.prototype.mouseStart = function(position_info) {
+    var node, node_name, offset;
+    this.refresh();
+    offset = $(position_info.target).offset();
+    node = this.current_item.node;
+    if (this.tree_widget.options.autoEscape) {
+      node_name = util.html_escape(node.name);
+    } else {
+      node_name = node.name;
+    }
+    this.drag_element = new DragElement(node_name, position_info.page_x - offset.left, position_info.page_y - offset.top, this.tree_widget.element);
+    this.is_dragging = true;
+    this.current_item.$element.addClass('jqtree-moving');
+    return true;
+  };
 
+  DragAndDropHandler.prototype.mouseDrag = function(position_info) {
+    var area, can_move_to;
+    this.drag_element.move(position_info.page_x, position_info.page_y);
+    area = this.findHoveredArea(position_info.page_x, position_info.page_y);
+    can_move_to = this.canMoveToArea(area);
+    if (can_move_to && area) {
+      if (!area.node.isFolder()) {
+        this.stopOpenFolderTimer();
+      }
+      if (this.hovered_area !== area) {
+        this.hovered_area = area;
+        if (this.mustOpenFolderTimer(area)) {
+          this.startOpenFolderTimer(area.node);
+        } else {
+          this.stopOpenFolderTimer();
+        }
+        this.updateDropHint();
+      }
+    } else {
+      this.removeHover();
+      this.removeDropHint();
+      this.stopOpenFolderTimer();
+    }
+    if (!area) {
+      if (this.tree_widget.options.onDragMove != null) {
+        this.tree_widget.options.onDragMove(this.current_item.node, position_info.original_event);
+      }
+    }
+    return true;
+  };
+
+  DragAndDropHandler.prototype.mustCaptureElement = function($element) {
+    return !$element.is('input,select,textarea');
+  };
+
+  DragAndDropHandler.prototype.canMoveToArea = function(area) {
+    var position_name;
+    if (!area) {
+      return false;
+    } else if (this.tree_widget.options.onCanMoveTo) {
+      position_name = Position.getName(area.position);
+      return this.tree_widget.options.onCanMoveTo(this.current_item.node, area.node, position_name);
+    } else {
+      return true;
+    }
+  };
+
+  DragAndDropHandler.prototype.mouseStop = function(position_info) {
+    var current_item;
+    this.moveItem(position_info);
+    this.clear();
+    this.removeHover();
+    this.removeDropHint();
+    this.removeHitAreas();
+    current_item = this.current_item;
+    if (this.current_item) {
+      this.current_item.$element.removeClass('jqtree-moving');
+      this.current_item = null;
+    }
+    this.is_dragging = false;
+    if (!this.hovered_area && current_item) {
+      if (this.tree_widget.options.onDragStop != null) {
+        this.tree_widget.options.onDragStop(current_item.node, position_info.original_event);
+      }
+    }
+    return false;
+  };
+
+  DragAndDropHandler.prototype.refresh = function() {
+    this.removeHitAreas();
+    if (this.current_item) {
+      this.generateHitAreas();
+      this.current_item = this.tree_widget._getNodeElementForNode(this.current_item.node);
+      if (this.is_dragging) {
+        return this.current_item.$element.addClass('jqtree-moving');
+      }
+    }
+  };
+
+  DragAndDropHandler.prototype.removeHitAreas = function() {
+    return this.hit_areas = [];
+  };
+
+  DragAndDropHandler.prototype.clear = function() {
+    this.drag_element.remove();
+    return this.drag_element = null;
+  };
+
+  DragAndDropHandler.prototype.removeDropHint = function() {
+    if (this.previous_ghost) {
+      return this.previous_ghost.remove();
+    }
+  };
+
+  DragAndDropHandler.prototype.removeHover = function() {
+    return this.hovered_area = null;
+  };
+
+  DragAndDropHandler.prototype.generateHitAreas = function() {
+    var hit_areas_generator;
+    hit_areas_generator = new HitAreasGenerator(this.tree_widget.tree, this.current_item.node, this.getTreeDimensions().bottom);
+    return this.hit_areas = hit_areas_generator.generate();
+  };
+
+  DragAndDropHandler.prototype.findHoveredArea = function(x, y) {
+    var area, dimensions, high, low, mid;
+    dimensions = this.getTreeDimensions();
+    if (x < dimensions.left || y < dimensions.top || x > dimensions.right || y > dimensions.bottom) {
+      return null;
+    }
+    low = 0;
+    high = this.hit_areas.length;
+    while (low < high) {
+      mid = (low + high) >> 1;
+      area = this.hit_areas[mid];
+      if (y < area.top) {
+        high = mid;
+      } else if (y > area.bottom) {
+        low = mid + 1;
+      } else {
+        return area;
+      }
+    }
+    return null;
+  };
+
+  DragAndDropHandler.prototype.mustOpenFolderTimer = function(area) {
+    var node;
+    node = area.node;
+    return node.isFolder() && !node.is_open && area.position === Position.INSIDE;
+  };
+
+  DragAndDropHandler.prototype.updateDropHint = function() {
+    var node_element;
+    if (!this.hovered_area) {
+      return;
+    }
+    this.removeDropHint();
+    node_element = this.tree_widget._getNodeElementForNode(this.hovered_area.node);
+    return this.previous_ghost = node_element.addDropHint(this.hovered_area.position);
+  };
+
+  DragAndDropHandler.prototype.startOpenFolderTimer = function(folder) {
+    var openFolder;
+    openFolder = (function(_this) {
+      return function() {
+        return _this.tree_widget._openNode(folder, _this.tree_widget.options.slide, function() {
+          _this.refresh();
+          return _this.updateDropHint();
+        });
+      };
+    })(this);
+    this.stopOpenFolderTimer();
+    return this.open_folder_timer = setTimeout(openFolder, this.tree_widget.options.openFolderDelay);
+  };
+
+  DragAndDropHandler.prototype.stopOpenFolderTimer = function() {
+    if (this.open_folder_timer) {
+      clearTimeout(this.open_folder_timer);
+      return this.open_folder_timer = null;
+    }
+  };
+
+  DragAndDropHandler.prototype.moveItem = function(position_info) {
+    var doMove, event, moved_node, position, previous_parent, target_node;
+    if (this.hovered_area && this.hovered_area.position !== Position.NONE && this.canMoveToArea(this.hovered_area)) {
+      moved_node = this.current_item.node;
+      target_node = this.hovered_area.node;
+      position = this.hovered_area.position;
+      previous_parent = moved_node.parent;
+      if (position === Position.INSIDE) {
+        this.hovered_area.node.is_open = true;
+      }
+      doMove = (function(_this) {
+        return function() {
+          _this.tree_widget.tree.moveNode(moved_node, target_node, position);
+          _this.tree_widget.element.empty();
+          return _this.tree_widget._refreshElements();
+        };
+      })(this);
+      event = this.tree_widget._triggerEvent('tree.move', {
+        move_info: {
+          moved_node: moved_node,
+          target_node: target_node,
+          position: Position.getName(position),
+          previous_parent: previous_parent,
+          do_move: doMove,
+          original_event: position_info.original_event
+        }
+      });
+      if (!event.isDefaultPrevented()) {
+        return doMove();
+      }
+    }
+  };
+
+  DragAndDropHandler.prototype.getTreeDimensions = function() {
+    var offset;
+    offset = this.tree_widget.element.offset();
+    return {
+      left: offset.left,
+      top: offset.top,
+      right: offset.left + this.tree_widget.element.width(),
+      bottom: offset.top + this.tree_widget.element.height() + 16
+    };
+  };
+
+  return DragAndDropHandler;
+
+})();
+
+VisibleNodeIterator = (function() {
+  function VisibleNodeIterator(tree) {
+    this.tree = tree;
+  }
+
+  VisibleNodeIterator.prototype.iterate = function() {
+    var _iterateNode, is_first_node;
+    is_first_node = true;
+    _iterateNode = (function(_this) {
+      return function(node, next_node) {
+        var $element, child, children_length, i, j, len, must_iterate_inside, ref;
+        must_iterate_inside = (node.is_open || !node.element) && node.hasChildren();
+        if (node.element) {
+          $element = $(node.element);
+          if (!$element.is(':visible')) {
+            return;
+          }
+          if (is_first_node) {
+            _this.handleFirstNode(node, $element);
+            is_first_node = false;
+          }
+          if (!node.hasChildren()) {
+            _this.handleNode(node, next_node, $element);
+          } else if (node.is_open) {
+            if (!_this.handleOpenFolder(node, $element)) {
+              must_iterate_inside = false;
+            }
+          } else {
+            _this.handleClosedFolder(node, next_node, $element);
+          }
+        }
+        if (must_iterate_inside) {
+          children_length = node.children.length;
+          ref = node.children;
+          for (i = j = 0, len = ref.length; j < len; i = ++j) {
+            child = ref[i];
+            if (i === (children_length - 1)) {
+              _iterateNode(node.children[i], null);
+            } else {
+              _iterateNode(node.children[i], node.children[i + 1]);
+            }
+          }
+          if (node.is_open) {
+            return _this.handleAfterOpenFolder(node, next_node, $element);
+          }
+        }
+      };
+    })(this);
+    return _iterateNode(this.tree, null);
+  };
+
+  VisibleNodeIterator.prototype.handleNode = function(node, next_node, $element) {};
+
+  VisibleNodeIterator.prototype.handleOpenFolder = function(node, $element) {};
+
+  VisibleNodeIterator.prototype.handleClosedFolder = function(node, next_node, $element) {};
+
+  VisibleNodeIterator.prototype.handleAfterOpenFolder = function(node, next_node, $element) {};
+
+  VisibleNodeIterator.prototype.handleFirstNode = function(node, $element) {};
+
+  return VisibleNodeIterator;
+
+})();
+
+HitAreasGenerator = (function(superClass) {
+  extend(HitAreasGenerator, superClass);
+
+  function HitAreasGenerator(tree, current_node, tree_bottom) {
+    HitAreasGenerator.__super__.constructor.call(this, tree);
+    this.current_node = current_node;
+    this.tree_bottom = tree_bottom;
+  }
+
+  HitAreasGenerator.prototype.generate = function() {
+    this.positions = [];
+    this.last_top = 0;
+    this.iterate();
+    return this.generateHitAreas(this.positions);
+  };
+
+  HitAreasGenerator.prototype.getTop = function($element) {
+    return $element.offset().top;
+  };
+
+  HitAreasGenerator.prototype.addPosition = function(node, position, top) {
+    var area;
+    area = {
+      top: top,
+      node: node,
+      position: position
+    };
+    this.positions.push(area);
+    return this.last_top = top;
+  };
+
+  HitAreasGenerator.prototype.handleNode = function(node, next_node, $element) {
+    var top;
+    top = this.getTop($element);
+    if (node === this.current_node) {
+      this.addPosition(node, Position.NONE, top);
+    } else {
+      this.addPosition(node, Position.INSIDE, top);
+    }
+    if (next_node === this.current_node || node === this.current_node) {
+      return this.addPosition(node, Position.NONE, top);
+    } else {
+      return this.addPosition(node, Position.AFTER, top);
+    }
+  };
+
+  HitAreasGenerator.prototype.handleOpenFolder = function(node, $element) {
+    if (node === this.current_node) {
+      return false;
+    }
+    if (node.children[0] !== this.current_node) {
+      this.addPosition(node, Position.INSIDE, this.getTop($element));
+    }
+    return true;
+  };
+
+  HitAreasGenerator.prototype.handleClosedFolder = function(node, next_node, $element) {
+    var top;
+    top = this.getTop($element);
+    if (node === this.current_node) {
+      return this.addPosition(node, Position.NONE, top);
+    } else {
+      this.addPosition(node, Position.INSIDE, top);
+      if (next_node !== this.current_node) {
+        return this.addPosition(node, Position.AFTER, top);
+      }
+    }
+  };
+
+  HitAreasGenerator.prototype.handleFirstNode = function(node, $element) {
+    if (node !== this.current_node) {
+      return this.addPosition(node, Position.BEFORE, this.getTop($(node.element)));
+    }
+  };
+
+  HitAreasGenerator.prototype.handleAfterOpenFolder = function(node, next_node, $element) {
+    if (node === this.current_node.node || next_node === this.current_node.node) {
+      return this.addPosition(node, Position.NONE, this.last_top);
+    } else {
+      return this.addPosition(node, Position.AFTER, this.last_top);
+    }
+  };
+
+  HitAreasGenerator.prototype.generateHitAreas = function(positions) {
+    var group, hit_areas, j, len, position, previous_top;
+    previous_top = -1;
+    group = [];
+    hit_areas = [];
+    for (j = 0, len = positions.length; j < len; j++) {
+      position = positions[j];
+      if (position.top !== previous_top && group.length) {
+        if (group.length) {
+          this.generateHitAreasForGroup(hit_areas, group, previous_top, position.top);
+        }
+        previous_top = position.top;
+        group = [];
+      }
+      group.push(position);
+    }
+    this.generateHitAreasForGroup(hit_areas, group, previous_top, this.tree_bottom);
+    return hit_areas;
+  };
+
+  HitAreasGenerator.prototype.generateHitAreasForGroup = function(hit_areas, positions_in_group, top, bottom) {
+    var area_height, area_top, i, position, position_count;
+    position_count = Math.min(positions_in_group.length, 4);
+    area_height = Math.round((bottom - top) / position_count);
+    area_top = top;
+    i = 0;
+    while (i < position_count) {
+      position = positions_in_group[i];
+      hit_areas.push({
+        top: area_top,
+        bottom: area_top + area_height,
+        node: position.node,
+        position: position.position
+      });
+      area_top += area_height;
+      i += 1;
+    }
+    return null;
+  };
+
+  return HitAreasGenerator;
+
+})(VisibleNodeIterator);
+
+DragElement = (function() {
+  function DragElement(node_name, offset_x, offset_y, $tree) {
+    this.offset_x = offset_x;
+    this.offset_y = offset_y;
+    this.$element = $("<span class=\"jqtree-title jqtree-dragging\">" + node_name + "</span>");
+    this.$element.css("position", "absolute");
+    $tree.append(this.$element);
+  }
+
+  DragElement.prototype.move = function(page_x, page_y) {
+    return this.$element.offset({
+      left: page_x - this.offset_x,
+      top: page_y - this.offset_y
+    });
+  };
+
+  DragElement.prototype.remove = function() {
+    return this.$element.remove();
+  };
+
+  return DragElement;
+
+})();
+
+module.exports = {
+  DragAndDropHandler: DragAndDropHandler,
+  DragElement: DragElement,
+  HitAreasGenerator: HitAreasGenerator
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 119 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, ElementsRenderer, NodeElement, html_escape, node_element, util;
 
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
+node_element = __webpack_require__(113);
 
-module.exports = setCacheAdd;
+NodeElement = node_element.NodeElement;
 
+util = __webpack_require__(111);
+
+html_escape = util.html_escape;
+
+$ = jQuery;
+
+ElementsRenderer = (function() {
+  function ElementsRenderer(tree_widget) {
+    this.tree_widget = tree_widget;
+    this.opened_icon_element = this.createButtonElement(tree_widget.options.openedIcon);
+    this.closed_icon_element = this.createButtonElement(tree_widget.options.closedIcon);
+  }
+
+  ElementsRenderer.prototype.render = function(from_node) {
+    if (from_node && from_node.parent) {
+      return this.renderFromNode(from_node);
+    } else {
+      return this.renderFromRoot();
+    }
+  };
+
+  ElementsRenderer.prototype.renderFromRoot = function() {
+    var $element;
+    $element = this.tree_widget.element;
+    $element.empty();
+    return this.createDomElements($element[0], this.tree_widget.tree.children, true, true, 1);
+  };
+
+  ElementsRenderer.prototype.renderFromNode = function(node) {
+    var $previous_li, li;
+    $previous_li = $(node.element);
+    li = this.createLi(node, node.getLevel());
+    this.attachNodeData(node, li);
+    $previous_li.after(li);
+    $previous_li.remove();
+    if (node.children) {
+      return this.createDomElements(li, node.children, false, false, node.getLevel() + 1);
+    }
+  };
+
+  ElementsRenderer.prototype.createDomElements = function(element, children, is_root_node, is_open, level) {
+    var child, i, len, li, ul;
+    ul = this.createUl(is_root_node);
+    element.appendChild(ul);
+    for (i = 0, len = children.length; i < len; i++) {
+      child = children[i];
+      li = this.createLi(child, level);
+      ul.appendChild(li);
+      this.attachNodeData(child, li);
+      if (child.hasChildren()) {
+        this.createDomElements(li, child.children, false, child.is_open, level + 1);
+      }
+    }
+    return null;
+  };
+
+  ElementsRenderer.prototype.attachNodeData = function(node, li) {
+    node.element = li;
+    return $(li).data('node', node);
+  };
+
+  ElementsRenderer.prototype.createUl = function(is_root_node) {
+    var class_string, role, ul;
+    if (!is_root_node) {
+      class_string = '';
+      role = 'group';
+    } else {
+      class_string = 'jqtree-tree';
+      role = 'tree';
+      if (this.tree_widget.options.rtl) {
+        class_string += ' jqtree-rtl';
+      }
+    }
+    ul = document.createElement('ul');
+    ul.className = "jqtree_common " + class_string;
+    ul.setAttribute('role', role);
+    return ul;
+  };
+
+  ElementsRenderer.prototype.createLi = function(node, level) {
+    var is_selected, li;
+    is_selected = this.tree_widget.select_node_handler && this.tree_widget.select_node_handler.isNodeSelected(node);
+    if (node.isFolder()) {
+      li = this.createFolderLi(node, level, is_selected);
+    } else {
+      li = this.createNodeLi(node, level, is_selected);
+    }
+    if (this.tree_widget.options.onCreateLi) {
+      this.tree_widget.options.onCreateLi(node, $(li));
+    }
+    return li;
+  };
+
+  ElementsRenderer.prototype.createFolderLi = function(node, level, is_selected) {
+    var button_classes, button_link, div, folder_classes, icon_element, is_folder, li;
+    button_classes = this.getButtonClasses(node);
+    folder_classes = this.getFolderClasses(node, is_selected);
+    if (node.is_open) {
+      icon_element = this.opened_icon_element;
+    } else {
+      icon_element = this.closed_icon_element;
+    }
+    li = document.createElement('li');
+    li.className = "jqtree_common " + folder_classes;
+    li.setAttribute('role', 'presentation');
+    div = document.createElement('div');
+    div.className = "jqtree-element jqtree_common";
+    div.setAttribute('role', 'presentation');
+    li.appendChild(div);
+    button_link = document.createElement('a');
+    button_link.className = button_classes;
+    button_link.appendChild(icon_element.cloneNode(false));
+    button_link.setAttribute('role', 'presentation');
+    button_link.setAttribute('aria-hidden', 'true');
+    if (this.tree_widget.options.buttonLeft) {
+      div.appendChild(button_link);
+    }
+    div.appendChild(this.createTitleSpan(node.name, level, is_selected, node.is_open, is_folder = true));
+    if (!this.tree_widget.options.buttonLeft) {
+      div.appendChild(button_link);
+    }
+    return li;
+  };
+
+  ElementsRenderer.prototype.createNodeLi = function(node, level, is_selected) {
+    var class_string, div, is_folder, li, li_classes;
+    li_classes = ['jqtree_common'];
+    if (is_selected) {
+      li_classes.push('jqtree-selected');
+    }
+    class_string = li_classes.join(' ');
+    li = document.createElement('li');
+    li.className = class_string;
+    li.setAttribute('role', 'presentation');
+    div = document.createElement('div');
+    div.className = "jqtree-element jqtree_common";
+    div.setAttribute('role', 'presentation');
+    li.appendChild(div);
+    div.appendChild(this.createTitleSpan(node.name, level, is_selected, node.is_open, is_folder = false));
+    return li;
+  };
+
+  ElementsRenderer.prototype.createTitleSpan = function(node_name, level, is_selected, is_open, is_folder) {
+    var classes, title_span;
+    title_span = document.createElement('span');
+    classes = "jqtree-title jqtree_common";
+    if (is_folder) {
+      classes += " jqtree-title-folder";
+    }
+    title_span.className = classes;
+    title_span.setAttribute('role', 'treeitem');
+    title_span.setAttribute('aria-level', level);
+    title_span.setAttribute('aria-selected', util.getBoolString(is_selected));
+    title_span.setAttribute('aria-expanded', util.getBoolString(is_open));
+    if (is_selected) {
+      title_span.setAttribute('tabindex', 0);
+    }
+    title_span.innerHTML = this.escapeIfNecessary(node_name);
+    return title_span;
+  };
+
+  ElementsRenderer.prototype.getButtonClasses = function(node) {
+    var classes;
+    classes = ['jqtree-toggler', 'jqtree_common'];
+    if (!node.is_open) {
+      classes.push('jqtree-closed');
+    }
+    if (this.tree_widget.options.buttonLeft) {
+      classes.push('jqtree-toggler-left');
+    } else {
+      classes.push('jqtree-toggler-right');
+    }
+    return classes.join(' ');
+  };
+
+  ElementsRenderer.prototype.getFolderClasses = function(node, is_selected) {
+    var classes;
+    classes = ['jqtree-folder'];
+    if (!node.is_open) {
+      classes.push('jqtree-closed');
+    }
+    if (is_selected) {
+      classes.push('jqtree-selected');
+    }
+    if (node.is_loading) {
+      classes.push('jqtree-loading');
+    }
+    return classes.join(' ');
+  };
+
+  ElementsRenderer.prototype.escapeIfNecessary = function(value) {
+    if (this.tree_widget.options.autoEscape) {
+      return html_escape(value);
+    } else {
+      return value;
+    }
+  };
+
+  ElementsRenderer.prototype.createButtonElement = function(value) {
+    var div;
+    if (typeof value === 'string') {
+      div = document.createElement('div');
+      div.innerHTML = value;
+      return document.createTextNode(div.innerHTML);
+    } else {
+      return $(value)[0];
+    }
+  };
+
+  return ElementsRenderer;
+
+})();
+
+module.exports = ElementsRenderer;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 120 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, KeyHandler,
+  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-module.exports = setCacheHas;
+$ = jQuery;
 
+KeyHandler = (function() {
+  var DOWN, LEFT, RIGHT, UP;
+
+  LEFT = 37;
+
+  UP = 38;
+
+  RIGHT = 39;
+
+  DOWN = 40;
+
+  function KeyHandler(tree_widget) {
+    this.selectNode = bind(this.selectNode, this);
+    this.tree_widget = tree_widget;
+    if (tree_widget.options.keyboardSupport) {
+      $(document).bind('keydown.jqtree', $.proxy(this.handleKeyDown, this));
+    }
+  }
+
+  KeyHandler.prototype.deinit = function() {
+    return $(document).unbind('keydown.jqtree');
+  };
+
+  KeyHandler.prototype.moveDown = function() {
+    var node;
+    node = this.tree_widget.getSelectedNode();
+    if (node) {
+      return this.selectNode(node.getNextNode());
+    } else {
+      return false;
+    }
+  };
+
+  KeyHandler.prototype.moveUp = function() {
+    var node;
+    node = this.tree_widget.getSelectedNode();
+    if (node) {
+      return this.selectNode(node.getPreviousNode());
+    } else {
+      return false;
+    }
+  };
+
+  KeyHandler.prototype.moveRight = function() {
+    var node;
+    node = this.tree_widget.getSelectedNode();
+    if (!node) {
+      return true;
+    } else if (!node.isFolder()) {
+      return true;
+    } else {
+      if (node.is_open) {
+        return this.selectNode(node.getNextNode());
+      } else {
+        this.tree_widget.openNode(node);
+        return false;
+      }
+    }
+  };
+
+  KeyHandler.prototype.moveLeft = function() {
+    var node;
+    node = this.tree_widget.getSelectedNode();
+    if (!node) {
+      return true;
+    } else if (node.isFolder() && node.is_open) {
+      this.tree_widget.closeNode(node);
+      return false;
+    } else {
+      return this.selectNode(node.getParent());
+    }
+  };
+
+  KeyHandler.prototype.handleKeyDown = function(e) {
+    var key;
+    if (!this.tree_widget.options.keyboardSupport) {
+      return true;
+    }
+    if ($(document.activeElement).is('textarea,input,select')) {
+      return true;
+    }
+    if (!this.tree_widget.getSelectedNode()) {
+      return true;
+    }
+    key = e.which;
+    switch (key) {
+      case DOWN:
+        return this.moveDown();
+      case UP:
+        return this.moveUp();
+      case RIGHT:
+        return this.moveRight();
+      case LEFT:
+        return this.moveLeft();
+    }
+    return true;
+  };
+
+  KeyHandler.prototype.selectNode = function(node) {
+    if (!node) {
+      return true;
+    } else {
+      this.tree_widget.selectNode(node);
+      if (this.tree_widget.scroll_handler && (!this.tree_widget.scroll_handler.isScrolledIntoView($(node.element).find('.jqtree-element')))) {
+        this.tree_widget.scrollToNode(node);
+      }
+      return false;
+    }
+  };
+
+  return KeyHandler;
+
+})();
+
+module.exports = KeyHandler;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSetToString = __webpack_require__(92),
-    shortOut = __webpack_require__(122);
-
-/**
- * Sets the `toString` method of `func` to return `string`.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
+/* WEBPACK VAR INJECTION */(function(jQuery) {
+/*
+This widget does the same a the mouse widget in jqueryui.
  */
-var setToString = shortOut(baseSetToString);
+var $, MouseWidget, SimpleWidget,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-module.exports = setToString;
+SimpleWidget = __webpack_require__(114);
 
+$ = jQuery;
+
+MouseWidget = (function(superClass) {
+  extend(MouseWidget, superClass);
+
+  function MouseWidget() {
+    return MouseWidget.__super__.constructor.apply(this, arguments);
+  }
+
+  MouseWidget.is_mouse_handled = false;
+
+  MouseWidget.prototype._init = function() {
+    this.$el.bind('mousedown.mousewidget', $.proxy(this._mouseDown, this));
+    this.$el.bind('touchstart.mousewidget', $.proxy(this._touchStart, this));
+    this.is_mouse_started = false;
+    this.mouse_delay = 0;
+    this._mouse_delay_timer = null;
+    this._is_mouse_delay_met = true;
+    return this.mouse_down_info = null;
+  };
+
+  MouseWidget.prototype._deinit = function() {
+    var $document;
+    this.$el.unbind('mousedown.mousewidget');
+    this.$el.unbind('touchstart.mousewidget');
+    $document = $(document);
+    $document.unbind('mousemove.mousewidget');
+    return $document.unbind('mouseup.mousewidget');
+  };
+
+  MouseWidget.prototype._mouseDown = function(e) {
+    var result;
+    if (e.which !== 1) {
+      return;
+    }
+    result = this._handleMouseDown(e, this._getPositionInfo(e));
+    if (result) {
+      e.preventDefault();
+    }
+    return result;
+  };
+
+  MouseWidget.prototype._handleMouseDown = function(e, position_info) {
+    if (MouseWidget.is_mouse_handled) {
+      return;
+    }
+    if (this.is_mouse_started) {
+      this._handleMouseUp(position_info);
+    }
+    this.mouse_down_info = position_info;
+    if (!this._mouseCapture(position_info)) {
+      return;
+    }
+    this._handleStartMouse();
+    this.is_mouse_handled = true;
+    return true;
+  };
+
+  MouseWidget.prototype._handleStartMouse = function() {
+    var $document;
+    $document = $(document);
+    $document.bind('mousemove.mousewidget', $.proxy(this._mouseMove, this));
+    $document.bind('touchmove.mousewidget', $.proxy(this._touchMove, this));
+    $document.bind('mouseup.mousewidget', $.proxy(this._mouseUp, this));
+    $document.bind('touchend.mousewidget', $.proxy(this._touchEnd, this));
+    if (this.mouse_delay) {
+      return this._startMouseDelayTimer();
+    }
+  };
+
+  MouseWidget.prototype._startMouseDelayTimer = function() {
+    if (this._mouse_delay_timer) {
+      clearTimeout(this._mouse_delay_timer);
+    }
+    this._mouse_delay_timer = setTimeout((function(_this) {
+      return function() {
+        return _this._is_mouse_delay_met = true;
+      };
+    })(this), this.mouse_delay);
+    return this._is_mouse_delay_met = false;
+  };
+
+  MouseWidget.prototype._mouseMove = function(e) {
+    return this._handleMouseMove(e, this._getPositionInfo(e));
+  };
+
+  MouseWidget.prototype._handleMouseMove = function(e, position_info) {
+    if (this.is_mouse_started) {
+      this._mouseDrag(position_info);
+      return e.preventDefault();
+    }
+    if (this.mouse_delay && !this._is_mouse_delay_met) {
+      return true;
+    }
+    this.is_mouse_started = this._mouseStart(this.mouse_down_info) !== false;
+    if (this.is_mouse_started) {
+      this._mouseDrag(position_info);
+    } else {
+      this._handleMouseUp(position_info);
+    }
+    return !this.is_mouse_started;
+  };
+
+  MouseWidget.prototype._getPositionInfo = function(e) {
+    return {
+      page_x: e.pageX,
+      page_y: e.pageY,
+      target: e.target,
+      original_event: e
+    };
+  };
+
+  MouseWidget.prototype._mouseUp = function(e) {
+    return this._handleMouseUp(this._getPositionInfo(e));
+  };
+
+  MouseWidget.prototype._handleMouseUp = function(position_info) {
+    var $document;
+    $document = $(document);
+    $document.unbind('mousemove.mousewidget');
+    $document.unbind('touchmove.mousewidget');
+    $document.unbind('mouseup.mousewidget');
+    $document.unbind('touchend.mousewidget');
+    if (this.is_mouse_started) {
+      this.is_mouse_started = false;
+      this._mouseStop(position_info);
+    }
+  };
+
+  MouseWidget.prototype._mouseCapture = function(position_info) {
+    return true;
+  };
+
+  MouseWidget.prototype._mouseStart = function(position_info) {
+    return null;
+  };
+
+  MouseWidget.prototype._mouseDrag = function(position_info) {
+    return null;
+  };
+
+  MouseWidget.prototype._mouseStop = function(position_info) {
+    return null;
+  };
+
+  MouseWidget.prototype.setMouseDelay = function(mouse_delay) {
+    return this.mouse_delay = mouse_delay;
+  };
+
+  MouseWidget.prototype._touchStart = function(e) {
+    var touch;
+    if (e.originalEvent.touches.length > 1) {
+      return;
+    }
+    touch = e.originalEvent.changedTouches[0];
+    return this._handleMouseDown(e, this._getPositionInfo(touch));
+  };
+
+  MouseWidget.prototype._touchMove = function(e) {
+    var touch;
+    if (e.originalEvent.touches.length > 1) {
+      return;
+    }
+    touch = e.originalEvent.changedTouches[0];
+    return this._handleMouseMove(e, this._getPositionInfo(touch));
+  };
+
+  MouseWidget.prototype._touchEnd = function(e) {
+    var touch;
+    if (e.originalEvent.touches.length > 1) {
+      return;
+    }
+    touch = e.originalEvent.changedTouches[0];
+    return this._handleMouseUp(this._getPositionInfo(touch));
+  };
+
+  return MouseWidget;
+
+})(SimpleWidget);
+
+module.exports = MouseWidget;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 122 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/** Used to detect hot functions by number of calls within a span of milliseconds. */
-var HOT_COUNT = 800,
-    HOT_SPAN = 16;
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, SaveStateHandler, indexOf, isInt, util;
 
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeNow = Date.now;
+util = __webpack_require__(111);
 
-/**
- * Creates a function that'll short out and invoke `identity` instead
- * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
- * milliseconds.
- *
- * @private
- * @param {Function} func The function to restrict.
- * @returns {Function} Returns the new shortable function.
- */
-function shortOut(func) {
-  var count = 0,
-      lastCalled = 0;
+indexOf = util.indexOf;
 
-  return function() {
-    var stamp = nativeNow(),
-        remaining = HOT_SPAN - (stamp - lastCalled);
+isInt = util.isInt;
 
-    lastCalled = stamp;
-    if (remaining > 0) {
-      if (++count >= HOT_COUNT) {
-        return arguments[0];
-      }
-    } else {
-      count = 0;
+$ = jQuery;
+
+SaveStateHandler = (function() {
+  function SaveStateHandler(tree_widget) {
+    this.tree_widget = tree_widget;
+  }
+
+  SaveStateHandler.prototype.saveState = function() {
+    var state;
+    state = JSON.stringify(this.getState());
+    if (this.tree_widget.options.onSetStateFromStorage) {
+      return this.tree_widget.options.onSetStateFromStorage(state);
+    } else if (this.supportsLocalStorage()) {
+      return localStorage.setItem(this.getCookieName(), state);
+    } else if ($.cookie) {
+      $.cookie.raw = true;
+      return $.cookie(this.getCookieName(), state, {
+        path: '/'
+      });
     }
-    return func.apply(undefined, arguments);
   };
-}
 
-module.exports = shortOut;
+  SaveStateHandler.prototype.getStateFromStorage = function() {
+    var json_data;
+    json_data = this._loadFromStorage();
+    if (json_data) {
+      return this._parseState(json_data);
+    } else {
+      return null;
+    }
+  };
 
+  SaveStateHandler.prototype._parseState = function(json_data) {
+    var state;
+    state = $.parseJSON(json_data);
+    if (state && state.selected_node && isInt(state.selected_node)) {
+      state.selected_node = [state.selected_node];
+    }
+    return state;
+  };
+
+  SaveStateHandler.prototype._loadFromStorage = function() {
+    if (this.tree_widget.options.onGetStateFromStorage) {
+      return this.tree_widget.options.onGetStateFromStorage();
+    } else if (this.supportsLocalStorage()) {
+      return localStorage.getItem(this.getCookieName());
+    } else if ($.cookie) {
+      $.cookie.raw = true;
+      return $.cookie(this.getCookieName());
+    } else {
+      return null;
+    }
+  };
+
+  SaveStateHandler.prototype.getState = function() {
+    var getOpenNodeIds, getSelectedNodeIds;
+    getOpenNodeIds = (function(_this) {
+      return function() {
+        var open_nodes;
+        open_nodes = [];
+        _this.tree_widget.tree.iterate(function(node) {
+          if (node.is_open && node.id && node.hasChildren()) {
+            open_nodes.push(node.id);
+          }
+          return true;
+        });
+        return open_nodes;
+      };
+    })(this);
+    getSelectedNodeIds = (function(_this) {
+      return function() {
+        var n;
+        return (function() {
+          var i, len, ref, results;
+          ref = this.tree_widget.getSelectedNodes();
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            n = ref[i];
+            results.push(n.id);
+          }
+          return results;
+        }).call(_this);
+      };
+    })(this);
+    return {
+      open_nodes: getOpenNodeIds(),
+      selected_node: getSelectedNodeIds()
+    };
+  };
+
+  SaveStateHandler.prototype.setInitialState = function(state) {
+    var must_load_on_demand;
+    if (!state) {
+      return false;
+    } else {
+      must_load_on_demand = this._openInitialNodes(state.open_nodes);
+      this._selectInitialNodes(state.selected_node);
+      return must_load_on_demand;
+    }
+  };
+
+  SaveStateHandler.prototype._openInitialNodes = function(node_ids) {
+    var i, len, must_load_on_demand, node, node_id;
+    must_load_on_demand = false;
+    for (i = 0, len = node_ids.length; i < len; i++) {
+      node_id = node_ids[i];
+      node = this.tree_widget.getNodeById(node_id);
+      if (node) {
+        if (!node.load_on_demand) {
+          node.is_open = true;
+        } else {
+          must_load_on_demand = true;
+        }
+      }
+    }
+    return must_load_on_demand;
+  };
+
+  SaveStateHandler.prototype._selectInitialNodes = function(node_ids) {
+    var i, len, node, node_id, select_count;
+    select_count = 0;
+    for (i = 0, len = node_ids.length; i < len; i++) {
+      node_id = node_ids[i];
+      node = this.tree_widget.getNodeById(node_id);
+      if (node) {
+        select_count += 1;
+        this.tree_widget.select_node_handler.addToSelection(node);
+      }
+    }
+    return select_count !== 0;
+  };
+
+  SaveStateHandler.prototype.setInitialStateOnDemand = function(state, cb_finished) {
+    if (state) {
+      return this._setInitialStateOnDemand(state.open_nodes, state.selected_node, cb_finished);
+    } else {
+      return cb_finished();
+    }
+  };
+
+  SaveStateHandler.prototype._setInitialStateOnDemand = function(node_ids, selected_nodes, cb_finished) {
+    var loadAndOpenNode, loading_count, openNodes;
+    loading_count = 0;
+    openNodes = (function(_this) {
+      return function() {
+        var i, len, new_nodes_ids, node, node_id;
+        new_nodes_ids = [];
+        for (i = 0, len = node_ids.length; i < len; i++) {
+          node_id = node_ids[i];
+          node = _this.tree_widget.getNodeById(node_id);
+          if (!node) {
+            new_nodes_ids.push(node_id);
+          } else {
+            if (!node.is_loading) {
+              if (node.load_on_demand) {
+                loadAndOpenNode(node);
+              } else {
+                _this.tree_widget._openNode(node, false);
+              }
+            }
+          }
+        }
+        node_ids = new_nodes_ids;
+        if (_this._selectInitialNodes(selected_nodes)) {
+          _this.tree_widget._refreshElements();
+        }
+        if (loading_count === 0) {
+          return cb_finished();
+        }
+      };
+    })(this);
+    loadAndOpenNode = (function(_this) {
+      return function(node) {
+        loading_count += 1;
+        return _this.tree_widget._openNode(node, false, function() {
+          loading_count -= 1;
+          return openNodes();
+        });
+      };
+    })(this);
+    return openNodes();
+  };
+
+  SaveStateHandler.prototype.getCookieName = function() {
+    if (typeof this.tree_widget.options.saveState === 'string') {
+      return this.tree_widget.options.saveState;
+    } else {
+      return 'tree';
+    }
+  };
+
+  SaveStateHandler.prototype.supportsLocalStorage = function() {
+    var testSupport;
+    testSupport = function() {
+      var error, key;
+      if (typeof localStorage === "undefined" || localStorage === null) {
+        return false;
+      } else {
+        try {
+          key = '_storage_test';
+          sessionStorage.setItem(key, true);
+          sessionStorage.removeItem(key);
+        } catch (error1) {
+          error = error1;
+          return false;
+        }
+        return true;
+      }
+    };
+    if (this._supportsLocalStorage == null) {
+      this._supportsLocalStorage = testSupport();
+    }
+    return this._supportsLocalStorage;
+  };
+
+  SaveStateHandler.prototype.getNodeIdToBeSelected = function() {
+    var state;
+    state = this.getStateFromStorage();
+    if (state && state.selected_node) {
+      return state.selected_node[0];
+    } else {
+      return null;
+    }
+  };
+
+  return SaveStateHandler;
+
+})();
+
+module.exports = SaveStateHandler;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 123 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/**
- * A specialized version of `_.indexOf` which performs strict equality
- * comparisons of values, i.e. `===`.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} value The value to search for.
- * @param {number} fromIndex The index to search from.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function strictIndexOf(array, value, fromIndex) {
-  var index = fromIndex - 1,
-      length = array.length;
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, ScrollHandler;
 
-  while (++index < length) {
-    if (array[index] === value) {
-      return index;
-    }
+$ = jQuery;
+
+ScrollHandler = (function() {
+  function ScrollHandler(tree_widget) {
+    this.tree_widget = tree_widget;
+    this.previous_top = -1;
+    this.is_initialized = false;
   }
-  return -1;
-}
 
-module.exports = strictIndexOf;
+  ScrollHandler.prototype._initScrollParent = function() {
+    var $scroll_parent, getParentWithOverflow, setDocumentAsScrollParent;
+    getParentWithOverflow = (function(_this) {
+      return function() {
+        var css_values, el, hasOverFlow, i, len, ref;
+        css_values = ['overflow', 'overflow-y'];
+        hasOverFlow = function(el) {
+          var css_value, i, len, ref;
+          for (i = 0, len = css_values.length; i < len; i++) {
+            css_value = css_values[i];
+            if ((ref = $.css(el, css_value)) === 'auto' || ref === 'scroll') {
+              return true;
+            }
+          }
+          return false;
+        };
+        if (hasOverFlow(_this.tree_widget.$el[0])) {
+          return _this.tree_widget.$el;
+        }
+        ref = _this.tree_widget.$el.parents();
+        for (i = 0, len = ref.length; i < len; i++) {
+          el = ref[i];
+          if (hasOverFlow(el)) {
+            return $(el);
+          }
+        }
+        return null;
+      };
+    })(this);
+    setDocumentAsScrollParent = (function(_this) {
+      return function() {
+        _this.scroll_parent_top = 0;
+        return _this.$scroll_parent = null;
+      };
+    })(this);
+    if (this.tree_widget.$el.css('position') === 'fixed') {
+      setDocumentAsScrollParent();
+    }
+    $scroll_parent = getParentWithOverflow();
+    if ($scroll_parent && $scroll_parent.length && $scroll_parent[0].tagName !== 'HTML') {
+      this.$scroll_parent = $scroll_parent;
+      this.scroll_parent_top = this.$scroll_parent.offset().top;
+    } else {
+      setDocumentAsScrollParent();
+    }
+    return this.is_initialized = true;
+  };
 
+  ScrollHandler.prototype._ensureInit = function() {
+    if (!this.is_initialized) {
+      return this._initScrollParent();
+    }
+  };
+
+  ScrollHandler.prototype.checkScrolling = function() {
+    var hovered_area;
+    this._ensureInit();
+    hovered_area = this.tree_widget.dnd_handler.hovered_area;
+    if (hovered_area && hovered_area.top !== this.previous_top) {
+      this.previous_top = hovered_area.top;
+      if (this.$scroll_parent) {
+        return this._handleScrollingWithScrollParent(hovered_area);
+      } else {
+        return this._handleScrollingWithDocument(hovered_area);
+      }
+    }
+  };
+
+  ScrollHandler.prototype._handleScrollingWithScrollParent = function(area) {
+    var distance_bottom;
+    distance_bottom = this.scroll_parent_top + this.$scroll_parent[0].offsetHeight - area.bottom;
+    if (distance_bottom < 20) {
+      this.$scroll_parent[0].scrollTop += 20;
+      this.tree_widget.refreshHitAreas();
+      return this.previous_top = -1;
+    } else if ((area.top - this.scroll_parent_top) < 20) {
+      this.$scroll_parent[0].scrollTop -= 20;
+      this.tree_widget.refreshHitAreas();
+      return this.previous_top = -1;
+    }
+  };
+
+  ScrollHandler.prototype._handleScrollingWithDocument = function(area) {
+    var distance_top;
+    distance_top = area.top - $(document).scrollTop();
+    if (distance_top < 20) {
+      return $(document).scrollTop($(document).scrollTop() - 20);
+    } else if ($(window).height() - (area.bottom - $(document).scrollTop()) < 20) {
+      return $(document).scrollTop($(document).scrollTop() + 20);
+    }
+  };
+
+  ScrollHandler.prototype.scrollTo = function(top) {
+    var tree_top;
+    this._ensureInit();
+    if (this.$scroll_parent) {
+      return this.$scroll_parent[0].scrollTop = top;
+    } else {
+      tree_top = this.tree_widget.$el.offset().top;
+      return $(document).scrollTop(top + tree_top);
+    }
+  };
+
+  ScrollHandler.prototype.isScrolledIntoView = function(element) {
+    var $element, element_bottom, element_top, view_bottom, view_top;
+    this._ensureInit();
+    $element = $(element);
+    if (this.$scroll_parent) {
+      view_top = 0;
+      view_bottom = this.$scroll_parent.height();
+      element_top = $element.offset().top - this.scroll_parent_top;
+      element_bottom = element_top + $element.height();
+    } else {
+      view_top = $(window).scrollTop();
+      view_bottom = view_top + $(window).height();
+      element_top = $element.offset().top;
+      element_bottom = element_top + $element.height();
+    }
+    return (element_bottom <= view_bottom) && (element_top >= view_top);
+  };
+
+  return ScrollHandler;
+
+})();
+
+module.exports = ScrollHandler;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 124 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/** Used for built-in method references. */
-var funcProto = Function.prototype;
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, SelectNodeHandler;
 
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
+$ = jQuery;
 
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to convert.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
+SelectNodeHandler = (function() {
+  function SelectNodeHandler(tree_widget) {
+    this.tree_widget = tree_widget;
+    this.clear();
   }
-  return '';
-}
 
-module.exports = toSource;
+  SelectNodeHandler.prototype.getSelectedNode = function() {
+    var selected_nodes;
+    selected_nodes = this.getSelectedNodes();
+    if (selected_nodes.length) {
+      return selected_nodes[0];
+    } else {
+      return false;
+    }
+  };
 
+  SelectNodeHandler.prototype.getSelectedNodes = function() {
+    var id, node, selected_nodes;
+    if (this.selected_single_node) {
+      return [this.selected_single_node];
+    } else {
+      selected_nodes = [];
+      for (id in this.selected_nodes) {
+        node = this.tree_widget.getNodeById(id);
+        if (node) {
+          selected_nodes.push(node);
+        }
+      }
+      return selected_nodes;
+    }
+  };
+
+  SelectNodeHandler.prototype.getSelectedNodesUnder = function(parent) {
+    var id, node, selected_nodes;
+    if (this.selected_single_node) {
+      if (parent.isParentOf(this.selected_single_node)) {
+        return [this.selected_single_node];
+      } else {
+        return [];
+      }
+    } else {
+      selected_nodes = [];
+      for (id in this.selected_nodes) {
+        node = this.tree_widget.getNodeById(id);
+        if (node && parent.isParentOf(node)) {
+          selected_nodes.push(node);
+        }
+      }
+      return selected_nodes;
+    }
+  };
+
+  SelectNodeHandler.prototype.isNodeSelected = function(node) {
+    if (!node) {
+      return false;
+    } else if (node.id) {
+      if (this.selected_nodes[node.id]) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (this.selected_single_node) {
+      return this.selected_single_node.element === node.element;
+    } else {
+      return false;
+    }
+  };
+
+  SelectNodeHandler.prototype.clear = function() {
+    this.selected_nodes = {};
+    return this.selected_single_node = null;
+  };
+
+  SelectNodeHandler.prototype.removeFromSelection = function(node, include_children) {
+    if (include_children == null) {
+      include_children = false;
+    }
+    if (!node.id) {
+      if (this.selected_single_node && node.element === this.selected_single_node.element) {
+        return this.selected_single_node = null;
+      }
+    } else {
+      delete this.selected_nodes[node.id];
+      if (include_children) {
+        return node.iterate((function(_this) {
+          return function(n) {
+            delete _this.selected_nodes[node.id];
+            return true;
+          };
+        })(this));
+      }
+    }
+  };
+
+  SelectNodeHandler.prototype.addToSelection = function(node) {
+    if (node.id) {
+      return this.selected_nodes[node.id] = true;
+    } else {
+      return this.selected_single_node = node;
+    }
+  };
+
+  return SelectNodeHandler;
+
+})();
+
+module.exports = SelectNodeHandler;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 125 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/**
- * Creates a function that returns `value`.
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Util
- * @param {*} value The value to return from the new function.
- * @returns {Function} Returns the new constant function.
- * @example
- *
- * var objects = _.times(2, _.constant({ 'a': 1 }));
- *
- * console.log(objects);
- * // => [{ 'a': 1 }, { 'a': 1 }]
- *
- * console.log(objects[0] === objects[1]);
- * // => true
- */
-function constant(value) {
-  return function() {
-    return value;
+/* WEBPACK VAR INJECTION */(function(jQuery) {var $, BorderDropHint, DragAndDropHandler, DragElement, ElementsRenderer, FolderElement, GhostDropHint, HitAreasGenerator, JqTreeWidget, KeyHandler, MouseWidget, Node, NodeElement, Position, SaveStateHandler, ScrollHandler, SelectNodeHandler, SimpleWidget, __version__, drag_and_drop_handler, isFunction, node_module, ref, util_module,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+__version__ = __webpack_require__(126);
+
+drag_and_drop_handler = __webpack_require__(118);
+
+ElementsRenderer = __webpack_require__(119);
+
+KeyHandler = __webpack_require__(120);
+
+MouseWidget = __webpack_require__(121);
+
+SaveStateHandler = __webpack_require__(122);
+
+ScrollHandler = __webpack_require__(123);
+
+SelectNodeHandler = __webpack_require__(124);
+
+SimpleWidget = __webpack_require__(114);
+
+node_module = __webpack_require__(112);
+
+Node = node_module.Node;
+
+Position = node_module.Position;
+
+util_module = __webpack_require__(111);
+
+isFunction = util_module.isFunction;
+
+ref = __webpack_require__(113), BorderDropHint = ref.BorderDropHint, FolderElement = ref.FolderElement, GhostDropHint = ref.GhostDropHint, NodeElement = ref.NodeElement;
+
+DragAndDropHandler = drag_and_drop_handler.DragAndDropHandler, DragElement = drag_and_drop_handler.DragElement, HitAreasGenerator = drag_and_drop_handler.HitAreasGenerator;
+
+$ = jQuery;
+
+JqTreeWidget = (function(superClass) {
+  extend(JqTreeWidget, superClass);
+
+  function JqTreeWidget() {
+    return JqTreeWidget.__super__.constructor.apply(this, arguments);
+  }
+
+  JqTreeWidget.prototype.BorderDropHint = BorderDropHint;
+
+  JqTreeWidget.prototype.DragElement = DragElement;
+
+  JqTreeWidget.prototype.DragAndDropHandler = DragAndDropHandler;
+
+  JqTreeWidget.prototype.ElementsRenderer = ElementsRenderer;
+
+  JqTreeWidget.prototype.GhostDropHint = GhostDropHint;
+
+  JqTreeWidget.prototype.HitAreasGenerator = HitAreasGenerator;
+
+  JqTreeWidget.prototype.Node = Node;
+
+  JqTreeWidget.prototype.SaveStateHandler = SaveStateHandler;
+
+  JqTreeWidget.prototype.ScrollHandler = ScrollHandler;
+
+  JqTreeWidget.prototype.SelectNodeHandler = SelectNodeHandler;
+
+  JqTreeWidget.prototype.defaults = {
+    autoOpen: false,
+    saveState: false,
+    dragAndDrop: false,
+    selectable: true,
+    useContextMenu: true,
+    onCanSelectNode: null,
+    onSetStateFromStorage: null,
+    onGetStateFromStorage: null,
+    onCreateLi: null,
+    onIsMoveHandle: null,
+    onCanMove: null,
+    onCanMoveTo: null,
+    onLoadFailed: null,
+    autoEscape: true,
+    dataUrl: null,
+    closedIcon: null,
+    openedIcon: '&#x25bc;',
+    slide: true,
+    nodeClass: Node,
+    dataFilter: null,
+    keyboardSupport: true,
+    openFolderDelay: 500,
+    rtl: null,
+    onDragMove: null,
+    onDragStop: null,
+    buttonLeft: true,
+    onLoading: null
   };
-}
 
-module.exports = constant;
+  JqTreeWidget.prototype.toggle = function(node, slide) {
+    if (slide == null) {
+      slide = null;
+    }
+    if (slide === null) {
+      slide = this.options.slide;
+    }
+    if (node.is_open) {
+      this.closeNode(node, slide);
+    } else {
+      this.openNode(node, slide);
+    }
+    return this.element;
+  };
 
+  JqTreeWidget.prototype.getTree = function() {
+    return this.tree;
+  };
+
+  JqTreeWidget.prototype.selectNode = function(node) {
+    this._selectNode(node, false);
+    return this.element;
+  };
+
+  JqTreeWidget.prototype._selectNode = function(node, must_toggle) {
+    var canSelect, deselected_node, openParents, saveState;
+    if (must_toggle == null) {
+      must_toggle = false;
+    }
+    if (!this.select_node_handler) {
+      return;
+    }
+    canSelect = (function(_this) {
+      return function() {
+        if (_this.options.onCanSelectNode) {
+          return _this.options.selectable && _this.options.onCanSelectNode(node);
+        } else {
+          return _this.options.selectable;
+        }
+      };
+    })(this);
+    openParents = (function(_this) {
+      return function() {
+        var parent;
+        parent = node.parent;
+        if (parent && parent.parent && !parent.is_open) {
+          return _this.openNode(parent, false);
+        }
+      };
+    })(this);
+    saveState = (function(_this) {
+      return function() {
+        if (_this.options.saveState) {
+          return _this.save_state_handler.saveState();
+        }
+      };
+    })(this);
+    if (!node) {
+      this._deselectCurrentNode();
+      saveState();
+      return;
+    }
+    if (!canSelect()) {
+      return;
+    }
+    if (this.select_node_handler.isNodeSelected(node)) {
+      if (must_toggle) {
+        this._deselectCurrentNode();
+        this._triggerEvent('tree.select', {
+          node: null,
+          previous_node: node
+        });
+      }
+    } else {
+      deselected_node = this.getSelectedNode();
+      this._deselectCurrentNode();
+      this.addToSelection(node);
+      this._triggerEvent('tree.select', {
+        node: node,
+        deselected_node: deselected_node
+      });
+      openParents();
+    }
+    return saveState();
+  };
+
+  JqTreeWidget.prototype.getSelectedNode = function() {
+    if (this.select_node_handler) {
+      return this.select_node_handler.getSelectedNode();
+    } else {
+      return null;
+    }
+  };
+
+  JqTreeWidget.prototype.toJson = function() {
+    return JSON.stringify(this.tree.getData());
+  };
+
+  JqTreeWidget.prototype.loadData = function(data, parent_node) {
+    this._loadData(data, parent_node);
+    return this.element;
+  };
+
+
+  /*
+  signatures:
+  - loadDataFromUrl(url, parent_node=null, on_finished=null)
+      loadDataFromUrl('/my_data');
+      loadDataFromUrl('/my_data', node1);
+      loadDataFromUrl('/my_data', node1, function() { console.log('finished'); });
+      loadDataFromUrl('/my_data', null, function() { console.log('finished'); });
+  
+  - loadDataFromUrl(parent_node=null, on_finished=null)
+      loadDataFromUrl();
+      loadDataFromUrl(node1);
+      loadDataFromUrl(null, function() { console.log('finished'); });
+      loadDataFromUrl(node1, function() { console.log('finished'); });
+   */
+
+  JqTreeWidget.prototype.loadDataFromUrl = function(param1, param2, param3) {
+    if ($.type(param1) === 'string') {
+      this._loadDataFromUrl(param1, param2, param3);
+    } else {
+      this._loadDataFromUrl(null, param1, param2);
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.reload = function(on_finished) {
+    this._loadDataFromUrl(null, null, on_finished);
+    return this.element;
+  };
+
+  JqTreeWidget.prototype._loadDataFromUrl = function(url_info, parent_node, on_finished) {
+    var $el, addLoadingClass, handeLoadData, handleError, handleSuccess, loadDataFromUrlInfo, parseUrlInfo, removeLoadingClass;
+    $el = null;
+    addLoadingClass = (function(_this) {
+      return function() {
+        if (parent_node) {
+          $el = $(parent_node.element);
+        } else {
+          $el = _this.element;
+        }
+        $el.addClass('jqtree-loading');
+        return _this._notifyLoading(true, parent_node, $el);
+      };
+    })(this);
+    removeLoadingClass = (function(_this) {
+      return function() {
+        if ($el) {
+          $el.removeClass('jqtree-loading');
+          return _this._notifyLoading(false, parent_node, $el);
+        }
+      };
+    })(this);
+    parseUrlInfo = function() {
+      if ($.type(url_info) === 'string') {
+        return {
+          url: url_info
+        };
+      }
+      if (!url_info.method) {
+        url_info.method = 'get';
+      }
+      return url_info;
+    };
+    handeLoadData = (function(_this) {
+      return function(data) {
+        removeLoadingClass();
+        _this._loadData(data, parent_node);
+        if (on_finished && $.isFunction(on_finished)) {
+          return on_finished();
+        }
+      };
+    })(this);
+    handleSuccess = (function(_this) {
+      return function(response) {
+        var data;
+        if ($.isArray(response) || typeof response === 'object') {
+          data = response;
+        } else if (data != null) {
+          data = $.parseJSON(response);
+        } else {
+          data = [];
+        }
+        if (_this.options.dataFilter) {
+          data = _this.options.dataFilter(data);
+        }
+        return handeLoadData(data);
+      };
+    })(this);
+    handleError = (function(_this) {
+      return function(response) {
+        removeLoadingClass();
+        if (_this.options.onLoadFailed) {
+          return _this.options.onLoadFailed(response);
+        }
+      };
+    })(this);
+    loadDataFromUrlInfo = function() {
+      url_info = parseUrlInfo();
+      return $.ajax($.extend({}, url_info, {
+        method: url_info.method != null ? url_info.method.toUpperCase() : 'GET',
+        cache: false,
+        dataType: 'json',
+        success: handleSuccess,
+        error: handleError
+      }));
+    };
+    if (!url_info) {
+      url_info = this._getDataUrlInfo(parent_node);
+    }
+    addLoadingClass();
+    if (!url_info) {
+      removeLoadingClass();
+    } else if ($.isArray(url_info)) {
+      handeLoadData(url_info);
+    } else {
+      loadDataFromUrlInfo();
+    }
+  };
+
+  JqTreeWidget.prototype._loadData = function(data, parent_node) {
+    var deselectNodes, loadSubtree;
+    if (parent_node == null) {
+      parent_node = null;
+    }
+    deselectNodes = (function(_this) {
+      return function() {
+        var i, len, n, selected_nodes_under_parent;
+        if (_this.select_node_handler) {
+          selected_nodes_under_parent = _this.select_node_handler.getSelectedNodesUnder(parent_node);
+          for (i = 0, len = selected_nodes_under_parent.length; i < len; i++) {
+            n = selected_nodes_under_parent[i];
+            _this.select_node_handler.removeFromSelection(n);
+          }
+        }
+        return null;
+      };
+    })(this);
+    loadSubtree = (function(_this) {
+      return function() {
+        parent_node.loadFromData(data);
+        parent_node.load_on_demand = false;
+        parent_node.is_loading = false;
+        return _this._refreshElements(parent_node);
+      };
+    })(this);
+    if (!data) {
+      return;
+    }
+    this._triggerEvent('tree.load_data', {
+      tree_data: data
+    });
+    if (!parent_node) {
+      this._initTree(data);
+    } else {
+      deselectNodes();
+      loadSubtree();
+    }
+    if (this.isDragging()) {
+      return this.dnd_handler.refresh();
+    }
+  };
+
+  JqTreeWidget.prototype.getNodeById = function(node_id) {
+    return this.tree.getNodeById(node_id);
+  };
+
+  JqTreeWidget.prototype.getNodeByName = function(name) {
+    return this.tree.getNodeByName(name);
+  };
+
+  JqTreeWidget.prototype.getNodesByProperty = function(key, value) {
+    return this.tree.getNodesByProperty(key, value);
+  };
+
+  JqTreeWidget.prototype.getNodeByHtmlElement = function(element) {
+    return this._getNode($(element));
+  };
+
+  JqTreeWidget.prototype.getNodeByCallback = function(callback) {
+    return this.tree.getNodeByCallback(callback);
+  };
+
+  JqTreeWidget.prototype.openNode = function(node, slide_param, on_finished_param) {
+    var on_finished, parseParams, ref1, slide;
+    if (slide_param == null) {
+      slide_param = null;
+    }
+    if (on_finished_param == null) {
+      on_finished_param = null;
+    }
+    parseParams = (function(_this) {
+      return function() {
+        var on_finished, slide;
+        if (isFunction(slide_param)) {
+          on_finished = slide_param;
+          slide = null;
+        } else {
+          slide = slide_param;
+          on_finished = on_finished_param;
+        }
+        if (slide === null) {
+          slide = _this.options.slide;
+        }
+        return [slide, on_finished];
+      };
+    })(this);
+    ref1 = parseParams(), slide = ref1[0], on_finished = ref1[1];
+    if (node) {
+      this._openNode(node, slide, on_finished);
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype._openNode = function(node, slide, on_finished) {
+    var doOpenNode, parent;
+    if (slide == null) {
+      slide = true;
+    }
+    doOpenNode = (function(_this) {
+      return function(_node, _slide, _on_finished) {
+        var folder_element;
+        folder_element = new FolderElement(_node, _this);
+        return folder_element.open(_on_finished, _slide);
+      };
+    })(this);
+    if (node.isFolder()) {
+      if (node.load_on_demand) {
+        return this._loadFolderOnDemand(node, slide, on_finished);
+      } else {
+        parent = node.parent;
+        while (parent) {
+          if (parent.parent) {
+            doOpenNode(parent, false, null);
+          }
+          parent = parent.parent;
+        }
+        doOpenNode(node, slide, on_finished);
+        return this._saveState();
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._loadFolderOnDemand = function(node, slide, on_finished) {
+    if (slide == null) {
+      slide = true;
+    }
+    node.is_loading = true;
+    return this._loadDataFromUrl(null, node, (function(_this) {
+      return function() {
+        return _this._openNode(node, slide, on_finished);
+      };
+    })(this));
+  };
+
+  JqTreeWidget.prototype.closeNode = function(node, slide) {
+    if (slide == null) {
+      slide = null;
+    }
+    if (slide === null) {
+      slide = this.options.slide;
+    }
+    if (node.isFolder()) {
+      new FolderElement(node, this).close(slide);
+      this._saveState();
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.isDragging = function() {
+    if (this.dnd_handler) {
+      return this.dnd_handler.is_dragging;
+    } else {
+      return false;
+    }
+  };
+
+  JqTreeWidget.prototype.refreshHitAreas = function() {
+    this.dnd_handler.refresh();
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.addNodeAfter = function(new_node_info, existing_node) {
+    var new_node;
+    new_node = existing_node.addAfter(new_node_info);
+    this._refreshElements(existing_node.parent);
+    return new_node;
+  };
+
+  JqTreeWidget.prototype.addNodeBefore = function(new_node_info, existing_node) {
+    var new_node;
+    new_node = existing_node.addBefore(new_node_info);
+    this._refreshElements(existing_node.parent);
+    return new_node;
+  };
+
+  JqTreeWidget.prototype.addParentNode = function(new_node_info, existing_node) {
+    var new_node;
+    new_node = existing_node.addParent(new_node_info);
+    this._refreshElements(new_node.parent);
+    return new_node;
+  };
+
+  JqTreeWidget.prototype.removeNode = function(node) {
+    var parent;
+    parent = node.parent;
+    if (parent) {
+      this.select_node_handler.removeFromSelection(node, true);
+      node.remove();
+      this._refreshElements(parent);
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.appendNode = function(new_node_info, parent_node) {
+    var node;
+    parent_node = parent_node || this.tree;
+    node = parent_node.append(new_node_info);
+    this._refreshElements(parent_node);
+    return node;
+  };
+
+  JqTreeWidget.prototype.prependNode = function(new_node_info, parent_node) {
+    var node;
+    if (!parent_node) {
+      parent_node = this.tree;
+    }
+    node = parent_node.prepend(new_node_info);
+    this._refreshElements(parent_node);
+    return node;
+  };
+
+  JqTreeWidget.prototype.updateNode = function(node, data) {
+    var id_is_changed;
+    id_is_changed = data.id && data.id !== node.id;
+    if (id_is_changed) {
+      this.tree.removeNodeFromIndex(node);
+    }
+    node.setData(data);
+    if (id_is_changed) {
+      this.tree.addNodeToIndex(node);
+    }
+    if (typeof data === 'object' && data.children) {
+      node.removeChildren();
+      if (data.children.length) {
+        node.loadFromData(data.children);
+      }
+    }
+    this.renderer.renderFromNode(node);
+    this._selectCurrentNode();
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.moveNode = function(node, target_node, position) {
+    var position_index;
+    position_index = Position.nameToIndex(position);
+    this.tree.moveNode(node, target_node, position_index);
+    this._refreshElements();
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.getStateFromStorage = function() {
+    return this.save_state_handler.getStateFromStorage();
+  };
+
+  JqTreeWidget.prototype.addToSelection = function(node) {
+    if (node) {
+      this.select_node_handler.addToSelection(node);
+      this._getNodeElementForNode(node).select();
+      this._saveState();
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.getSelectedNodes = function() {
+    return this.select_node_handler.getSelectedNodes();
+  };
+
+  JqTreeWidget.prototype.isNodeSelected = function(node) {
+    return this.select_node_handler.isNodeSelected(node);
+  };
+
+  JqTreeWidget.prototype.removeFromSelection = function(node) {
+    this.select_node_handler.removeFromSelection(node);
+    this._getNodeElementForNode(node).deselect();
+    this._saveState();
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.scrollToNode = function(node) {
+    var $element, top;
+    $element = $(node.element);
+    top = $element.offset().top - this.$el.offset().top;
+    this.scroll_handler.scrollTo(top);
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.getState = function() {
+    return this.save_state_handler.getState();
+  };
+
+  JqTreeWidget.prototype.setState = function(state) {
+    this.save_state_handler.setInitialState(state);
+    this._refreshElements();
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.setOption = function(option, value) {
+    this.options[option] = value;
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.moveDown = function() {
+    if (this.key_handler) {
+      this.key_handler.moveDown();
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.moveUp = function() {
+    if (this.key_handler) {
+      this.key_handler.moveUp();
+    }
+    return this.element;
+  };
+
+  JqTreeWidget.prototype.getVersion = function() {
+    return __version__;
+  };
+
+  JqTreeWidget.prototype._init = function() {
+    JqTreeWidget.__super__._init.call(this);
+    this.element = this.$el;
+    this.mouse_delay = 300;
+    this.is_initialized = false;
+    this.options.rtl = this._getRtlOption();
+    if (!this.options.closedIcon) {
+      this.options.closedIcon = this._getDefaultClosedIcon();
+    }
+    this.renderer = new ElementsRenderer(this);
+    if (SaveStateHandler != null) {
+      this.save_state_handler = new SaveStateHandler(this);
+    } else {
+      this.options.saveState = false;
+    }
+    if (SelectNodeHandler != null) {
+      this.select_node_handler = new SelectNodeHandler(this);
+    }
+    if (DragAndDropHandler != null) {
+      this.dnd_handler = new DragAndDropHandler(this);
+    } else {
+      this.options.dragAndDrop = false;
+    }
+    if (ScrollHandler != null) {
+      this.scroll_handler = new ScrollHandler(this);
+    }
+    if ((KeyHandler != null) && (SelectNodeHandler != null)) {
+      this.key_handler = new KeyHandler(this);
+    }
+    this._initData();
+    this.element.click($.proxy(this._click, this));
+    this.element.dblclick($.proxy(this._dblclick, this));
+    if (this.options.useContextMenu) {
+      return this.element.bind('contextmenu', $.proxy(this._contextmenu, this));
+    }
+  };
+
+  JqTreeWidget.prototype._deinit = function() {
+    this.element.empty();
+    this.element.unbind();
+    if (this.key_handler) {
+      this.key_handler.deinit();
+    }
+    this.tree = null;
+    return JqTreeWidget.__super__._deinit.call(this);
+  };
+
+  JqTreeWidget.prototype._initData = function() {
+    var data_url;
+    if (this.options.data) {
+      return this._loadData(this.options.data);
+    } else {
+      data_url = this._getDataUrlInfo();
+      if (data_url) {
+        return this._loadDataFromUrl();
+      } else {
+        return this._loadData([]);
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._getDataUrlInfo = function(node) {
+    var data_url, getUrlFromString;
+    data_url = this.options.dataUrl || this.element.data('url');
+    getUrlFromString = (function(_this) {
+      return function() {
+        var data, selected_node_id, url_info;
+        url_info = {
+          url: data_url
+        };
+        if (node && node.id) {
+          data = {
+            node: node.id
+          };
+          url_info['data'] = data;
+        } else {
+          selected_node_id = _this._getNodeIdToBeSelected();
+          if (selected_node_id) {
+            data = {
+              selected_node: selected_node_id
+            };
+            url_info['data'] = data;
+          }
+        }
+        return url_info;
+      };
+    })(this);
+    if ($.isFunction(data_url)) {
+      return data_url(node);
+    } else if ($.type(data_url) === 'string') {
+      return getUrlFromString();
+    } else {
+      return data_url;
+    }
+  };
+
+  JqTreeWidget.prototype._getNodeIdToBeSelected = function() {
+    if (this.options.saveState) {
+      return this.save_state_handler.getNodeIdToBeSelected();
+    } else {
+      return null;
+    }
+  };
+
+  JqTreeWidget.prototype._initTree = function(data) {
+    var doInit, must_load_on_demand;
+    doInit = (function(_this) {
+      return function() {
+        if (!_this.is_initialized) {
+          _this.is_initialized = true;
+          return _this._triggerEvent('tree.init');
+        }
+      };
+    })(this);
+    this.tree = new this.options.nodeClass(null, true, this.options.nodeClass);
+    if (this.select_node_handler) {
+      this.select_node_handler.clear();
+    }
+    this.tree.loadFromData(data);
+    must_load_on_demand = this._setInitialState();
+    this._refreshElements();
+    if (!must_load_on_demand) {
+      return doInit();
+    } else {
+      return this._setInitialStateOnDemand(doInit);
+    }
+  };
+
+  JqTreeWidget.prototype._setInitialState = function() {
+    var autoOpenNodes, is_restored, must_load_on_demand, ref1, restoreState;
+    restoreState = (function(_this) {
+      return function() {
+        var must_load_on_demand, state;
+        if (!(_this.options.saveState && _this.save_state_handler)) {
+          return [false, false];
+        } else {
+          state = _this.save_state_handler.getStateFromStorage();
+          if (!state) {
+            return [false, false];
+          } else {
+            must_load_on_demand = _this.save_state_handler.setInitialState(state);
+            return [true, must_load_on_demand];
+          }
+        }
+      };
+    })(this);
+    autoOpenNodes = (function(_this) {
+      return function() {
+        var max_level, must_load_on_demand;
+        if (_this.options.autoOpen === false) {
+          return false;
+        }
+        max_level = _this._getAutoOpenMaxLevel();
+        must_load_on_demand = false;
+        _this.tree.iterate(function(node, level) {
+          if (node.load_on_demand) {
+            must_load_on_demand = true;
+            return false;
+          } else if (!node.hasChildren()) {
+            return false;
+          } else {
+            node.is_open = true;
+            return level !== max_level;
+          }
+        });
+        return must_load_on_demand;
+      };
+    })(this);
+    ref1 = restoreState(), is_restored = ref1[0], must_load_on_demand = ref1[1];
+    if (!is_restored) {
+      must_load_on_demand = autoOpenNodes();
+    }
+    return must_load_on_demand;
+  };
+
+  JqTreeWidget.prototype._setInitialStateOnDemand = function(cb_finished) {
+    var autoOpenNodes, restoreState;
+    restoreState = (function(_this) {
+      return function() {
+        var state;
+        if (!(_this.options.saveState && _this.save_state_handler)) {
+          return false;
+        } else {
+          state = _this.save_state_handler.getStateFromStorage();
+          if (!state) {
+            return false;
+          } else {
+            _this.save_state_handler.setInitialStateOnDemand(state, cb_finished);
+            return true;
+          }
+        }
+      };
+    })(this);
+    autoOpenNodes = (function(_this) {
+      return function() {
+        var loadAndOpenNode, loading_count, max_level, openNodes;
+        max_level = _this._getAutoOpenMaxLevel();
+        loading_count = 0;
+        loadAndOpenNode = function(node) {
+          loading_count += 1;
+          return _this._openNode(node, false, function() {
+            loading_count -= 1;
+            return openNodes();
+          });
+        };
+        openNodes = function() {
+          _this.tree.iterate(function(node, level) {
+            if (node.load_on_demand) {
+              if (!node.is_loading) {
+                loadAndOpenNode(node);
+              }
+              return false;
+            } else {
+              _this._openNode(node, false);
+              return level !== max_level;
+            }
+          });
+          if (loading_count === 0) {
+            return cb_finished();
+          }
+        };
+        return openNodes();
+      };
+    })(this);
+    if (!restoreState()) {
+      return autoOpenNodes();
+    }
+  };
+
+  JqTreeWidget.prototype._getAutoOpenMaxLevel = function() {
+    if (this.options.autoOpen === true) {
+      return -1;
+    } else {
+      return parseInt(this.options.autoOpen);
+    }
+  };
+
+
+  /*
+  Redraw the tree or part of the tree.
+   * from_node: redraw this subtree
+   */
+
+  JqTreeWidget.prototype._refreshElements = function(from_node) {
+    if (from_node == null) {
+      from_node = null;
+    }
+    this.renderer.render(from_node);
+    return this._triggerEvent('tree.refresh');
+  };
+
+  JqTreeWidget.prototype._click = function(e) {
+    var click_target, event, node;
+    click_target = this._getClickTarget(e.target);
+    if (click_target) {
+      if (click_target.type === 'button') {
+        this.toggle(click_target.node, this.options.slide);
+        e.preventDefault();
+        return e.stopPropagation();
+      } else if (click_target.type === 'label') {
+        node = click_target.node;
+        event = this._triggerEvent('tree.click', {
+          node: node,
+          click_event: e
+        });
+        if (!event.isDefaultPrevented()) {
+          return this._selectNode(node, true);
+        }
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._dblclick = function(e) {
+    var click_target;
+    click_target = this._getClickTarget(e.target);
+    if (click_target && click_target.type === 'label') {
+      return this._triggerEvent('tree.dblclick', {
+        node: click_target.node,
+        click_event: e
+      });
+    }
+  };
+
+  JqTreeWidget.prototype._getClickTarget = function(element) {
+    var $button, $el, $target, node;
+    $target = $(element);
+    $button = $target.closest('.jqtree-toggler');
+    if ($button.length) {
+      node = this._getNode($button);
+      if (node) {
+        return {
+          type: 'button',
+          node: node
+        };
+      }
+    } else {
+      $el = $target.closest('.jqtree-element');
+      if ($el.length) {
+        node = this._getNode($el);
+        if (node) {
+          return {
+            type: 'label',
+            node: node
+          };
+        }
+      }
+    }
+    return null;
+  };
+
+  JqTreeWidget.prototype._getNode = function($element) {
+    var $li;
+    $li = $element.closest('li.jqtree_common');
+    if ($li.length === 0) {
+      return null;
+    } else {
+      return $li.data('node');
+    }
+  };
+
+  JqTreeWidget.prototype._getNodeElementForNode = function(node) {
+    if (node.isFolder()) {
+      return new FolderElement(node, this);
+    } else {
+      return new NodeElement(node, this);
+    }
+  };
+
+  JqTreeWidget.prototype._getNodeElement = function($element) {
+    var node;
+    node = this._getNode($element);
+    if (node) {
+      return this._getNodeElementForNode(node);
+    } else {
+      return null;
+    }
+  };
+
+  JqTreeWidget.prototype._contextmenu = function(e) {
+    var $div, node;
+    $div = $(e.target).closest('ul.jqtree-tree .jqtree-element');
+    if ($div.length) {
+      node = this._getNode($div);
+      if (node) {
+        e.preventDefault();
+        e.stopPropagation();
+        this._triggerEvent('tree.contextmenu', {
+          node: node,
+          click_event: e
+        });
+        return false;
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._saveState = function() {
+    if (this.options.saveState) {
+      return this.save_state_handler.saveState();
+    }
+  };
+
+  JqTreeWidget.prototype._mouseCapture = function(position_info) {
+    if (this.options.dragAndDrop) {
+      return this.dnd_handler.mouseCapture(position_info);
+    } else {
+      return false;
+    }
+  };
+
+  JqTreeWidget.prototype._mouseStart = function(position_info) {
+    if (this.options.dragAndDrop) {
+      return this.dnd_handler.mouseStart(position_info);
+    } else {
+      return false;
+    }
+  };
+
+  JqTreeWidget.prototype._mouseDrag = function(position_info) {
+    var result;
+    if (this.options.dragAndDrop) {
+      result = this.dnd_handler.mouseDrag(position_info);
+      if (this.scroll_handler) {
+        this.scroll_handler.checkScrolling();
+      }
+      return result;
+    } else {
+      return false;
+    }
+  };
+
+  JqTreeWidget.prototype._mouseStop = function(position_info) {
+    if (this.options.dragAndDrop) {
+      return this.dnd_handler.mouseStop(position_info);
+    } else {
+      return false;
+    }
+  };
+
+  JqTreeWidget.prototype._triggerEvent = function(event_name, values) {
+    var event;
+    event = $.Event(event_name);
+    $.extend(event, values);
+    this.element.trigger(event);
+    return event;
+  };
+
+  JqTreeWidget.prototype.testGenerateHitAreas = function(moving_node) {
+    this.dnd_handler.current_item = this._getNodeElementForNode(moving_node);
+    this.dnd_handler.generateHitAreas();
+    return this.dnd_handler.hit_areas;
+  };
+
+  JqTreeWidget.prototype._selectCurrentNode = function() {
+    var node, node_element;
+    node = this.getSelectedNode();
+    if (node) {
+      node_element = this._getNodeElementForNode(node);
+      if (node_element) {
+        return node_element.select();
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._deselectCurrentNode = function() {
+    var node;
+    node = this.getSelectedNode();
+    if (node) {
+      return this.removeFromSelection(node);
+    }
+  };
+
+  JqTreeWidget.prototype._getDefaultClosedIcon = function() {
+    if (this.options.rtl) {
+      return '&#x25c0;';
+    } else {
+      return '&#x25ba;';
+    }
+  };
+
+  JqTreeWidget.prototype._getRtlOption = function() {
+    var data_rtl;
+    if (this.options.rtl !== null) {
+      return this.options.rtl;
+    } else {
+      data_rtl = this.element.data('rtl');
+      if ((data_rtl != null) && data_rtl !== false) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
+  JqTreeWidget.prototype._notifyLoading = function(is_loading, node, $el) {
+    if (this.options.onLoading) {
+      return this.options.onLoading(is_loading, node, $el);
+    }
+  };
+
+  return JqTreeWidget;
+
+})(MouseWidget);
+
+JqTreeWidget.getModule = function(name) {
+  var modules;
+  modules = {
+    'node': node_module,
+    'util': util_module,
+    'drag_and_drop_handler': drag_and_drop_handler
+  };
+  return modules[name];
+};
+
+SimpleWidget.register(JqTreeWidget, 'tree');
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 126 */
 /***/ (function(module, exports) {
 
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-module.exports = eq;
+module.exports = '1.3.7';
 
 
 /***/ }),
 /* 127 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var isFunction = __webpack_require__(74),
-    isLength = __webpack_require__(129);
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return addCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return removeCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return renameCategory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return moveInto; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return moveBefore; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return moveAfter; });
 
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
 
-module.exports = isArrayLike;
+var api = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
+    baseURL: '/api/team'
+});
 
+var addCategory = function addCategory(team, parent, name) {
+
+    return api.post(team + '/category', {
+        parent: parent,
+        name: name
+    });
+};
+
+var removeCategory = function removeCategory(team, id) {
+    return api.delete(team + '/category/' + id);
+};
+
+var renameCategory = function renameCategory(team, id, name) {
+    return api.put(team + '/category/' + id, {
+        name: name
+    });
+};
+
+var moveInto = function moveInto(team, id, node) {
+    return api.put(team + '/category/' + id + '/moveInto', {
+        node: node
+    });
+};
+
+var moveBefore = function moveBefore(team, id, node) {
+    return api.put(team + '/category/' + id + '/moveBefore', {
+        node: node
+    });
+};
+
+var moveAfter = function moveAfter(team, id, node) {
+    return api.put(team + '/category/' + id + '/moveAfter', {
+        node: node
+    });
+};
 
 /***/ }),
 /* 128 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(127),
-    isObjectLike = __webpack_require__(130);
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(115);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__ = __webpack_require__(127);
 
-/**
- * This method is like `_.isArrayLike` except that it also checks if `value`
- * is an object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array-like object,
- *  else `false`.
- * @example
- *
- * _.isArrayLikeObject([1, 2, 3]);
- * // => true
- *
- * _.isArrayLikeObject(document.body.children);
- * // => true
- *
- * _.isArrayLikeObject('abc');
- * // => false
- *
- * _.isArrayLikeObject(_.noop);
- * // => false
- */
-function isArrayLikeObject(value) {
-  return isObjectLike(value) && isArrayLike(value);
+
+
+var $tree = $('#treeTeam');
+var team = $tree.data('team');
+
+var options = {
+    deleteNode: function deleteNode(node) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["a" /* removeCategory */](team, node);
+    },
+    addNode: function addNode(node, name) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["b" /* addCategory */](team, node, name);
+    },
+    renameNode: function renameNode(node, name) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["c" /* renameCategory */](team, node, name);
+    },
+    moveBefore: function moveBefore(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["d" /* moveBefore */](team, node, target);
+    },
+    moveAfter: function moveAfter(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["e" /* moveAfter */](team, node, target);
+    },
+    moveInto: function moveInto(node, target) {
+        return __WEBPACK_IMPORTED_MODULE_1__api_teamCategory__["f" /* moveInto */](team, node, target);
+    }
+};
+
+if ($tree.length) {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])($tree, options);
 }
-
-module.exports = isArrayLikeObject;
-
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports) {
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-module.exports = isLength;
-
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseDifference = __webpack_require__(85),
-    baseRest = __webpack_require__(91),
-    isArrayLikeObject = __webpack_require__(128);
-
-/**
- * Creates an array excluding all given values using
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * **Note:** Unlike `_.pull`, this method returns a new array.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Array
- * @param {Array} array The array to inspect.
- * @param {...*} [values] The values to exclude.
- * @returns {Array} Returns the new array of filtered values.
- * @see _.difference, _.xor
- * @example
- *
- * _.without([2, 1, 2, 3], 1, 2);
- * // => [3]
- */
-var without = baseRest(function(array, values) {
-  return isArrayLikeObject(array)
-    ? baseDifference(array, values)
-    : [];
-});
-
-module.exports = without;
-
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
 
 /***/ })
 /******/ ]);
