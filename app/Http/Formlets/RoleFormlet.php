@@ -10,6 +10,8 @@ use Illuminate\Support\Collection;
 use RS\Form\Fields\Input;
 use RS\Form\Formlet;
 
+//TODO: Actually USE the 'modify' vs 'view' values as stored in category_role.
+
 class RoleFormlet extends Formlet {
 	public $formView = "role.form";
 	/**

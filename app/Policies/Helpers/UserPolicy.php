@@ -12,10 +12,11 @@ use Illuminate\Support\Collection;
 class UserPolicy {
 
 	private $connection;
-
 	private $categories;
 	private $teams;
 	private $teamCategories;
+
+	//TODO: Actually USE the 'modify' vs 'view' values as stored in category_role.
 
 	public function __construct(Connection $connection) {
 		$this->teams = collect();
