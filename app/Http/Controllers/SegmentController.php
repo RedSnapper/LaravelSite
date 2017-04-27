@@ -67,7 +67,9 @@ class SegmentController extends Controller {
 		return $this->form->renderWith([
 		  'route'  => ['segment.update', $id],
 		  'method' => 'PUT'
-		])->with('title', "Edit Segment: {$this->form->getModel()->name}");
+		])
+			->with('category',"{$this->form->getModel()->category_id}")
+			->with('title', "Edit Segment: {$this->form->getModel()->name}");
 	}
 	
 	public function update($id) {

@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeds;
 
 use Illuminate\Support\Collection;
 use App\Models\Layout;

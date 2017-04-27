@@ -1,7 +1,9 @@
 <?php
+namespace Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Faker;
 
 /**
  * Part of form
@@ -21,8 +23,8 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('SEGMENTS',6);
 		$this->addGroup('LAYOUTS',4);
 		$this->addGroup('ACTIVITIES',7,['Activities','Layouts','Media','Roles','Segments','Teams','Users']);
-		$this->addGroup('MEDIA',4);
-		$this->addGroup('TEAMS',4);
+		$this->addGroup('MEDIA',3,['Source','Pre-Production','Post-Production']);
+		$this->addGroup('TEAMS',2,['Organisations','Agencies','Other']);
 	}
 
 	private function addGroup($name,$size = 3,array $names = []) {

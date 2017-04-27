@@ -17,15 +17,13 @@
                     </a>
                 </li>
             </ul>
-
+            <div data-v.contents="#document" />
             <div data-v.pagination="layouts.pagination" data-v.name="activities"/>
+            <div data-v.exists="category.id" class="well text-right">
+                <a data-v.url="/activity/create/?category={category.id}" class="btn btn-primary">New Activity</a>
+            </div>
 
         </div>
     </div>
-
-    <div class="well text-right">
-        <a data-v.url="/activity/create/?category={category.id}" class="btn btn-primary">New Activity</a>
-    </div>
-
 
 </div>

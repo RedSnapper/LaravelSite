@@ -36,6 +36,8 @@ class Navigation extends ViewController{
 			return;
 		}
 
+//		$userRoles = [3,4,5];
+//		$userTeams = Auth::user()->roleTeams()->wherePivotIn('role_id',$userRoles)->get();
 		$userTeams = Auth::user()->teams()->get();
 
 		$view->with('mediaTeams',$userTeams);
@@ -49,10 +51,12 @@ class Navigation extends ViewController{
 			$view->set("//*[@data-v.xp='logout']",$this->showLogoutForm());
 		}
 
-		$current = Route::current()->getName();
-		$view->set("//h:li[.//*[@data-v.route='$current']]/@class/child-gap()"," active");
-
-   		return $view;
+		$current = Route::current();
+		if(!is_null($current)) {
+			$name = $current->getName();
+			$view->set("//h:li[.//*[@data-v.route='$name']]/@class/child-gap()"," active");
+		}
+ 		return $view;
    }
 
 

@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="well text-right">
+    <div data-v.exists="category.id" class="well text-right">
         <a data-v.url="/segment/create/?category={category.id}" class="btn btn-primary">New Segment</a>
     </div>
     <div data-v.include="layouts.integrity" />

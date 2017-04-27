@@ -4,38 +4,42 @@ const api = axios.create({
     baseURL: '/api/team',
 });
 
-export const addCategory = (team,parent,name)=>{
+export const removeCategory = (team,nodeId)=>{
+    console.assert(typeof nodeId == 'number',nodeId);
+    return api.delete(`${team}/category/${nodeId}`);
+};
 
+export const addCategory = (team,parent,name)=>{
     return api.post(`${team}/category`,{
         parent,
         name
     });
 };
 
-export const removeCategory = (team,id)=>{
-    return api.delete(`${team}/category/${id}`);
-};
-
-export const renameCategory = (team,id,name)=>{
-    return api.put(`${team}/category/${id}`,{
+export const renameCategory = (team,nodeId,name)=>{
+    console.assert(typeof nodeId == 'number',nodeId);
+    return api.put(`${team}/category/${nodeId}`,{
         name
     });
 };
 
-export const moveInto = (team,id,node)=>{
-    return api.put(`${team}/category/${id}/moveInto`,{
+export const moveBefore = (team,nodeId,node)=>{
+    console.assert(typeof nodeId == 'number',nodeId);
+    return api.put(`${team}/category/${nodeId}/moveBefore`,{
         node
     });
 };
 
-export const moveBefore = (team,id,node)=>{
-    return api.put(`${team}/category/${id}/moveBefore`,{
+export const moveAfter = (team,nodeId,node)=>{
+    console.assert(typeof nodeId == 'number',nodeId);
+    return api.put(`${team}/category/${nodeId}/moveAfter`,{
         node
     });
 };
 
-export const moveAfter = (team,id,node)=>{
-    return api.put(`${team}/category/${id}/moveAfter`,{
+export const moveInto = (team,nodeId,node)=>{
+    console.assert(typeof nodeId == 'number',nodeId);
+    return api.put(`${team}/category/${nodeId}/moveInto`,{
         node
     });
 };

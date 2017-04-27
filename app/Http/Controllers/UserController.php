@@ -56,7 +56,7 @@ class UserController extends Controller {
 	 * @return View
 	 */
 	public function create($id = null) {
-		$this->authorize('USER_CREATE');
+		$this->authorize('USER_MODIFY');
 		return $this->form->renderWith(['route' => ['user.store']])
 		  ->with('title','New User');
 	}
@@ -81,7 +81,7 @@ class UserController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request) {
-		$this->authorize('USER_CREATE');
+		$this->authorize('USER_MODIFY');
 		$user = $this->form->store();
 		return redirect()->route('user.edit', $user->id);
 	}

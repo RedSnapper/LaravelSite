@@ -7,31 +7,17 @@ use App\Http\Formlets\MediaFormlet;
 use App\Models\Category;
 use App\Models\Media;
 use App\Models\Team;
-use App\Policies\Helpers\UserPolicy;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 class MediaController extends Controller {
 	/**
 	 * @var MediaFormlet
 	 */
 	private $form;
-	/**
-	 * @var UserPolicy
-	 */
-	private $userPolicy;
-	///**
-	// * @var CategoryController
-	// */
-	//private $categoryController;
 
-	public function __construct(MediaFormlet $form,UserPolicy $userPolicy) {
+	public function __construct(MediaFormlet $form) {
 		$this->form = $form;
 		$this->middleware('auth');
-//		$this->categoryController = $categoryController;
-//		public function getAvailableTeamCategories($user)
-		$this->userPolicy = $userPolicy;
 	}
 
 	/**
@@ -39,21 +25,21 @@ class MediaController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Team $team,Category $category) {
+	public function index(Team $team, Category $category) {
 
-		if (!$category->exists){
-			$this->authorize('MEDIA_ACCESS',$team);
-			return view("media.index",compact('team'));
+		if (!$category->exists) {
+			$this->authorize('MEDIA_ACCESS', $team);
+			return view("media.index", compact('team'));
 		}
 
-		$this->authorize('MEDIA_ACCESS',[$team,$category]);
+		$this->authorize('MEDIA_ACCESS', [$team, $category]);
 
 		$medias = Media::orderBy('name')
 			->team($team->id)
 			->category($category->id)
 			->paginate(10);
 
-		return view("media.index",compact('team','medias','category'));
+		return view("media.index", compact('team', 'medias', 'category'));
 	}
 
 	public function show(Media $medium) {
@@ -67,23 +53,19 @@ class MediaController extends Controller {
 		//return $response;
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 */
-	public function create(Request $request) {
-		$requestCategory = $request->get('category');
-		if (!is_null($requestCategory)) {
-			$category = Category::find($requestCategory);
-			$this->authorize('MEDIA_CREATE', $category);
-			if ($category->exists) {
-				$form = $this->form->create(['route' => 'media.store']);
-				$form->with('category',$category->id);
-				return $form->render()->with('title', 'New Categorised Media');
-			}
-		} else {
-			$this->authorize('MEDIA_CREATE');
+	public function create(Team $team, Category $category) {
+		if ($category->exists && $team->exists) {
+			$this->authorize('MEDIA_MODIFY', [$team, $category]);
+
 			$form = $this->form->create(['route' => 'media.store']);
-			return $form->render()->with('title', 'New Media');
+			$form
+				->with('category', $category)
+				->with('team', $team);
+
+			return $form->render()
+				->with('title', 'New Media')
+				->with('category', $category)
+				->with('team', $team);
 		}
 	}
 
@@ -107,17 +89,20 @@ class MediaController extends Controller {
 		// If we want model binding we need to use this name or change it
 		// in the routes file
 
-		$this->authorize('MEDIA_MODIFY',[$medium->category,$medium->team]);
+		$this->authorize('MEDIA_MODIFY', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		return $form->renderWith([
 			'route'  => ['media.update', $medium->id],
 			'method' => 'PUT'
-		])->with('media', $form->getModel());
+		])
+			->with('media', $medium)
+			->with('category', $medium->category)
+			->with('team', $medium->team);
 	}
 
 	public function update(Media $medium, MediaEditFormlet $form) {
 
-		$this->authorize('MEDIA_MODIFY',[$medium->category,$medium->team]);
+		$this->authorize('MEDIA_MODIFY', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		$media = $form->update();
 		return redirect()->route('media.edit', $media->id);

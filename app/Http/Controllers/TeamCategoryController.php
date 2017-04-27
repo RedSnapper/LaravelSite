@@ -56,21 +56,24 @@ class TeamCategoryController extends ApiController {
 	}
 
 	public function moveInto(Team $team, Category $category, Request $request) {
-		if ($this->treeController->moveInto($category, $request->get('node'), $this->allowsModify($team))) {
+		$node = $request->get('node');
+		if ($this->treeController->moveInto($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
 	}
 
 	public function moveBefore(Team $team, Category $category, Request $request) {
-		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify($team))) {
+		$node = $request->get('node');
+		if ($this->treeController->moveBefore($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
 	}
 
 	public function moveAfter(Team $team, Category $category, Request $request) {
-		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify($team))) {
+		$node = $request->get('node');
+		if ($this->treeController->moveBefore($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();

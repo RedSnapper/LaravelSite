@@ -34,7 +34,6 @@ class MediaEditFormlet extends Formlet {
 		$this->add($field->setLabel("Name")->setRequired(true));
 
 		$this->categoryHelper->field($this,'MEDIA');
-
 		$field = new Select('team_id', auth()->user()->teams()->pluck('name', 'id'));
 		$this->add(
 			$field->setLabel("Team")
@@ -49,7 +48,7 @@ class MediaEditFormlet extends Formlet {
 	}
 
 	public function edit(): Model {
-		return $this->model->saveMedia($this->fields(), $this->request->file('media'));;
+		return $this->model->saveMedia($this->fields(), $this->request->file('media'));
 	}
 
 	public function rules(): array {

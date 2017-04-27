@@ -12,24 +12,33 @@
             <div data-v.include="layouts.treemenu"/>
         </div>
 
-        <div class="col-md-6">
+        <div data-v.exists="team.id" class="col-md-9">
             <h2 data-v.child="category.name"/>
             <ul data-v.foreach="medias" data-v.name="media" class="list-group">
                 <li class="list-group-item">
-                    <a data-v.url="/media/{media.id}/edit">
-                        <img data-v.attr.src="{media.thumbnail}" />
-                        <span data-v.replace="media.name"/>
-                    </a>
+                    <div data-v.can="MEDIA_MODIFY" data-v.param="category;team">
+                        <a data-v.url="/media/{media.id}/edit">
+                            <img data-v.attr.src="{media.thumbnail}"/>
+                            <span data-v.replace="media.name"/>
+                        </a>
+                    </div>
+                    <div data-v.cannot="MEDIA_MODIFY" data-v.can="MEDIA_ACCESS" data-v.param="category;team">
+                        <a data-v.url="{media.image_path}">
+                            <img data-v.attr.src="{media.thumbnail}"/>
+                            <span data-v.replace="media.name"/>
+                        </a>
+                    </div>
                 </li>
             </ul>
-
+            <div data-v.contents="#document"/>
             <div data-v.pagination="layouts.pagination" data-v.name="medias"/>
-
+            <div data-v.exists="category">
+                <div data-v.can="MEDIA_MODIFY" data-v.param="category;team" class="well text-right">
+                    <a data-v.url="/media/create/{team.id}/{category.id}" class="btn btn-primary">New Media</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="well text-right">
-        <a data-v.url="/media/create/?category={category.id}" class="btn btn-primary">New Media</a>
-    </div>
 
 </div>

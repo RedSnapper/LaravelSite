@@ -28,10 +28,10 @@ class RoleController extends Controller {
 		$roles = Role::orderBy('name');
 		if ($category->exists) {
 			$roles->where('category_id', $category->id);
+			$roles =  $roles->paginate(10);
+			return view("role.index",compact('roles','category'));
 		}
-		$roles =  $roles->paginate(10);
-
-		return view("role.index",compact('roles','category'));
+		return view("role.index");
 	}
 
 	/**
@@ -65,7 +65,9 @@ class RoleController extends Controller {
 		return $this->form->renderWith([
 		  'route'  => ['role.update', $id],
 		  'method' => 'PUT'
-		])->with('title', "Edit Role: {$this->form->getModel('role')->name}");
+		])
+			->with('category',"{$this->form->getModel('role')->category_id}")
+			->with('title', "Edit Role: {$this->form->getModel('role')->name}");
 	}
 
 	public function update($id) {

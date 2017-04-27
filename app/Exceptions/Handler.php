@@ -3,8 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+//use Illuminate\Database\Eloquent\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -44,7 +48,17 @@ class Handler extends ExceptionHandler
 		 */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+			if ($exception instanceof AuthorizationException) {
+				return response()->view('errors.forbidden',["exception"=>$exception->getMessage()])->setStatusCode(403,"Forbidden");
+			}
+			if ($exception instanceof NotFoundHttpException) {
+				return response()->view('errors.notfound',["exception"=>$exception->getMessage()])->setStatusCode(404,"Not Found");
+			}
+			if ($exception instanceof ModelNotFoundException) {
+				return response()->view('errors.notfound',["exception"=>$exception->getMessage()])->setStatusCode(404,"Not Found");
+			}
+
+			return parent::render($request, $exception);
     }
 
     /**

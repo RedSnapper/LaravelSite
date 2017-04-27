@@ -1,12 +1,28 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-    <h1 data-v.child="media.name">Edit Media <span data-replace="media.id"/></h1>
-    <img data-v.attr.src="{media.thumbnail}" />
-    <a data-v.attr.href="{media.image_path}" >View full size</a>
-    <div class="row" data-v.container="form.form">
-        <div class="col-md-8">
-            <div data-v.replace="form"/>
-            <button class="btn btn-primary" type="submit">Edit Media</button>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Media</h1>
+            <div id="treeTeam"
+                 data-v.xp="tree"
+                 data-v.attr.data-link="/media/{team.id}"
+                 data-v.attr.data-url="/api/team/{team.id}/category?section=MEDIA"
+                 data-v.attr.data-team="{team.id}"
+            />
+            <div data-v.include="layouts.treemenu"/>
+        </div>
+        <div class="col-md-9" data-v.container="form.form">
+            <h1 data-v.child="media.name">Edit Media
+                <span data-replace="media.id"/>
+            </h1>
+            <img data-v.attr.src="{media.thumbnail}" />
+            <a data-v.attr.href="{media.image_path}">View full size</a>
+            <div class="row" data-v.container="form.form">
+                <div class="col-md-8">
+                    <div data-v.replace="form"/>
+                    <button class="btn btn-primary" type="submit">Save Edits</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

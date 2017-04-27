@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeds;
 
 use App\Models\Role;
 use App\Models\Category;
@@ -16,7 +17,8 @@ class RolesTableSeeder extends BaseTableSeeder {
 		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','category_id'=> $category]);
 		$category = Category::reference('Admin')->first()->id;
 		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'Editor','category_id'=> $category]);
-		$this->withJoins(3,1);
+		$category = Category::reference('Staff')->first()->id;
+		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'User','category_id'=> $category]);
 
 		$this->giveAccessToAllCategories();
 

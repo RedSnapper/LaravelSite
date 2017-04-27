@@ -1,3 +1,5 @@
+// teamCategory api.
+
 import tree from './base';
 import * as api from '../api/teamCategory';
 

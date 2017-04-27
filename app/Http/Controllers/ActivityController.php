@@ -29,10 +29,10 @@ class ActivityController extends Controller {
 		$activities = Activity::orderBy('name');
 		if ($category->exists) {
 			$activities->where('category_id', $category->id);
+			$activities =  $activities->paginate(10);
+			return view("activity.index",compact('activities','category'));
 		}
-		$activities =  $activities->paginate(10);
-
-		return view("activity.index",compact('activities','category'));
+		return view("activity.index");
 	}
 
 
@@ -65,7 +65,9 @@ class ActivityController extends Controller {
 		return $this->form->renderWith([
 			'route'  => ['activity.update', $id],
 			'method' => 'PUT'
-		])->with('title',"Edit Activity: {$this->form->getModel('activity')->name}");
+		])
+			->with('category',"{$this->form->getModel('activity')->category_id}")
+			->with('title',"Edit Activity: {$this->form->getModel('activity')->name}");
 	}
 
 	public function update($id) {

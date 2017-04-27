@@ -25,6 +25,20 @@ class MediaFormlet extends Formlet {
 		$this->categoryHelper = $categoryHelper;
 	}
 
+	private function doTeam() {
+		$model = $this->getModel();
+		if(is_null($model->team_id) ){
+			$team = $this->getData('team');
+			$model->setAttribute('team_id',is_a($team,Team::class) ? $team->id : $team);
+		}
+
+		$field = new Select('team_id', auth()->user()->teams()->pluck('name', 'id'));
+		$this->add(
+			$field->setLabel("Team")
+				->setPlaceholder("Please select a team")
+		);
+
+	}
 	/**
 	 * Prepare the form with fields
 	 *
@@ -36,13 +50,7 @@ class MediaFormlet extends Formlet {
 		$this->add($field->setLabel("Name")->setRequired(true));
 
 		$this->categoryHelper->field($this, 'MEDIA');
-
-		$field = new Select('team_id', auth()->user()->teams()->pluck('name', 'id'));
-		$this->add(
-		  $field->setLabel("Team")
-			->setPlaceholder("Please select a team")
-		  	//->setDefault($this->getData('team')->id)
-		);
+		$this->doTeam();
 
 		$field = new Input('file', 'media');
 		$this->add($field->setLabel("Media"));

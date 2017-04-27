@@ -27,7 +27,7 @@ const init = (selector,options)=>{
 
 const deleteNode = (node)=>{
 
-    settings.deleteNode(node);
+    settings.deleteNode(node.id);
 
     $tree.tree('removeNode',node);
 };

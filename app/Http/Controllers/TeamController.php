@@ -9,7 +9,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller {
-
 	/**
 	 * @var TeamFormlet
 	 */
@@ -28,10 +27,10 @@ class TeamController extends Controller {
 		$teams = Team::orderBy('name');
 		if ($category->exists) {
 			$teams->where('category_id', $category->id);
+			$teams = $teams->paginate(10);
+			return view("team.index", compact('teams', 'category'));
 		}
-		$teams =  $teams->paginate(10);
-
-		return view("team.index",compact('teams','category'));
+		return view("team.index");
 	}
 
 	/**
@@ -65,7 +64,9 @@ class TeamController extends Controller {
 		return $this->form->renderWith([
 			'route'  => ['team.update', $id],
 			'method' => 'PUT'
-		])->with('title', "Edit Team: {$this->form->getModel('team')->name}");
+		])
+			->with('category', "{$this->form->getModel('team')->category_id}")
+			->with('title', "Edit Team: {$this->form->getModel('team')->name}");
 	}
 
 	public function update($id) {
@@ -88,7 +89,4 @@ class TeamController extends Controller {
 	public function getCollection() {
 //		return $this->treeController->options($reference, $this->allowsView());
 	}
-
-
-
 }
