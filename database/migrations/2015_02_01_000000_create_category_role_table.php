@@ -16,6 +16,7 @@ class CreateCategoryRoleTable extends Migration
 		Schema::create('category_role', function (Blueprint $table) {
 			$table->integer('category_id')->unsigned();
 			$table->integer('role_id')->unsigned();
+			$table->boolean('modify')->default(true);
 
 			$table->foreign('category_id')
 			  ->references('id')

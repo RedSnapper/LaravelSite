@@ -29,7 +29,7 @@
                 <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Used</th>
+                        <th>Available</th>
                     </tr>
                 </thead>
                 <tbody data-v.foreach="form.categories" data-v.name="category">
