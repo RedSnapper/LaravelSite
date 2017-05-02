@@ -13,11 +13,9 @@ class RolesTableSeeder extends BaseTableSeeder {
 
 		$totalActivities = Activity::count();
 
-		$category = Category::reference('Super')->first()->id;
+		$category = Category::reference('General')->first()->id;
 		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','category_id'=> $category]);
-		$category = Category::reference('Admin')->first()->id;
 		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'Editor','category_id'=> $category]);
-		$category = Category::reference('Staff')->first()->id;
 		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'User','category_id'=> $category]);
 
 		$this->giveAccessToAllCategories();

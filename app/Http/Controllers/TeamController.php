@@ -87,6 +87,6 @@ class TeamController extends Controller {
 	}
 
 	public function getCollection() {
-//		return $this->treeController->options($reference, $this->allowsView());
+//		return $this->treeController->options($reference, $this->allowsAccess());
 	}
 }

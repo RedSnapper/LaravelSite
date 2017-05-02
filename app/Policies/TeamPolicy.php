@@ -31,7 +31,7 @@ class TeamPolicy {
 		$this->user = $user;
 	}
 
-	public function view(User $user, Team $team , Category $category) {
+	public function access(User $user, Team $team , Category $category) {
 		return $this->user->hasTeamCategory($user,$team, $category, UserPolicy::CAN_ACCESS );
 	}
 
@@ -42,14 +42,17 @@ class TeamPolicy {
 	public function __call($activity, $arguments) {
 
 		list($user, $team, $category, $modify) = array_pad($arguments, 4, null);
-
-		$hasTeamActivity = $this->user->hasTeamActivity($user, $team, $activity);
-
-		if (is_null($category)) {
-			return $hasTeamActivity;
+		if(is_null($modify)) {
+			$bits = explode('_',$activity);
+			$modify = $bits[1] && $bits[1] === 'MODIFY' ? UserPolicy::CAN_MODIFY : UserPolicy::CAN_ACCESS;
 		}
 
-		return $hasTeamActivity && $this->user->hasTeamCategory($user, $team, $category, $modify ?? UserPolicy::CAN_ACCESS);
+		if (is_null($category)) {
+			return $this->user->hasTeam($user, $team, $activity);
+		} else {
+			return $this->user->hasTeamCategory($user, $team, $category, $modify ?? UserPolicy::CAN_ACCESS);
+		}
+
 	}
 
 }

@@ -32,7 +32,7 @@ class CategoryController extends ApiController {
 	}
 
 	public function getCollection(string $reference) {
-		return $this->treeController->options($reference, $this->allowsView());
+		return $this->treeController->options($reference, $this->allowsAccess());
 	}
 
 	public function getIds(string $reference){
@@ -40,7 +40,7 @@ class CategoryController extends ApiController {
 	}
 
 	public function index(Request $request) {
-		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsView());
+		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsAccess());
 	}
 
 	public function store(Request $request) {
@@ -99,13 +99,13 @@ class CategoryController extends ApiController {
 
 	private function allowsModify() {
 		return function (Category $category) {
-			return Gate::allows('modify', $category);
+			return Gate::allows('MODIFY', $category);
 		};
 	}
 
-	private function allowsView() {
+	private function allowsAccess() {
 		return function (Category $category) {
-			return Gate::allows('view', $category);
+			return Gate::allows('ACCESS', $category);
 		};
 	}
 }

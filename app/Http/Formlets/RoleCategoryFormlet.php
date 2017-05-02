@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 
+use App\Policies\Helpers\UserPolicy;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
@@ -14,8 +15,12 @@ class RoleCategoryFormlet extends Formlet {
 	 * @return void
 	 */
 	public function prepareForm() {
-		$select = new Select('modify', ['0' => 'Access', '1' => 'Modify', '2' => 'Inherit']);
-		$this->add($select->setDefault(2));
+		$select = new Select('modify', [
+			UserPolicy::CAN_ACCESS => 'Access',
+			UserPolicy::CAN_MODIFY => 'Modify',
+			UserPolicy::INHERITING => 'Inherit',
+			UserPolicy::NIL_ACCESS => 'None'
+		]);
+		$this->add($select->setDefault(UserPolicy::INHERITING));
 	}
-
 }

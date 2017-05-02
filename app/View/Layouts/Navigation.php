@@ -4,18 +4,13 @@ namespace App\View\Layouts;
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\LogoutForm;
-use App\Models\Team;
-use App\Models\User;
-use App\Policies\Helpers\UserPolicy;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use RS\NView\Document;
 use RS\NView\View;
 use RS\NView\ViewController;
 
-class Navigation extends ViewController{
-
+class Navigation extends ViewController {
 	/**
 	 * @var LogoutForm
 	 */
@@ -31,38 +26,28 @@ class Navigation extends ViewController{
 	}
 
 	public function compose(View $view) {
-
-		if(!Auth::check()){
+		if (!Auth::check()) {
 			return;
 		}
-
-//		$userRoles = [3,4,5];
-//		$userTeams = Auth::user()->roleTeams()->wherePivotIn('role_id',$userRoles)->get();
-		$userTeams = Auth::user()->teams()->get();
-
-		$view->with('mediaTeams',$userTeams);
 	}
 
-	public function render(Document $view,array $data): Document {
-   		$view->set("//*[@data-v.xp='app']/child-gap()",config('app.name'));
+	public function render(Document $view, array $data): Document {
+		$view->set("//*[@data-v.xp='app']/child-gap()", config('app.name'));
 
-   		if(!Auth::guest()){
-			$view->set("//*[@data-v.xp='username']",Auth::user()->name);
-			$view->set("//*[@data-v.xp='logout']",$this->showLogoutForm());
+		if (!Auth::guest()) {
+			$view->set("//*[@data-v.xp='username']", Auth::user()->name);
+			$view->set("//*[@data-v.xp='logout']", $this->showLogoutForm());
 		}
 
 		$current = Route::current();
-		if(!is_null($current)) {
+		if (!is_null($current)) {
 			$name = $current->getName();
-			$view->set("//h:li[.//*[@data-v.route='$name']]/@class/child-gap()"," active");
+			$view->set("//h:li[.//*[@data-v.route='$name']]/@class/child-gap()", " active");
 		}
- 		return $view;
-   }
-
-
-	protected function showLogoutForm(){
-		return $this->form->create(['route'=>'logout','class'=>'dropdown__form'])->render();
+		return $view;
 	}
 
-
+	protected function showLogoutForm() {
+		return $this->form->create(['route' => 'logout', 'class' => 'dropdown__form'])->render();
+	}
 }

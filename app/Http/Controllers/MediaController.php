@@ -28,11 +28,11 @@ class MediaController extends Controller {
 	public function index(Team $team, Category $category) {
 
 		if (!$category->exists) {
-			$this->authorize('MEDIA_ACCESS', $team);
+			$this->authorize('MEDIA_ACCESS');
 			return view("media.index", compact('team'));
 		}
 
-		$this->authorize('MEDIA_ACCESS', [$team, $category]);
+		$this->authorize('access',[$team, $category]);
 
 		$medias = Media::orderBy('name')
 			->team($team->id)
@@ -55,7 +55,7 @@ class MediaController extends Controller {
 
 	public function create(Team $team, Category $category) {
 		if ($category->exists && $team->exists) {
-			$this->authorize('MEDIA_MODIFY', [$team, $category]);
+			$this->authorize('access', [$team, $category]);
 
 			$form = $this->form->create(['route' => 'media.store']);
 			$form
@@ -89,7 +89,7 @@ class MediaController extends Controller {
 		// If we want model binding we need to use this name or change it
 		// in the routes file
 
-		$this->authorize('MEDIA_MODIFY', [$medium->category, $medium->team]);
+		$this->authorize('modify', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		return $form->renderWith([
 			'route'  => ['media.update', $medium->id],
@@ -102,7 +102,7 @@ class MediaController extends Controller {
 
 	public function update(Media $medium, MediaEditFormlet $form) {
 
-		$this->authorize('MEDIA_MODIFY', [$medium->category, $medium->team]);
+		$this->authorize('modify', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		$media = $form->update();
 		return redirect()->route('media.edit', $media->id);

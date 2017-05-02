@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
+//TODO:: Add a flag distinguishing between team-role and general role...
+//It's just going to be far easier to separate them out.
+
 class Role extends Model
 {
 	protected $fillable = [

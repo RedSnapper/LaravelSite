@@ -13,6 +13,6 @@ class CategoryValidator {
 	public function validate($attribute, $value, $parameters, $validator) {
 		$category = Category::find($value);
 		if(is_null($category)) { return false; }
-		return Gate::allows('view',$category);
+		return Gate::allows('access',$category);
 	}
 }

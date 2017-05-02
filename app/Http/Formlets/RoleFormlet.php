@@ -5,6 +5,7 @@ namespace App\Http\Formlets;
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Category;
 use App\Models\Role;
+use App\Policies\Helpers\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use RS\Form\Fields\Input;
@@ -53,7 +54,7 @@ class RoleFormlet extends Formlet {
 		$closure = function (Collection $collection): Collection {
 			return $collection->filter(
 				function ($array) {
-					return ((int)$array['modify'] !== 2);
+					return ((int)$array['modify'] !== UserPolicy::INHERITING);
 				}
 			);
 		};

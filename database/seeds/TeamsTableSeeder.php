@@ -16,10 +16,8 @@ class TeamsTableSeeder extends BaseTableSeeder {
 
 	public function run() {
 		$devCategory = Category::reference('Organisations')->first()->id;
-		$this->withJoins(1,3,['name'=>'Otsuka Staff','category_id'=> $devCategory]);
-		$devCategory = Category::reference('Agencies')->first()->id;
-		$this->withJoins(1,3,['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
-		$devCategory = Category::reference('Other')->first()->id;
+		$this->withJoins(1,1,['name'=>'Otsuka Staff','category_id'=> $devCategory]);
+		$this->withJoins(1,1,['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
 		$this->withJoins(1,1,['name'=>'Freelancers','category_id'=> $devCategory]);
 	}
 

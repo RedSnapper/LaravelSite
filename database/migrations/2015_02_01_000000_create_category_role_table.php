@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Policies\Helpers\UserPolicy;
 
 class CreateCategoryRoleTable extends Migration
 {
@@ -16,7 +17,7 @@ class CreateCategoryRoleTable extends Migration
 		Schema::create('category_role', function (Blueprint $table) {
 			$table->integer('category_id')->unsigned();
 			$table->integer('role_id')->unsigned();
-			$table->boolean('modify')->default(true);
+			$table->unsignedTinyInteger('modify')->default(UserPolicy::INHERITING);
 
 			$table->foreign('category_id')
 			  ->references('id')

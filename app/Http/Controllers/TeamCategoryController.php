@@ -30,7 +30,7 @@ class TeamCategoryController extends ApiController {
 
 
 	public function index(Team $team,Request $request) {
-		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsView($team));
+		return $this->treeController->branch($request->get('section', "ROOT"), $this->allowsAccess($team));
 	}
 
 	public function store(Team $team,Request $request) {
@@ -94,9 +94,9 @@ class TeamCategoryController extends ApiController {
 		};
 	}
 
-	private function allowsView(Team $team) {
+	private function allowsAccess(Team $team) {
 		return function (Category $category) use ($team) {
-			return Gate::allows('view', [$team, $category]);
+			return Gate::allows('access', [$team, $category]);
 		};
 	}
 }

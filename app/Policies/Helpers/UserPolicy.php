@@ -15,8 +15,10 @@ class UserPolicy {
 	private $teams;
 	private $teamCategories;
 	private static $userPolicy; //static reference to this.
-	const CAN_ACCESS = 0;
-	const CAN_MODIFY = 1;
+	const INHERITING = 2;
+	const CAN_ACCESS = 4;
+	const CAN_MODIFY = 5;
+	const NIL_ACCESS = 3;
 
 	public function __construct(Connection $connection) {
 		$this->teams = collect();
@@ -60,12 +62,12 @@ class UserPolicy {
 
 		$this->loadTeams($user);
 
-		try {
-			$permission = $this->teams->get($user->id)->get($team)->get($activity);
-			return !is_null($permission);
-		} catch (\Exception $e) {
-			return false;
-		}
+		$userPermissions = $this->teams->get($user->id);
+		if(is_null($userPermissions)) return false;
+		$userTeamPermissions = $userPermissions->get($team);
+		if(is_null($userTeamPermissions)) return false;
+		$permission = $userTeamPermissions->get($activity);
+		return !is_null($permission);
 	}
 
 	/**
@@ -84,7 +86,7 @@ class UserPolicy {
 
 		try {
 			$permission = $this->teamCategories->get($user->id)->get($team)->get($category);
-			return $permission->modify >= $access;
+			return ($permission->modify >= $access);
 		} catch (\Exception $e) {
 			return false;
 		}
@@ -126,6 +128,7 @@ class UserPolicy {
 			->join('role_team_user', 'category_role.role_id', 'role_team_user.role_id')
 			->where('role_team_user.user_id', $user)
 			->groupBy(['team', 'category']);
+//		dd($query->toSql());
 		$teams = $query->get()->groupBy('team');
 		foreach ($teams as $id => $team) {
 			$teams[$id] = $team->keyBy('category');
@@ -138,26 +141,43 @@ class UserPolicy {
 	 * @return Collection
 	 */
 	protected function getAvailableTeams($user): Collection {
-		$user = $this->getUserID($user);
+		$userID = $this->getUserID($user);
+		//The following deals with hard activities.
 		$query = $this->connection->table('role_team_user as rtu')->select([
 			'rtu.team_id as team',
 			'a.name as activity'
 		])
 			->join('activity_role as ar', 'ar.role_id', 'rtu.role_id')
 			->join('activities as a', 'a.id', 'ar.activity_id')
-			->where('rtu.user_id', $user);
+			->where('rtu.user_id', $userID);
 		$teams = $query->get()->groupBy('team');
 
+		$teamIds = $user->teams()->get()->keyBy('id');
 		//now we need to get derived accesses...
 		foreach (Category::sections()->get() as $section) {
 			$category = $section->id;
-			foreach ($teams as $id => $team) {
+			foreach ($teamIds as $id => $team) {
 				$activity = $section->name . '_';
-				$userTeamCat = $this->teamCategories->get($user)->get($id);
+				$userTeamCat = $this->teamCategories->get($user->id)->get($id);
 				if(!is_null($userTeamCat)) {
-					$teams[$id]->push((object)['team'=>$id,'activity'=>$activity."ACCESS"]);
-					if($userTeamCat->get($category)->modify == UserPolicy::CAN_MODIFY ) {
-						$teams[$id]->push((object)['team'=>$id,'activity'=>$activity."MODIFY"]);
+
+					//Section levels are complex. we want them to represent access only, but inheritance is a tricky bugger here.
+					//if($userTeamCat->get($category) && $userTeamCat->get($category)->modify == UserPolicy::CAN_MODIFY ) {
+					//	$accessItem = (object)['team'=>$id,'activity'=>$activity."ACCESS"];
+					//	if(!$teams->has($id)) {
+					//		$teams->put($id,collect());
+					//	}
+					//	$teams[$id]->push($accessItem);
+					//}
+
+					$accessItem = (object)['team'=>$id,'activity'=>$activity."ACCESS"];
+					$modifyItem = (object)['team'=>$id,'activity'=>$activity."MODIFY"];
+					if(!$teams->has($id)) {
+						$teams->put($id,collect());
+					}
+					$teams[$id]->push($accessItem);
+					if($userTeamCat->get($category) && $userTeamCat->get($category)->modify == UserPolicy::CAN_MODIFY ) {
+						$teams[$id]->push($modifyItem);
 					}
 				}
 			}
@@ -208,7 +228,7 @@ class UserPolicy {
 	protected function loadTeams(User $user) {
 		$this->loadTeamCategories($user);
 		if (!$this->teams->has($user->id)) {
-			$this->teams->put($user->id, $this->getAvailableTeams($user->id));
+			$this->teams->put($user->id, $this->getAvailableTeams($user));
 		}
 	}
 
