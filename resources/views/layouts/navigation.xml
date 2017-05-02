@@ -38,13 +38,13 @@
                             <li data-v.can="USER_ACCESS" >
                                 <a data-v.route="user.index">Users</a>
                             </li>
-                            <li data-v.can="TEAM_ACCESS">
+                            <li data-v.can="TEAMS_ACCESS">
                                 <a data-v.route="team.index">Teams</a>
                             </li>
-                            <li data-v.can="ROLE_ACCESS">
+                            <li data-v.can="ROLES_ACCESS">
                                 <a data-v.route="role.index">Roles</a>
                             </li>
-                            <li data-v.can="ACTIVITY_ACCESS">
+                            <li data-v.can="ACTIVITIES_ACCESS">
                                 <a data-v.route="activity.index">Activities</a>
                             </li>
                         </ul>

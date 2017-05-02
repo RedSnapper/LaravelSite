@@ -32,16 +32,16 @@ class TeamPolicy {
 	}
 
 	public function view(User $user, Team $team , Category $category) {
-		return $this->user->hasTeamCategory($user,$team, $category);
+		return $this->user->hasTeamCategory($user,$team, $category, UserPolicy::CAN_ACCESS );
 	}
 
 	public function modify(User $user, Team $team , Category $category) {
-		return $this->user->hasTeamCategory($user,$team, $category);
+		return $this->user->hasTeamCategory($user,$team, $category, UserPolicy::CAN_MODIFY );
 	}
 
 	public function __call($activity, $arguments) {
 
-		list($user, $team, $category) = array_pad($arguments, 3, null);
+		list($user, $team, $category, $modify) = array_pad($arguments, 4, null);
 
 		$hasTeamActivity = $this->user->hasTeamActivity($user, $team, $activity);
 
@@ -49,7 +49,7 @@ class TeamPolicy {
 			return $hasTeamActivity;
 		}
 
-		return $hasTeamActivity && $this->user->hasTeamCategory($user, $team, $category);
+		return $hasTeamActivity && $this->user->hasTeamCategory($user, $team, $category, $modify ?? UserPolicy::CAN_ACCESS);
 	}
 
 }

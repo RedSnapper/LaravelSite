@@ -29,23 +29,19 @@ class CategoryPolicy {
 	}
 
 	public function view(User $user, Category $category) {
-		return $this->user->hasCategory($user, $category);
+		return $this->user->hasCategory($user, $category, UserPolicy::CAN_ACCESS);
 	}
 
 	public function modify(User $user, Category $category) {
-		return $this->user->hasCategory($user, $category);
+		return $this->user->hasCategory($user, $category, UserPolicy::CAN_MODIFY);
 	}
 
 	public function __call($activity, $arguments) {
-
-		list($user, $category, $team) = array_pad($arguments, 3, null);
-
+		list($user, $category, $team , $modify) = array_pad($arguments, 4, null);
 		if (is_null($team)) {
 			return Gate::allows($activity) && $this->user->hasCategory($user, $category);
 		}
-
-		return $this->user->hasTeamActivity($user, $team, $activity) && $this->user->hasTeamCategory($user, $team, $category);
-
+		return $this->user->hasTeamActivity($user, $team, $activity) && $this->user->hasTeamCategory($user, $team, $category , $modify ?? UserPolicy::CAN_ACCESS);
 	}
 
 }

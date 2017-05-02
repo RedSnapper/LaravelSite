@@ -12,9 +12,6 @@ class Team extends Model {
 		'category_id'
 	];
 
-	protected function canUpdate(Team $team){
-		return Gate::allows('update', $team);
-	}
 
 	public function category() {
 		return $this->belongsTo(Category::class);

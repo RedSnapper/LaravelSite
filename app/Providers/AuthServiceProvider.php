@@ -30,14 +30,15 @@ class AuthServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot(GateContract $gate) {
-		$this->registerPolicies();
-		if ($this->canRegisterGates()) {
-			$this->registerGates($gate);
-		}
-
 		$this->app->singleton(UserPolicy::class, function ($app) {
 			return new UserPolicy($app->make(Connection::class));
 		});
+
+		$this->registerPolicies();
+		if ($this->canRegisterGates()) {
+			$this->registerGates($gate,$this->app->make(UserPolicy::class));
+		}
+
 	}
 
 	protected function canRegisterGates(): bool {
@@ -51,16 +52,29 @@ class AuthServiceProvider extends ServiceProvider {
 		return Schema::hasTable('activity_role');
 	}
 
-	protected function registerGates(GateContract $gate) {
+	protected function registerGates(GateContract $gate, UserPolicy $userPolicy) {
 		foreach ($this->getActivities() as $activity) {
 			$gate->define($activity->name, function ($user) use ($activity) {
 				return $user->hasRole($activity->roles);
 			});
 		}
+		foreach ($this->getSections() as $section) {
+			$gate->define($section->name . '_ACCESS', function ($user) use ($userPolicy,$section) {
+				return $userPolicy->hasCategory($user,$section->id,UserPolicy::CAN_ACCESS);
+			});
+			$gate->define($section->name . '_MODIFY', function ($user) use ($userPolicy,$section) {
+				return $userPolicy->hasCategory($user,$section->id,UserPolicy::CAN_MODIFY);
+			});
+		}
+
 	}
 
 	protected function getActivities() {
 		return Activity::with('roles')->get();
+	}
+
+	protected function getSections() {
+		return Category::sections()->get();
 	}
 
 }

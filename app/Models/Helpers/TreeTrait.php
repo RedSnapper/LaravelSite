@@ -55,6 +55,10 @@ trait TreeTrait {
 		return $query->where('name', $reference)->where('section', true);
 	}
 
+	public function scopeSections(Builder $query) {
+		return $query->where('idx','!=','1')->where('section', true);
+	}
+
 	public function scopeParent(Builder $query) {
 		return $query->where('idx', $this->parent);
 	}

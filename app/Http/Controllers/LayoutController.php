@@ -27,7 +27,7 @@ class LayoutController extends Controller {
 	 */
 	public function index(Category $category) {
 		if ($category->exists) {
-			if (Gate::allows('LAYOUT_ACCESS',$category)) {
+			if (Gate::allows('LAYOUTS_ACCESS',$category)) {
 				$layouts = Layout::orderBy('name');
 				if ($category->exists) {
 					$layouts->where('category_id', $category->id);
@@ -35,7 +35,7 @@ class LayoutController extends Controller {
 				$layouts = []; //$layouts->paginate(10);
 			}
 		} else {
-			if (Gate::allows('LAYOUT_ACCESS')) {
+			if (Gate::allows('LAYOUTS_ACCESS')) {
 				$layouts = []; //$layouts->paginate(10);
 			}
 		}

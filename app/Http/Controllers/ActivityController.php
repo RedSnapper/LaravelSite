@@ -16,7 +16,7 @@ class ActivityController extends Controller {
 	private $form;
 
 	public function __construct(ActivityFormlet $form) {
-		$this->middleware('can:ACTIVITY_ACCESS');
+		$this->middleware('can:ACTIVITIES_ACCESS');
 		$this->form = $form;
 	}
 
