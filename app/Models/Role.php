@@ -2,26 +2,20 @@
 
 namespace App\Models;
 
+use App\Policies\Helpers\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-//TODO:: Add a flag distinguishing between team-role and general role...
-//It's just going to be far easier to separate them out.
 
 class Role extends Model
 {
 	protected $fillable = [
-		'name','category_id'
+		'name','category_id','team_based'
 	];
 
 	public function category() {
 		return $this->belongsTo(Category::class);
 	}
-
-	public function mm() {
-		return $this->users($team);
-	}
-
 
 	public function activities() {
 		return $this->belongsToMany(Activity::class);
@@ -30,7 +24,6 @@ class Role extends Model
 	public function users() {
 		return $this->belongsToMany(User::class);
 	}
-
 
 	public function teamUsers(int $team) {
 		return $this->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
@@ -48,12 +41,12 @@ class Role extends Model
 		return $this->activities()->save($activity);
 	}
 
-	public function givePermissionToCategory(Category $category){
-		return $this->categories()->save($category);
+	public function givePermissionToCategory(Category $category,int $modify = UserPolicy::CAN_ACCESS){
+		return $this->categories()->save($category,['modify'=>$modify]);
 	}
 
-	public static function options(Collection $categories = null) {
-		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');
+	public static function options(Collection $categories = null,bool $forTeams = true) {
+		return with(new static)->whereIn('category_id',$categories)->where('team_based','=',$forTeams)->pluck('name','id');
 	}
 
 

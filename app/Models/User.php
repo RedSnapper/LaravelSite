@@ -42,12 +42,6 @@ class User extends Authenticatable {
 		return $this->hasOne(UserProfile::class);
 	}
 
-	/**
-	 * many-many relations Roles for a User.
-	 **/
-	public function mm() {
-		return $this->roles();
-	}
 
 	public function roles() {
 		return $this->belongsToMany(Role::class);

@@ -14,7 +14,7 @@ class CreateRolesTable extends Migration {
 		Schema::create('roles', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
-
+			$table->boolean('team_based')->default(false);
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');

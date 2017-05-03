@@ -2,53 +2,33 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Category;
 use App\Models\Role;
 use App\Policies\Helpers\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use RS\Form\Fields\Input;
 use RS\Form\Formlet;
-
-//TODO: Actually USE the 'modify' vs 'view' values as stored in category_role.
 
 class RoleFormlet extends Formlet {
 	public $formView = "role.form";
-	/**
-	 * @var CategoryHelper
-	 */
-	private $categoryHelper;
 
-	public function __construct(Role $role, CategoryHelper $categoryHelper) {
+	public function __construct(Role $role) {
 		$this->setModel($role);
-		$this->categoryHelper = $categoryHelper;
 	}
 
+	/**
+	 * TODO: The base checkbox failed:- it is always returning true. So FTM changed this to a pure composite.
+	 */
 	public function prepareForm() {
-		$field = new Input('text', 'name');
-		$this->add(
-			$field->setLabel('Name')->setRequired()
-		);
-
-		$this->categoryHelper->field($this, 'ROLES');
-
+		$this->addFormlet('role',RoleRecordFormlet::class)->setModel($this->model);
 		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
-
 		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories()->withPivot('modify'), Category::ordered()->get());
 	}
 
-	public function rules(): array {
-		return [
-			'name'        => 'required|max:255',
-			'category_id' => 'required|category'
-		];
-	}
 
 	public function edit(): Model {
 
-		$role = parent::edit();
-
+		$role = $this->getFormlet('role')->edit();
 		$role->activities()->sync($this->getSubscriberFields('activities'));
 
 		$closure = function (Collection $collection): Collection {
@@ -58,7 +38,6 @@ class RoleFormlet extends Formlet {
 				}
 			);
 		};
-
 		$catSubs = $this->getSubscriberFields('categories', 'modify', $closure);
 		$role->categories()->sync($catSubs);
 		return $role;

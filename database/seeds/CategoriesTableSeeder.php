@@ -19,29 +19,21 @@ class CategoriesTableSeeder extends Seeder  {
 
 		//Do ROOT node first.
 		factory(Category::class,1)->create(['id'=>1,'idx'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT','section'=>true]);
-		$this->addGroup('ROLES',1,['General','Team']);
-		$this->addGroup('SEGMENTS',2);
-		$this->addGroup('LAYOUTS',2);
-		$this->addGroup('ACTIVITIES',1,['Control']);
-		$this->addGroup('MEDIA',2,['Source','Pre-Production','Post-Production']);
-		$this->addGroup('TEAMS',2,['Organisations','Agencies','Other']);
+		$this->addGroup('ROLES',['General','Team']);
+		$this->addGroup('SEGMENTS',['Segments']);
+		$this->addGroup('LAYOUTS',['Layouts']);
+		$this->addGroup('ACTIVITIES',['Control']);
+		$this->addGroup('MEDIA',['Source','Pre-Production','Post-Production']);
+		$this->addGroup('TEAMS',['Organisations','Agencies','Other']);
 	}
 
-	private function addGroup($name,$size = 3,array $names = []) {
-		$size = max($size,count($names));
+	private function addGroup($name,array $names = []) {
+		$size = count($names);
 		factory(Category::class,1)->create(['parent'=>1,'name'=>$name,'section'=>true]);
 		$this->nodeCount++;
 		$branchRoot = $this->nodeCount;
-		$branchSize = $branchRoot + $size; //so this is the number of categories under this branch, excluding local root.
-		$name = count($names) == 0 ? ucfirst(strtolower($name)) : $names[0]; //the first name by $names[0] or via groupName.
-		$this->addNode($branchRoot,$name);
-		$branchNodes = min($size,max(3,count($names) - 1)); //one of the names was used for the first category.
-		for($i = 0; $i < $branchNodes; $i++) {
-			$this->addNode($branchRoot,@$names[$branchSize - $this->nodeCount]);
-		}
-//add the rest randomly.
-		while($this->nodeCount < $branchSize) {
-			$this->addNode(mt_rand($branchRoot,$this->nodeCount),@$names[$branchSize - $this->nodeCount]);
+		for($i = 0; $i < $size; $i++) {
+			$this->addNode($branchRoot,$names[$i]);
 		}
 	}
 

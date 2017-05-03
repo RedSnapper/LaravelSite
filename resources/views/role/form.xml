@@ -11,7 +11,7 @@
 
         <div class="col-md-8" data-v.container="form.form">
             <h1 data-v.child="title"/>
-            <div data-v.replace="form.base"/>
+            <div data-v.replace="form.role"/>
 
             <table class="table">
                 <thead>

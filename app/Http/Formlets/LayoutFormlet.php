@@ -13,7 +13,6 @@ use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
 
-	private $categoryController;
 	/**
 	 * @var CategoryHelper
 	 */

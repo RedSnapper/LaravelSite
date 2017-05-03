@@ -5,6 +5,7 @@ use App\Models\Role;
 use App\Models\Category;
 use App\Models\Activity;
 use App\Models\User;
+use App\Policies\Helpers\UserPolicy;
 use Illuminate\Support\Collection;
 
 class RolesTableSeeder extends BaseTableSeeder {
@@ -12,11 +13,10 @@ class RolesTableSeeder extends BaseTableSeeder {
 	public function run() {
 
 		$totalActivities = Activity::count();
-
+//		intdiv($totalActivities,2)
 		$category = Category::reference('General')->first()->id;
-		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','category_id'=> $category]);
-		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'Editor','category_id'=> $category]);
-		$this->withJoins(1,intdiv($totalActivities, 2),['name'=>'User','category_id'=> $category]);
+		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','team_based'=>false,'category_id'=> $category]);
+		$this->withJoins(1,0,['name'=>'User','team_based'=>false,'category_id'=> $category]);
 
 		$this->giveAccessToAllCategories();
 
@@ -40,7 +40,7 @@ class RolesTableSeeder extends BaseTableSeeder {
 	//Give superuser access to all categories
 	protected function giveAccessToAllCategories(){
 		$category = Category::section('ROOT')->first();
-		Role::first()->givePermissionToCategory($category);
+		Role::first()->givePermissionToCategory($category,UserPolicy::CAN_MODIFY);
 	}
 
 
