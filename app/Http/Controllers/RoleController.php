@@ -40,9 +40,7 @@ class RoleController extends Controller {
 	 *
 	 * @return View
 	 */
-	public function create(Request $request) {
-		$category = $request->get('category', '');
-		$form = $this->form->create(['route' => 'role.store']);
+	public function create(Category $category) {$form = $this->form->create(['route' => 'role.store']);
 		$form->with('category', $category);
 		return $form->render()->with('title', 'New Role');
 	}

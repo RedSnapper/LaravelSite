@@ -20,7 +20,7 @@
             <div data-v.contents="#document" />
             <div data-v.pagination="layouts.pagination" data-v.name="roles"/>
             <div data-v.exists="category.id" class="well text-right">
-                <a data-v.url="/role/create/?category={category.id}" class="btn btn-primary">New Role</a>
+                <a data-v.url="/role/create/{category.id}" class="btn btn-primary">New Role</a>
             </div>
 
         </div>

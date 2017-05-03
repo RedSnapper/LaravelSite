@@ -84,12 +84,17 @@ class UserPolicy {
 
 		$this->loadTeamCategories($user);
 
-		try {
-			$permission = $this->teamCategories->get($user->id)->get($team)->get($category);
-			return ($permission->modify >= $access);
-		} catch (\Exception $e) {
-			return false;
-		}
+		$userPermissions = $this->teamCategories->get($user->id);
+		if(is_null($userPermissions)) return false;
+
+		$userTeamPermissions = $userPermissions->get($team);
+		if(is_null($userTeamPermissions)) return false;
+
+		$permission = $userTeamPermissions->get($category);
+		return !is_null($permission);
+		return ($permission->modify >= $access);
+
+
 	}
 
 	/**

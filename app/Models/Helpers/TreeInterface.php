@@ -17,10 +17,6 @@ interface TreeInterface {
 
 	public function scopeChildren(Builder $query);
 
-//	public function createNode(int $parent = null, string $name) : TreeInterface;
-
-//	public function moveTo(TreeInterface $parentId = null,int $indexReplace = null);
-
 	public function moveAfter(TreeInterface $sibling);
 
 	public function moveBefore(TreeInterface $sibling,TreeInterface $parent);

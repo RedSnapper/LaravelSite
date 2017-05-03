@@ -18,6 +18,7 @@ class RoleFormlet extends Formlet {
 
 	/**
 	 * TODO: The base checkbox failed:- it is always returning true. So FTM changed this to a pure composite.
+	 * ..and that made no difference at all.
 	 */
 	public function prepareForm() {
 		$this->addFormlet('role',RoleRecordFormlet::class)->setModel($this->model);

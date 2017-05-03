@@ -32,6 +32,7 @@ Route::get('layout/{category?}', 'LayoutController@index')->name('layout.index')
 //Roles;
 Route::resource('/role','RoleController', ['except' => 'show']);
 Route::get('role/{category?}', 'RoleController@index')->name('role.index');
+Route::get('role/create/{category?}', 'RoleController@create')->name('role.create');
 
 //Segments
 Route::resource('/segment','SegmentController', ['except' => 'show']);

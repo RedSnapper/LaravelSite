@@ -13,7 +13,6 @@ use RS\Form\Fields\Radio;
 use RS\Form\Formlet;
 
 class RoleRecordFormlet extends Formlet {
-
 	/**
 	 * @var CategoryHelper
 	 */
@@ -41,3 +40,4 @@ class RoleRecordFormlet extends Formlet {
 	}
 
 }
+

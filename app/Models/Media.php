@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Helpers\VersionsInterface;
+use App\Models\Helpers\VersionsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Laravel\Scout\Searchable;
 
-class Media extends Model {
+class Media extends Model implements VersionsInterface {
 
+	use VersionsTrait;
 	use Searchable;
+
 
 	protected $with = ['team','category'];
 
@@ -18,6 +22,9 @@ class Media extends Model {
 	 * @var array
 	 */
 	protected $fillable = ['name', 'filename', 'category_id', 'team_id'];
+	public function versionsTable() : string {
+		return "media_versions";
+	}
 
 	public function saveMedia(array $fields, UploadedFile $file = null): Media {
 

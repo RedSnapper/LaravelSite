@@ -35,7 +35,6 @@ trait TreeTrait {
 		return $this->update(['parent' => $parent->idx]);
 	}
 
-
 	public function scopeIndex(Builder $query, int $index) {
 		return $query->where('idx', $index);
 	}
