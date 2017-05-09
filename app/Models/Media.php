@@ -27,12 +27,19 @@ class Media extends Model implements VersionsInterface {
 	 * +--------------+
 	 * |d path        |
 	 * |d mime        |
+	 * |d is_image    |
 	 * |d size        |
 	 * +--------------+
-	 * 	protected $fillable = ['category_id', 'team_id','name','path','mime','filename','size'];
+	 *  protected $fillable = ['category_id', 'team_id','name','path','mime','filename','size'];
+	 *
 	 * @var array
 	 */
 	protected $fillable = ['name', 'filename', 'category_id', 'team_id'];
+	protected $casts = [
+		'properties' => 'array',
+		'details'    => 'array',
+		'exif'       => 'array'
+	];
 
 	/**
 	 * Versioned Trait required method
@@ -49,13 +56,60 @@ class Media extends Model implements VersionsInterface {
 		if ($file) {
 			$path = $file->store('/media');
 			$this->path = $path;
+			$filePath = $file->path();
 			$this->mime = $file->getMimeType();
+			$exifType = @exif_imagetype($filePath);
+			$this->is_image = ($exifType !== false);
 			$this->size = $file->getSize();
 			$this->filename = $file->getClientOriginalName();
+			if ($this->is_image) {
+				$this->doImageInformation($exifType, $filePath);
+			}
 		}
 		$this->save();
 
 		return $this;
+	}
+
+	protected function doImageInformation(int $exifType, string $filePath) {
+		$this->exif = null;
+		$this->properties = null;
+		$this->details = null;
+		$this->has_tn = false;
+		$image = new \Imagick($filePath);
+		$properties = $image->getImageProperties();
+
+		$this->properties = array_filter($properties, function ($key) {
+			return explode(':', $key)[0] != "exif";
+		}, ARRAY_FILTER_USE_KEY);
+		$details = $image->identifyImage();
+		foreach ($details as $key => $value) {
+			if (is_array($value)) {
+				foreach ($value as $k => $v) {
+					$details["$key.$k"] = $v;
+				}
+				unset($details[$key]);
+			}
+		}
+		$this->details = $details;
+		if (in_array($exifType, [2, 7, 8])) {
+			$exif = @exif_read_data($filePath, null, true, false);
+			unset($exif['EXIF']['MakerNote']);
+			foreach ($exif as $set => $details) {
+				foreach ($details as $key => $value) {
+					if (is_array($value)) {
+						foreach ($value as $k => $v) {
+							$details["$key.$k"] = $v;
+						}
+						unset($details[$key]);
+					}
+				}
+				$exif[$set]=$details;
+			}
+
+			$this->exif = $exif;
+			$this->has_tn = (@exif_thumbnail($filePath) !== false);
+		}
 	}
 
 	/**

@@ -63,7 +63,7 @@ class MediaFormlet extends Formlet {
 	public function rules(): array {
 
 		return [
-		  'media'       => 'required|image',
+		  'media'       => 'required',
 		  'name'        => 'required|max:255|unique:media',
 		  'category_id' => 'required|category',
 		  'team_id'     => 'required|exists:teams,id'

@@ -12,17 +12,114 @@
             <div data-v.include="layouts.treemenu"/>
         </div>
         <div class="col-md-9" data-v.container="form.form">
-            <h1 data-v.child="media.name">Edit Media
-                <span data-replace="media.id"/>
+            <h1>Edit Media
+                <i data-v.child="media.name">
+                    <span data-replace="media.id"/>
+                </i>
             </h1>
-            <img data-v.attr.src="{media.thumbnail}" />
+            <img data-v.attr.src="{media.thumbnail}"/>
             <a data-v.attr.href="{media.image_path}">View full size</a>
             <div class="row" data-v.container="form.form">
                 <div class="col-md-8">
                     <div data-v.replace="form"/>
-                    <button data-v.exists="media.prev_id" class="btn btn-secondary" name="_fn" value="undo" type="submit">Undo</button>
-                    <button data-v.exists="media.next_id" class="btn btn-secondary" name="_fn" value="redo" type="submit">Redo</button>
+                    <button data-v.exists="media.prev_id" class="btn btn-secondary" name="_fn" value="undo"
+                            type="submit">Undo
+                    </button>
+                    <button data-v.exists="media.next_id" class="btn btn-secondary" name="_fn" value="redo"
+                            type="submit">Redo
+                    </button>
                     <button class="btn btn-primary" type="submit">Save Edits</button>
+                </div>
+            </div>
+            <h3>Properties</h3>
+            <table>
+                <tbody data-v.foreach="media.properties" data-v.name="property">
+                    <tr>
+                        <td>
+                            <span data-v.replace="#key"/>
+                        </td>
+                        <td>
+                            <span data-v.replace="property"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div data-v.exists="media.details">
+            <h3>Details</h3>
+            <table>
+                <tbody data-v.foreach="media.details" data-v.name="detail">
+                    <tr>
+                        <td>
+                            <span data-v.replace="#key"/>
+                        </td>
+                        <td>
+                            <span data-v.replace="detail"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <div data-v.exists="media.exif">
+                <div data-v.exists="media.exif.COMPUTED">
+                    <h3>EXIF Computed</h3>
+                    <table>
+                        <tbody data-v.foreach="media.exif.COMPUTED" data-v.name="detail">
+                            <tr>
+                                <td>
+                                    <span data-v.replace="#key"/>
+                                </td>
+                                <td>
+                                    <span data-v.replace="detail"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-v.exists="media.exif.IFD0">
+
+                    <h3>EXIF IFD0</h3>
+                    <table>
+                        <tbody data-v.foreach="media.exif.IFD0" data-v.name="detail">
+                            <tr>
+                                <td>
+                                    <span data-v.replace="#key"/>
+                                </td>
+                                <td>
+                                    <span data-v.replace="detail"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-v.exists="media.exif.GPS">
+                    <h3>EXIF GPS</h3>
+                    <table>
+                        <tbody data-v.foreach="media.exif.GPS" data-v.name="detail">
+                            <tr>
+                                <td>
+                                    <span data-v.replace="#key"/>
+                                </td>
+                                <td>
+                                    <span data-v.replace="detail"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-v.exists="media.exif.THUMBNAIL">
+                    <h3>EXIF Thumbnail</h3>
+                    <table>
+                        <tbody data-v.foreach="media.exif.THUMBNAIL" data-v.name="detail">
+                            <tr>
+                                <td>
+                                    <span data-v.replace="#key"/>
+                                </td>
+                                <td>
+                                    <span data-v.replace="detail"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

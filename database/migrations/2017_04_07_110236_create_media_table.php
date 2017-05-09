@@ -16,15 +16,24 @@ class CreateMediaTable extends Migration {
 
 			$table->integer('category_id')->unsigned();
 			$table->integer('team_id')->unsigned();
+			//Adding unique may cause problems on versions (Eg: undo name to a unique).
 			if($mainTable) {
 				$table->string('name')->unique();
 			} else {
 				$table->string('name');
 			}
+
+			//Actual media payload.
 			$table->string('path');
 			$table->string('mime');
 			$table->string('filename');
 			$table->integer('size');
+			$table->boolean('is_image');
+			$table->longText('properties')->nullable();
+			$table->longText('details')->nullable();
+			$table->longText('exif')->nullable();
+			$table->boolean('has_tn')->default(false);
+
 			$table->timestamps();
 			if($mainTable) {
 				$table->integer('version')->unsigned()->nullable();
