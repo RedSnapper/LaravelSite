@@ -51,6 +51,17 @@ class MediaEditFormlet extends Formlet {
 		return $this->model->saveMedia($this->fields(), $this->request->file('media'));
 	}
 
+	protected function undo(): bool {
+		$this->model->undo();
+		return false; //don't process as a form.
+	}
+
+	protected function redo(): bool {
+		$this->model->redo();
+		return false; //don't process as a form.
+	}
+
+
 	public function rules(): array {
 		$key = $this->model->getKey();
 

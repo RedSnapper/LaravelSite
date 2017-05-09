@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserRoleFormlet extends Formlet {
 
 	public function prepareForm(){
-		$items = $this->model->roles()->getRelated()->all();
+		$items = $this->model->roles()->getRelated()->teamed(false)->get();
 		foreach ($items as $item) {
 			$this->add((new Checkbox('',$item->id))
 				->setLabel($item->name)

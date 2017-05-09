@@ -10,10 +10,15 @@ class CreateMediaTable extends Migration {
 		return
 		function(Blueprint $table) use($mainTable) {
 			$table->increments('id');
-			$table->integer('version_id')->unsigned()->nullable();
+			$table->integer('prev_id')->unsigned()->nullable();
+			$table->integer('next_id')->unsigned()->nullable();
 			$table->integer('category_id')->unsigned();
 			$table->integer('team_id')->unsigned();
-			$table->string('name')->unique();
+			if($mainTable) {
+				$table->string('name')->unique();
+			} else {
+				$table->string('name');
+			}
 			$table->string('path');
 			$table->string('mime');
 			$table->string('filename');
@@ -35,16 +40,16 @@ class CreateMediaTable extends Migration {
 		Schema::create('media_versions',$this->forVersions(false));
 
 		Schema::table('media', function (Blueprint $table) {
-			$table->foreign('version_id')->references('id')->on('media_versions')->onDelete('restrict');
-
+			$table->foreign('prev_id')->references('id')->on('media_versions')->onDelete('restrict');
+			$table->foreign('next_id')->references('id')->on('media_versions')->onDelete('restrict');
 			$table->foreign('category_id')->references('id')->on('categories')->onDelete('restrict');
 			$table->foreign('team_id')->references('id')->on('teams')->onDelete('restrict');
 		});
 
 		Schema::table('media_versions', function (Blueprint $table) {
-			$table->foreign('version_id')->references('id')->on('media_versions')->onDelete('cascade');
+			$table->foreign('prev_id')->references('id')->on('media_versions')->onDelete('cascade');
+			$table->foreign('next_id')->references('id')->on('media_versions')->onDelete('cascade');
 			$table->foreign('master_id')->references('id')->on('media')->onDelete('cascade');
-
 		});
 
 	}
@@ -59,11 +64,13 @@ class CreateMediaTable extends Migration {
 		Schema::table('media', function (Blueprint $table) {
 			$table->dropForeign('media_category_id_foreign');
 			$table->dropForeign('media_team_id_foreign');
-			$table->dropForeign('media_version_id_foreign');
+			$table->dropForeign('media_prev_id_foreign');
+			$table->dropForeign('media_next_id_foreign');
 		});
 
 		Schema::table('media_versions', function (Blueprint $table) {
-			$table->dropForeign('media_versions_version_id_foreign');
+			$table->dropForeign('media_versions_prev_id_foreign');
+			$table->dropForeign('media_versions_next_id_foreign');
 			$table->dropForeign('media_versions_master_id_foreign');
 		});
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Policies\Helpers\UserPolicy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -12,6 +13,10 @@ class Role extends Model
 	protected $fillable = [
 		'name','category_id','team_based'
 	];
+
+	public function scopeTeamed(Builder $query,bool $teams = true) {
+		return $query->where('team_based', $teams);
+	}
 
 	public function category() {
 		return $this->belongsTo(Category::class);

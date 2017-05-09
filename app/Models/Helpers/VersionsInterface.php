@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface VersionsInterface {
 
+	//methods that are inherited by the model and used by the trait.
+	public function getOriginal($key = null, $default = null);
+	public function getAttributes();
+
 	//methods that must be set by the model.
 		public function versionsTable() : string;
 

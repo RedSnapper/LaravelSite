@@ -2,9 +2,9 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
     <div data-v.replace="formlets.user"/>
     <div data-v.replace="formlets.profile"/>
-    <h4>Roles</h4>
+    <h4>General Roles</h4>
     <div data-v.replace="formlets.roles"/>
-    <h4>Teams</h4>
+    <h4>Team Roles</h4>
     <div data-v.foreach="formlets.teams" data-v.name="team">
         <div>
             <form data-v.replace="team" />
