@@ -10,8 +10,10 @@ class CreateMediaTable extends Migration {
 		return
 		function(Blueprint $table) use($mainTable) {
 			$table->increments('id');
+			//The three fields following are implment the 'versionable' trait.
 			$table->integer('prev_id')->unsigned()->nullable();
 			$table->integer('next_id')->unsigned()->nullable();
+
 			$table->integer('category_id')->unsigned();
 			$table->integer('team_id')->unsigned();
 			if($mainTable) {
@@ -24,11 +26,14 @@ class CreateMediaTable extends Migration {
 			$table->string('filename');
 			$table->integer('size');
 			$table->timestamps();
-			if(!$mainTable) {
-				$table->integer('master_id')->unsigned();
+			if($mainTable) {
+				$table->integer('version')->unsigned()->nullable();
+			} else {
+				$table->integer('primary')->unsigned();
 			}
 		};
 	}
+
 
 	/**
 	 * Run the migrations.
@@ -49,7 +54,7 @@ class CreateMediaTable extends Migration {
 		Schema::table('media_versions', function (Blueprint $table) {
 			$table->foreign('prev_id')->references('id')->on('media_versions')->onDelete('cascade');
 			$table->foreign('next_id')->references('id')->on('media_versions')->onDelete('cascade');
-			$table->foreign('master_id')->references('id')->on('media')->onDelete('cascade');
+			$table->foreign('primary')->references('id')->on('media')->onDelete('cascade');
 		});
 
 	}
@@ -71,7 +76,7 @@ class CreateMediaTable extends Migration {
 		Schema::table('media_versions', function (Blueprint $table) {
 			$table->dropForeign('media_versions_prev_id_foreign');
 			$table->dropForeign('media_versions_next_id_foreign');
-			$table->dropForeign('media_versions_master_id_foreign');
+			$table->dropForeign('media_versions_primary_foreign');
 		});
 
 		Schema::dropIfExists('media');

@@ -31,12 +31,21 @@ class TeamPolicy {
 		$this->user = $user;
 	}
 
-	public function access(User $user, Team $team , Category $category) {
-		return $this->user->hasTeamCategory($user,$team, $category, UserPolicy::CAN_ACCESS );
+	//
+	public function access(User $user, Team $team , Category $category  = null) {
+		if (is_null($category)) {
+			return $this->user->hasTeam($user, $team);
+		} else {
+			return $this->user->hasTeamCategory($user, $team, $category, UserPolicy::CAN_ACCESS);
+		}
 	}
 
-	public function modify(User $user, Team $team , Category $category) {
-		return $this->user->hasTeamCategory($user,$team, $category, UserPolicy::CAN_MODIFY );
+	public function modify(User $user, Team $team , Category $category  = null) {
+		if (is_null($category)) {
+			return $this->user->hasTeam($user, $team);
+		} else {
+			return $this->user->hasTeamCategory($user, $team, $category, UserPolicy::CAN_MODIFY);
+		}
 	}
 
 	public function __call($activity, $arguments) {

@@ -19,7 +19,7 @@ class CategoriesTableSeeder extends Seeder  {
 
 		//Do ROOT node first.
 		factory(Category::class,1)->create(['id'=>1,'idx'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT','section'=>true]);
-		$this->addGroup('ROLES',['General','Team']);
+		$this->addGroup('ROLES',['General Roles','Team Roles']);
 		$this->addGroup('SEGMENTS',['Segments']);
 		$this->addGroup('LAYOUTS',['Layouts']);
 		$this->addGroup('ACTIVITIES',['Control']);

@@ -1,7 +1,7 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
-    <div class="row">
-        <div class="col-md-3">
+    <div class="row" data-v.can="access" data-v.param="team">
+        <div class="col-md-3"  >
             <h1><span data-v.replace="team.name"/>: Media</h1>
             <div id="treeTeam"
                  data-v.xp="tree"

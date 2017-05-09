@@ -16,22 +16,21 @@ class TeamsTableSeeder extends BaseTableSeeder {
 
 	public function run() {
 		$devCategory = Category::reference('Organisations')->first()->id;
-		$this->withJoins(1,1,['name'=>'Otsuka Staff','category_id'=> $devCategory]);
-		$this->withJoins(1,1,['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
-		$this->withJoins(1,1,['name'=>'Freelancers','category_id'=> $devCategory]);
+		$this->withJoins(['name'=>'Otsuka Staff','category_id'=> $devCategory]);
+		$this->withJoins(['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
+		$this->withJoins(['name'=>'Freelancers','category_id'=> $devCategory]);
 	}
 
-	private function withJoins($count,$roles = 5,$values = []) {
+	private function withJoins($values = []) {
 
-		Collection::times($count, function () use ($values, $roles) {
+		Collection::times(1,function () use ($values) {
 
 			$values['category_id'] = @$values['category_id'] ?? $this->getRandomCategory('TEAMS');
 			$team = factory(Team::class)->create($values);
 
-			$roles = Role::inRandomOrder()->limit($roles)->pluck('id');
+			$roles = Role::teamed()->pluck('id');
 			foreach($roles as $role) {
 				$team->attachRoleUsers($role,[1,2]);
-				$team->attachRoleUsers($role,User::inRandomOrder()->whereNotIn('id',[1,2])->limit(4)->pluck('id')->all());
 			}
 
 			return $team;

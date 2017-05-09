@@ -70,6 +70,14 @@ class UserPolicy {
 		return !is_null($permission);
 	}
 
+	public function hasTeam(User $user, $team) : bool {
+		$team = $this->getTeamID($team);
+		$this->loadTeams($user);
+		$userPermissions = $this->teams->get($user->id);
+		if(is_null($userPermissions)) return false;
+		return $userPermissions->has($team);
+	}
+
 	/**
 	 * @param User $user
 	 * @param      $team
@@ -109,6 +117,7 @@ class UserPolicy {
 			})
 			->join('category_role', 'categories.id', 'category_role.category_id')
 			->join('role_user', 'category_role.role_id', 'role_user.role_id')
+			->join('roles', function($join) { $join->on('role_user.role_id','roles.id')->where('roles.team_based',false); })
 			->where('role_user.user_id', $user)
 			->groupBy('self.id');
 		return $query->get()->keyBy('id'); //->pluck('id,modify');
@@ -131,6 +140,7 @@ class UserPolicy {
 			})
 			->join('category_role', 'categories.id', 'category_role.category_id')
 			->join('role_team_user', 'category_role.role_id', 'role_team_user.role_id')
+			->join('roles', function($join) { $join->on('role_team_user.role_id', 'roles.id')->where('roles.team_based',true); })
 			->where('role_team_user.user_id', $user)
 			->groupBy(['team', 'category']);
 //		dd($query->toSql());

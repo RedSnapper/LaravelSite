@@ -2,7 +2,7 @@
 <li xmlns="http://www.w3.org/1999/xhtml" class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Media<span class="caret"/></a>
     <ul class="dropdown-menu" data-v.foreach="teams" data-v.name="team" >
-        <li>
+        <li data-v.can="access" data-v.param="team">
             <a data-v.url="/media/{team.id}/{category.id}">
                 <span data-v.replace="team.name"/>
             </a>

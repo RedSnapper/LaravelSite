@@ -13,26 +13,28 @@ class RolesTableSeeder extends BaseTableSeeder {
 	public function run() {
 
 		$totalActivities = Activity::count();
-//		intdiv($totalActivities,2)
-		$category = Category::reference('General')->first()->id;
+		$category = Category::reference('General Roles')->first()->id;
 		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','team_based'=>false,'category_id'=> $category]);
 		$this->withJoins(1,0,['name'=>'User','team_based'=>false,'category_id'=> $category]);
-
 		$this->giveAccessToAllCategories();
 
+		$category = Category::reference('Team Roles')->first()->id;
+		$mediaCat = Category::section('MEDIA')->first();
+		$this->withJoins(1,0,['name'=>'MediaModify','team_based'=>true,'category_id'=> $category],$mediaCat);
 	}
 
-	private function withJoins($count, $activities = 5, $values = []) {
-
-		Collection::times($count, function () use ($values, $activities) {
-
+	private function withJoins($count, $activities, $values = [],Category $cat = null) {
+		Collection::times($count, function () use ($values, $activities,$cat) {
 			$values['category_id'] = @$values['category_id'] ?? $this->getRandomCategory('ROLES');
 			$role = factory(Role::class)->create($values);
-
-			$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
-			$role->users()->attach([1, 2]); //Ben n Param
-			$role->users()->attach(User::inRandomOrder()->whereNotIn('id', [1, 2])->limit(4)->pluck('id'));
-
+			if(! is_null($cat)) {
+				$role->givePermissionToCategory($cat,UserPolicy::CAN_MODIFY);
+				$role->users()->attach([1, 2]); //Ben n Param
+			} else {
+				$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
+				$role->users()->attach([1, 2]); //Ben n Param
+				$role->users()->attach(User::inRandomOrder()->whereNotIn('id', [1, 2])->limit(4)->pluck('id'));
+			}
 			return $role;
 		});
 	}

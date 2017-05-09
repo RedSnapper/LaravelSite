@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-6">
             <ul data-v.foreach="medias" data-v.name="media" class="list-group">
-                <li class="list-group-item">
+                <li class="list-group-item" data-v.can="access" data-v.param="media.category;media.team">
                     <a data-v.url="/media/{media.id}/edit">
                         <img data-v.attr.src="{media.thumbnail}" />
                         <span data-v.replace="media.name"/>

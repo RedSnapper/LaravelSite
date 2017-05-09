@@ -61,7 +61,6 @@ class MediaEditFormlet extends Formlet {
 		return false; //don't process as a form.
 	}
 
-
 	public function rules(): array {
 		$key = $this->model->getKey();
 
