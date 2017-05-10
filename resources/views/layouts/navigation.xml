@@ -17,7 +17,6 @@
                 <!-- Branding Image -->
                 <a data-v.xp="app" class="navbar-brand" data-v.route="home"/>
             </div>
-
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav" data-v.auth="true">

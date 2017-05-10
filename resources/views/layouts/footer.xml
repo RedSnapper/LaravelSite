@@ -1,5 +1,5 @@
-<!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml">
-    Footer
-</div>
+<!DOCTYPE footer>
+<footer class="footer footer-default footer-fixed" xmlns="http://www.w3.org/1999/xhtml">
+        <div class="container text-right text-muted"><hr />Brought to you by Red Snapper Ltd.</div>
+</footer>
 
