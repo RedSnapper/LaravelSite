@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
+use RS\Form\Fields\TextArea;
 use RS\Form\Formlet;
 
 class MediaEditFormlet extends Formlet {
@@ -45,6 +46,10 @@ class MediaEditFormlet extends Formlet {
 
 		$field = new Input('text', 'filename');
 		$this->add($field->setLabel("Filename"));
+
+		$field = new TextArea('license_ta');
+		$this->add($field->setLabel("License Information"));
+
 	}
 
 	public function edit(): Model {
@@ -65,12 +70,10 @@ class MediaEditFormlet extends Formlet {
 		$key = $this->model->getKey();
 
 		$rules = [
-			'media'       => ['required'],
+			'filename'    => 'required|max:255',
 			'name'        => ['required', 'max:255', Rule::unique('media')->ignore($key)],
-			'filename'    => ['required', 'max:255'],
 			'category_id' => 'required|category',
 			'team_id'     => 'required|integer',
-
 		];
 
 		return $rules;

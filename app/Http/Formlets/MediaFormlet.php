@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
+use RS\Form\Fields\TextArea;
 use RS\Form\Formlet;
 
 class MediaFormlet extends Formlet {
@@ -54,6 +55,10 @@ class MediaFormlet extends Formlet {
 
 		$field = new Input('file', 'media');
 		$this->add($field->setLabel("Media"));
+
+		$field = new TextArea('license_ta');
+		$this->add($field->setLabel("License Information"));
+
 	}
 
 	public function persist(): Model {
