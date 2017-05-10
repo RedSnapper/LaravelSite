@@ -1,5 +1,5 @@
 <!DOCTYPE ul>
-<ul xmlns="http://www.w3.org/1999/xhtml" data-v.controller="helpers.complex" data-v.outer="outer" class="list-unstyled col-sm-12" data-v.container="true">
+<ul xmlns="http://www.w3.org/1999/xhtml" data-v.controller="helpers.complex" data-v.outer="outer" class="list-unstyled" data-v.container="true">
     <li data-v.title-holder="true">
         <h4>
             <span data-v.title="true"/>

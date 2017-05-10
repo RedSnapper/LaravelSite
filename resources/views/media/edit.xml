@@ -1,7 +1,7 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
     <div class="row" data-v.can="modify" data-v.param="category;team">
-        <div class="col-md-3">
+        <div class="col-md-3 col-lg-2">
             <h1>Media</h1>
             <div id="treeTeam"
                  data-v.xp="tree"
@@ -11,38 +11,43 @@
             />
             <div data-v.include="layouts.treemenu"/>
         </div>
-        <div class="col-md-9" data-v.container="form.form">
-            <h1>Edit Media
-                <i data-v.child="media.name">
-                    <span data-replace="media.id"/>
-                </i>
-            </h1>
-            <img data-v.attr.src="{media.thumbnail}"/>
-            <a data-v.attr.href="{media.image_path}">View full size</a>
-            <div class="row" data-v.container="form.form">
-                <div class="col-md-8">
-                    <div data-v.replace="form"/>
-                    <button data-v.exists="media.prev_id" class="btn btn-secondary" name="_fn" value="undo"
-                            type="submit">Undo
-                    </button>
-                    <button data-v.exists="media.next_id" class="btn btn-secondary" name="_fn" value="redo"
-                            type="submit">Redo
-                    </button>
-                    <button class="btn btn-primary" type="submit">Save Edits</button>
+        <div class="row-fluid col-md-9 col-lg-10">
+            <div class="col-md-12 col-lg-5" data-v.container="form.form">
+                <h1>Edit Media
+                    <i data-v.child="media.name">
+                        <span data-replace="media.id"/>
+                    </i>
+                </h1>
+                <img data-v.attr.src="{media.thumbnail}"/>
+                <a data-v.attr.href="{media.image_path}">View full size</a>
+                <div class="row" data-v.container="form.form">
+                    <div class="col-md-12">
+                        <div data-v.replace="form"/>
+                        <button data-v.exists="media.prev_id" class="btn btn-secondary" name="_fn" value="undo"
+                                type="submit">Undo
+                        </button>
+                        <button data-v.exists="media.next_id" class="btn btn-secondary" name="_fn" value="redo"
+                                type="submit">Redo
+                        </button>
+                        <button class="btn btn-primary" type="submit">Save Edits</button>
+                    </div>
                 </div>
             </div>
-           <div data-v.exists="media.properties">
-                <h3>Properties</h3>
-                <div data-v.param="media.properties" data-v.include="layouts.complex"/>
+            <div class="row-fluid col-md-12 col-lg-7">
+                <div data-v.exists="media.properties">
+                    <h3>Properties</h3>
+                    <div data-v.param="media.properties" data-v.include="layouts.complex"/>
+                </div>
+                <div data-v.exists="media.details">
+                    <h3>Details</h3>
+                    <div data-v.param="media.details" data-v.include="layouts.complex"/>
+                </div>
+                <div data-v.exists="media.exif">
+                    <h3>Exif Metadata</h3>
+                    <div data-v.param="media.exif" data-v.include="layouts.complex"/>
+                </div>
             </div>
-            <div data-v.exists="media.details">
-                <h3>Details</h3>
-                <div data-v.param="media.details" data-v.include="layouts.complex"/>
-            </div>
-            <div data-v.exists="media.exif">
-                <h3>Exif Metadata</h3>
-                <div data-v.param="media.exif" data-v.include="layouts.complex"/>
-            </div>
+
         </div>
-    </div>
+     </div>
 </div>
