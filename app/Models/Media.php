@@ -78,35 +78,23 @@ class Media extends Model implements VersionsInterface {
 		$this->has_tn = false;
 		$image = new \Imagick($filePath);
 		$properties = $image->getImageProperties();
-
-		$this->properties = array_filter($properties, function ($key) {
-			return explode(':', $key)[0] != "exif";
-		}, ARRAY_FILTER_USE_KEY);
-		$details = $image->identifyImage();
-		foreach ($details as $key => $value) {
-			if (is_array($value)) {
-				foreach ($value as $k => $v) {
-					$details["$key.$k"] = $v;
+		$props = [];
+		foreach ($properties as $key => $value) {
+			$kb = explode(':', $key);
+			if ($kb[0] != "exif") {
+				if (isset($kb[1])) {
+					$props[$kb[0]][$kb[1]] = $value;
+				} else {
+					$props[$kb[0]] = $value;
 				}
-				unset($details[$key]);
 			}
 		}
+		$this->properties = $props;
+		$details = $image->identifyImage();
+		unset($details['imageName']);
 		$this->details = $details;
 		if (in_array($exifType, [2, 7, 8])) {
-			$exif = @exif_read_data($filePath, null, true, false);
-			unset($exif['EXIF']['MakerNote']);
-			foreach ($exif as $set => $details) {
-				foreach ($details as $key => $value) {
-					if (is_array($value)) {
-						foreach ($value as $k => $v) {
-							$details["$key.$k"] = $v;
-						}
-						unset($details[$key]);
-					}
-				}
-				$exif[$set]=$details;
-			}
-
+			$exif = $this->sanitise( @exif_read_data($filePath, null, true, false) ?? [] );
 			$this->exif = $exif;
 			$this->has_tn = (@exif_thumbnail($filePath) !== false);
 		}
@@ -167,4 +155,35 @@ class Media extends Model implements VersionsInterface {
 			'updated_at' => $this->updated_at->toDateTimeString()
 		];
 	}
+
+	private function utf8It(string $value): string {
+		return preg_replace_callback('/((?:[\x20-\x7F] 
+		| [\xC0-\xDF][\x80-\xBF] 
+		| [\xE0-\xEF][\x80-\xBF]{2} 
+		| [\xF0-\xF7][\x80-\xBF]{3})+)/u',
+			function ($matches) {
+				return "0x" . bin2hex($matches[0]);
+			}, $value) ?? "";
+	}
+
+	private function sanitise(array $basis) {
+		foreach ($basis as $key => $value) {
+			if(is_array($value)) {
+				$value = $this->sanitise($value);
+			} else {
+				$value = $this->utf8It($value);
+			}
+			$uKey = $this->utf8It($key);
+			if ($uKey != $key) {
+				unset($basis[$key]);
+			}
+			if ($value != "") {
+				$basis[$uKey] = $value;
+			} else {
+				unset($basis[$uKey]);
+			}
+		}
+		return $basis;
+	}
 }
+

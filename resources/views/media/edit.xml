@@ -31,96 +31,17 @@
                     <button class="btn btn-primary" type="submit">Save Edits</button>
                 </div>
             </div>
-            <h3>Properties</h3>
-            <table>
-                <tbody data-v.foreach="media.properties" data-v.name="property">
-                    <tr>
-                        <td>
-                            <span data-v.replace="#key"/>
-                        </td>
-                        <td>
-                            <span data-v.replace="property"/>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+           <div data-v.exists="media.properties">
+                <h3>Properties</h3>
+                <div data-v.param="media.properties" data-v.include="layouts.complex"/>
+            </div>
             <div data-v.exists="media.details">
-            <h3>Details</h3>
-            <table>
-                <tbody data-v.foreach="media.details" data-v.name="detail">
-                    <tr>
-                        <td>
-                            <span data-v.replace="#key"/>
-                        </td>
-                        <td>
-                            <span data-v.replace="detail"/>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <h3>Details</h3>
+                <div data-v.param="media.details" data-v.include="layouts.complex"/>
             </div>
             <div data-v.exists="media.exif">
-                <div data-v.exists="media.exif.COMPUTED">
-                    <h3>EXIF Computed</h3>
-                    <table>
-                        <tbody data-v.foreach="media.exif.COMPUTED" data-v.name="detail">
-                            <tr>
-                                <td>
-                                    <span data-v.replace="#key"/>
-                                </td>
-                                <td>
-                                    <span data-v.replace="detail"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div data-v.exists="media.exif.IFD0">
-
-                    <h3>EXIF IFD0</h3>
-                    <table>
-                        <tbody data-v.foreach="media.exif.IFD0" data-v.name="detail">
-                            <tr>
-                                <td>
-                                    <span data-v.replace="#key"/>
-                                </td>
-                                <td>
-                                    <span data-v.replace="detail"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div data-v.exists="media.exif.GPS">
-                    <h3>EXIF GPS</h3>
-                    <table>
-                        <tbody data-v.foreach="media.exif.GPS" data-v.name="detail">
-                            <tr>
-                                <td>
-                                    <span data-v.replace="#key"/>
-                                </td>
-                                <td>
-                                    <span data-v.replace="detail"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div data-v.exists="media.exif.THUMBNAIL">
-                    <h3>EXIF Thumbnail</h3>
-                    <table>
-                        <tbody data-v.foreach="media.exif.THUMBNAIL" data-v.name="detail">
-                            <tr>
-                                <td>
-                                    <span data-v.replace="#key"/>
-                                </td>
-                                <td>
-                                    <span data-v.replace="detail"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <h3>Exif Metadata</h3>
+                <div data-v.param="media.exif" data-v.include="layouts.complex"/>
             </div>
         </div>
     </div>
