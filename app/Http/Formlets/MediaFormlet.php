@@ -2,11 +2,9 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Media;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
