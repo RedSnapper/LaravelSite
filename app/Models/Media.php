@@ -156,8 +156,10 @@ class Media extends Model implements VersionsInterface {
 			'properties' => $this->properties,
 			'details'    => $this->details,
 			'image'      => $this->is_image,
-			'created_at' => $this->created_at->toDateTimeString(),
-			'updated_at' => $this->updated_at->toDateTimeString()
+			'width'      => @$this->details['geometry']['width'],
+			'height'     => @$this->details['geometry']['height'],
+			'uploaded_at' => $this->created_at->toDateTimeString(),
+			'modified_at' => $this->updated_at->toDateTimeString()
 		];
 	}
 

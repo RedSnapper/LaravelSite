@@ -109,15 +109,11 @@ class MediaController extends Controller {
 	}
 
 	public function search(Request $request) {
-
 		$query = $request->get('query');
-
 		$medias = [];
-
 		if ($query) {
 			$medias = Media::search($query)->paginate(10);
 		}
-
 		return view("media.search", compact('medias', 'query'));
 	}
 }
