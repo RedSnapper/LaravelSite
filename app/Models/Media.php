@@ -34,7 +34,7 @@ class Media extends Model implements VersionsInterface {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'filename', 'category_id', 'team_id'];
+	protected $fillable = ['name', 'filename', 'category_id', 'team_id', 'license_ta'];
 	protected $casts = [
 		'properties' => 'array',
 		'details'    => 'array',
@@ -150,7 +150,12 @@ class Media extends Model implements VersionsInterface {
 		return [
 			'name'       => $this->name,
 			'filename'   => $this->filename,
+			'licensing'  => $this->license_ta,
 			'category'   => $this->category->name,
+			'exif'   		 => $this->exif,
+			'properties' => $this->properties,
+			'details'    => $this->details,
+			'image'      => $this->is_image,
 			'created_at' => $this->created_at->toDateTimeString(),
 			'updated_at' => $this->updated_at->toDateTimeString()
 		];
@@ -167,6 +172,12 @@ class Media extends Model implements VersionsInterface {
 	}
 
 	private function sanitise(array $basis) {
+		$conversions = [
+			"UndefinedTag:0xA434" => "LensModel",
+			"UndefinedTag:0xA433" => "LensMake",
+			"UndefinedTag:0xA432" => "LensSpec. (FLen Range; FNo. Range)",
+			"UndefinedTag:0x001F" => "GPSHPositioningError",
+		];
 		foreach ($basis as $key => $value) {
 			if(is_array($value)) {
 				$value = $this->sanitise($value);
@@ -174,6 +185,7 @@ class Media extends Model implements VersionsInterface {
 				$value = $this->utf8It($value);
 			}
 			$uKey = $this->utf8It($key);
+			$uKey = @$conversions[$uKey] ?? $uKey;
 			if ($uKey != $key) {
 				unset($basis[$key]);
 			}

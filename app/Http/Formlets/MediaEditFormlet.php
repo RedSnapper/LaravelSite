@@ -2,10 +2,8 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Media;
-use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;

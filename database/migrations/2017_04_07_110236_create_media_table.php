@@ -29,6 +29,7 @@ class CreateMediaTable extends Migration {
 			$table->string('filename');
 			$table->integer('size');
 			$table->boolean('is_image');
+			$table->text('license_ta')->nullable();
 			$table->longText('properties')->nullable();
 			$table->longText('details')->nullable();
 			$table->longText('exif')->nullable();
