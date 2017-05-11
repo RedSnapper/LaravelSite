@@ -209,7 +209,7 @@ class UserPolicy {
 	 * @return int
 	 */
 	protected function getUserID($user): int {
-		return is_a($user, User::class) ? $user->id : (int)$user;
+		return (is_a($user, User::class) ? $user->id : (int)$user) ?? 0;
 	}
 
 	/**
@@ -217,15 +217,16 @@ class UserPolicy {
 	 * @return int
 	 */
 	protected function getCategoryID($category): int {
-		return is_a($category, Category::class) ? $category->id : (int)$category;
+		return (is_a($category, Category::class) ? $category->id : (int)$category) ?? 0;
 	}
 
 	/**
 	 * @param $team
+
 	 * @return int
 	 */
 	protected function getTeamID($team): int {
-		return is_a($team, Team::class) ? $team->id : (int)$team;
+		return (is_a($team, Team::class) ? $team->id : (int)$team) ?? 0;
 	}
 
 	/**

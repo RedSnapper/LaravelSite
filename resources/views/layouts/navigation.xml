@@ -21,6 +21,9 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav" data-v.auth="true">
                     <li data-v.include="layouts.medianav"/>
+                    <li data-v.can="TAGS_ACCESS">
+                        <a data-v.route="tag.index">Tags</a>
+                    </li>
                     <li data-v.can="ACCESS_CONTROL" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">Access Control

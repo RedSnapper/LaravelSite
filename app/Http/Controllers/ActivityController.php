@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ActivityController extends Controller {
 
 	/**
-	 * @var ActivityComposite
+	 * @var ActivityFormlet
 	 */
 	private $form;
 

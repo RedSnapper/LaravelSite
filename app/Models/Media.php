@@ -128,6 +128,10 @@ class Media extends Model implements VersionsInterface {
 		return route("img.show", $this->getMediaParameters());
 	}
 
+	public function tags() {
+		return $this->belongsToMany(Tag::class);
+	}
+
 	public function category() {
 		return $this->belongsTo(Category::class);
 	}

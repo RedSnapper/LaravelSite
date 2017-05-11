@@ -108,6 +108,15 @@ class MediaController extends Controller {
 		return redirect()->route('media.edit', $media->id);
 	}
 
+	public function destroy(Media $medium) {
+		$this->authorize('modify', [$medium->category, $medium->team]);
+		$team = $medium->team;
+		$category = $medium->category;
+		//Now delete the media.
+		$medium->delete();
+		return redirect()->route('media.index',[$team,$category]);
+	}
+
 	public function search(Request $request) {
 		$query = $request->get('query');
 		$medias = [];

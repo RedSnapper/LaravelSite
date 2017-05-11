@@ -25,6 +25,7 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('ACTIVITIES',['Control']);
 		$this->addGroup('MEDIA',['Source','Pre-Production','Post-Production']);
 		$this->addGroup('TEAMS',['Organisations','Agencies','Other']);
+		$this->addGroup('TAGS',['Media']);
 	}
 
 	private function addGroup($name,array $names = []) {

@@ -1,0 +1,29 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category" >
+
+    <div class="row">
+        <div class="col-md-3">
+            <h1>Tags</h1>
+            <div id="tree" data-v.xp="tree" data-v.attr.data-link="/tag" data-url="/api/category?section=TAGS"/>
+            <div data-v.include="layouts.treemenu"/>
+        </div>
+
+        <div class="col-md-6">
+            <h2 data-v.child="category.name"/>
+            <ul data-v.foreach="tags" data-v.name="tag" class="list-group">
+                <li class="list-group-item">
+                    <a data-v.url="/tag/{tag.id}/edit">
+                        <span data-v.replace="tag.name"/>
+                    </a>
+                </li>
+            </ul>
+            <div data-v.contents="#document" />
+            <div data-v.pagination="layouts.pagination" data-v.name="tags"/>
+            <div data-v.exists="category.id" class="well text-right" >
+                <a data-v.url="/tag/create/{category.id}" data-v.can="modify" data-v.param="category" class="btn btn-primary">New Tag</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
