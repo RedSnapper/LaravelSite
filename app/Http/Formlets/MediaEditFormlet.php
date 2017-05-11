@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
+use App\Http\Formlets\Helpers\Rating;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
@@ -44,6 +45,10 @@ class MediaEditFormlet extends Formlet {
 
 		$field = new Input('text', 'filename');
 		$this->add($field->setLabel("Filename"));
+
+		$field = new Rating('rating');
+		$field->setLabel("Rating");
+		$this->add($field);
 
 		$field = new TextArea('license_ta');
 		$this->add($field->setLabel("License Information"));

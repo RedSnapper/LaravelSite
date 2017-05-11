@@ -5,42 +5,72 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateMediaTable extends Migration {
-
+/**
++-------------+------------------+------+-----+---------+----------------+
+| Field       | Type             | Null | Key | Default | Extra          |
++-------------+------------------+------+-----+---------+----------------+
+k id          | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
++-------------+------------------+------+-----+---------+----------------+
+√ category_id | int(10) unsigned | NO   | MUL | NULL    |                |
+√ team_id     | int(10) unsigned | NO   | MUL | NULL    |                |
+√ name        | varchar(255)     | NO   | UNI | NULL    |                |
+√ filename    | varchar(255)     | NO   |     | NULL    |                |
+√ rating      | int(11)          | NO   |     | 0       |                |
+√ license_ta  | text             | YES  |     | NULL    |                |
++-------------+------------------+------+-----+---------+----------------+
+d path        | varchar(255)     | NO   |     | NULL    |                |
+d mime        | varchar(255)     | NO   |     | NULL    |                |
+d size        | int(11)          | NO   |     | NULL    |                |
+d is_image    | tinyint(1)       | NO   |     | NULL    |                |
+d properties  | longtext         | YES  |     | NULL    |                |
+d details     | longtext         | YES  |     | NULL    |                |
+d exif        | longtext         | YES  |     | NULL    |                |
+d has_tn      | tinyint(1)       | NO   |     | 0       |                |
+d created_at  | timestamp        | YES  |     | NULL    |                |
+d updated_at  | timestamp        | YES  |     | NULL    |                |
++-------------+------------------+------+-----+---------+----------------+
+v version     | int(10) unsigned | YES  |     | NULL    |                |
+v prev_id     | int(10) unsigned | YES  | MUL | NULL    |                |
+v next_id     | int(10) unsigned | YES  | MUL | NULL    |                |
++-------------+------------------+------+-----+---------+----------------+
+**/
 	private function forVersions(bool $mainTable) {
 		return
 		function(Blueprint $table) use($mainTable) {
 			$table->increments('id');
-			//The three fields following are implment the 'versionable' trait.
-			$table->integer('prev_id')->unsigned()->nullable();
-			$table->integer('next_id')->unsigned()->nullable();
+
 
 			$table->integer('category_id')->unsigned();
 			$table->integer('team_id')->unsigned();
-			//Adding unique may cause problems on versions (Eg: undo name to a unique).
+			//TODO: Adding unique may cause problems on versions (Eg: undo name to a unique).
 			if($mainTable) {
 				$table->string('name')->unique();
 			} else {
 				$table->string('name');
 			}
+			$table->string('filename');
+			$table->integer('rating')->nullable()->default(0);
+			$table->text('license_ta')->nullable();
 
-			//Actual media payload.
+			//Derived (non-editable) fields
+			$table->timestamps();
 			$table->string('path');
 			$table->string('mime');
-			$table->string('filename');
 			$table->integer('size');
 			$table->boolean('is_image');
-			$table->text('license_ta')->nullable();
 			$table->longText('properties')->nullable();
 			$table->longText('details')->nullable();
 			$table->longText('exif')->nullable();
 			$table->boolean('has_tn')->default(false);
 
-			$table->timestamps();
+			//The following fields implement the 'versionable' trait.
 			if($mainTable) {
 				$table->integer('version')->unsigned()->nullable();
 			} else {
 				$table->integer('primary')->unsigned();
 			}
+			$table->integer('prev_id')->unsigned()->nullable();
+			$table->integer('next_id')->unsigned()->nullable();
 		};
 	}
 

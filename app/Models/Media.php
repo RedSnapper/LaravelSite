@@ -14,27 +14,37 @@ class Media extends Model implements VersionsInterface {
 	protected $with = ['team', 'category'];
 	/**
 	 * The attributes that are mass assignable. The rest are key, versions, or derived.
-	 * +--------------+
-	 * |k id          |
-	 * +--------------+
-	 * |v prev_id     |
-	 * |v next_id     |
-	 * +--------------+
-	 * |√ category_id |
-	 * |√ team_id     |
-	 * |√ name        |
-	 * |√ filename    |
-	 * +--------------+
-	 * |d path        |
-	 * |d mime        |
-	 * |d is_image    |
-	 * |d size        |
-	 * +--------------+
-	 *  protected $fillable = ['category_id', 'team_id','name','path','mime','filename','size'];
+	+-------------+------------------+------+-----+---------+----------------+
+	| Field       | Type             | Null | Key | Default | Extra          |
+	+-------------+------------------+------+-----+---------+----------------+
+	k id          | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+	+-------------+------------------+------+-----+---------+----------------+
+	√ category_id | int(10) unsigned | NO   | MUL | NULL    |                |
+	√ team_id     | int(10) unsigned | NO   | MUL | NULL    |                |
+	√ name        | varchar(255)     | NO   | UNI | NULL    |                |
+	√ filename    | varchar(255)     | NO   |     | NULL    |                |
+	√ rating      | int(11)          | NO   |     | 0       |                |
+	√ license_ta  | text             | YES  |     | NULL    |                |
+	+-------------+------------------+------+-----+---------+----------------+
+	d path        | varchar(255)     | NO   |     | NULL    |                |
+	d mime        | varchar(255)     | NO   |     | NULL    |                |
+	d size        | int(11)          | NO   |     | NULL    |                |
+	d is_image    | tinyint(1)       | NO   |     | NULL    |                |
+	d properties  | longtext         | YES  |     | NULL    |                |
+	d details     | longtext         | YES  |     | NULL    |                |
+	d exif        | longtext         | YES  |     | NULL    |                |
+	d has_tn      | tinyint(1)       | NO   |     | 0       |                |
+	d created_at  | timestamp        | YES  |     | NULL    |                |
+	d updated_at  | timestamp        | YES  |     | NULL    |                |
+	+-------------+------------------+------+-----+---------+----------------+
+	v version     | int(10) unsigned | YES  |     | NULL    |                |
+	v prev_id     | int(10) unsigned | YES  | MUL | NULL    |                |
+	v next_id     | int(10) unsigned | YES  | MUL | NULL    |                |
+	+-------------+------------------+------+-----+---------+----------------+
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'filename', 'category_id', 'team_id', 'license_ta'];
+	protected $fillable = ['name', 'filename',  'category_id', 'team_id', 'rating', 'license_ta'];
 	protected $casts = [
 		'properties' => 'array',
 		'details'    => 'array',

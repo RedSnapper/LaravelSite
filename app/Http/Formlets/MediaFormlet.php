@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
+use App\Http\Formlets\Helpers\Rating;
 use App\Models\Media;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +37,11 @@ class MediaFormlet extends Formlet {
 			$field->setLabel("Team")
 				->setPlaceholder("Please select a team")
 		);
+
+		$field = new Rating('rating');
+		$field->setLabel("Rating");
+		$this->add($field);
+
 
 	}
 	/**
