@@ -2,7 +2,11 @@
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
     <div class="row" data-v.can="modify" data-v.param="category;team">
         <div class="col-md-3 col-lg-2">
-            <h1>Media</h1>
+            <h4>Media:
+                <i data-v.child="team.name">
+                    <span data-replace="media.id"/>
+                </i>
+            </h4>
             <div id="treeTeam"
                  data-v.xp="tree"
                  data-v.attr.data-link="/media/{team.id}"
@@ -13,11 +17,11 @@
         </div>
         <div class="row-fluid col-md-9 col-lg-10">
             <div class="col-md-12 col-lg-5" data-v.container="form.form">
-                <h1>Edit Media
+                <h4>Editing:
                     <i data-v.child="media.name">
                         <span data-replace="media.id"/>
                     </i>
-                </h1>
+                </h4>
                 <img data-v.attr.src="{media.thumbnail}"/>
                 <a data-v.attr.href="{media.image_path}">View full size</a>
                 <div class="row" data-v.container="form.form">

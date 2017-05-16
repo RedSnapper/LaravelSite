@@ -30,12 +30,11 @@ class AuthServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot(GateContract $gate) {
-		$this->app->singleton(UserPolicy::class, function ($app) {
-			return new UserPolicy($app->make(Connection::class));
-		});
-
 		$this->registerPolicies();
 		if ($this->canRegisterGates()) {
+			$this->app->singleton(UserPolicy::class, function ($app) {
+				return new UserPolicy($app->make(Connection::class));
+			});
 			$this->registerGates($gate,$this->app->make(UserPolicy::class));
 		}
 

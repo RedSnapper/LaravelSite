@@ -86,23 +86,25 @@ class Media extends Model implements VersionsInterface {
 		$this->properties = null;
 		$this->details = null;
 		$this->has_tn = false;
-		$image = new \Imagick($filePath);
-		$properties = $image->getImageProperties();
-		$props = [];
-		foreach ($properties as $key => $value) {
-			$kb = explode(':', $key);
-			if ($kb[0] != "exif") {
-				if (isset($kb[1])) {
-					$props[$kb[0]][$kb[1]] = $value;
-				} else {
-					$props[$kb[0]] = $value;
+		if(class_exists("\Imagick")) {
+			$image = new \Imagick($filePath);
+			$properties = $image->getImageProperties();
+			$props = [];
+			foreach ($properties as $key => $value) {
+				$kb = explode(':', $key);
+				if ($kb[0] != "exif") {
+					if (isset($kb[1])) {
+						$props[$kb[0]][$kb[1]] = $value;
+					} else {
+						$props[$kb[0]] = $value;
+					}
 				}
 			}
+			$this->properties = $props;
+			$details = $image->identifyImage();
+			unset($details['imageName']);
+			$this->details = $details;
 		}
-		$this->properties = $props;
-		$details = $image->identifyImage();
-		unset($details['imageName']);
-		$this->details = $details;
 		if (in_array($exifType, [2, 7, 8])) {
 			$exif = $this->sanitise( @exif_read_data($filePath, null, true, false) ?? [] );
 			$this->exif = $exif;
@@ -189,16 +191,32 @@ class Media extends Model implements VersionsInterface {
 
 	private function sanitise(array $basis) {
 		$conversions = [
+			"UndefinedTag:0x001F" => "GPSHPositioningError",
+			"UndefinedTag:0x8830" => "ISOSensitivityType",
+			"UndefinedTag:0x8832" => "Rec.ExposureIndex",
+			"UndefinedTag:0xA430" => "CameraOwnerName",
+			"UndefinedTag:0xA431" => "BodySerialNumber",
 			"UndefinedTag:0xA434" => "LensModel",
+			"UndefinedTag:0xA435" => "LensSerialNumber",
 			"UndefinedTag:0xA433" => "LensMake",
 			"UndefinedTag:0xA432" => "LensSpec. (FLen Range; FNo. Range)",
-			"UndefinedTag:0x001F" => "GPSHPositioningError",
 		];
 		foreach ($basis as $key => $value) {
-			if(is_array($value)) {
-				$value = $this->sanitise($value);
-			} else {
-				$value = $this->utf8It($value);
+			switch(gettype($value)) {
+				case 'array':
+					$value = $this->sanitise($value);
+					break;
+				case 'string':
+					$value = $this->utf8It($value);
+				break;
+				case 'integer':
+					$value = "$value";
+				break;
+				case 'NULL':
+					$value = "";
+				break;
+				default:
+					$value = "Didn't expect a " . gettype($value);
 			}
 			$uKey = $this->utf8It($key);
 			$uKey = @$conversions[$uKey] ?? $uKey;
