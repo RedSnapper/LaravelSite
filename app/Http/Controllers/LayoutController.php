@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Formlets\LayoutFormlet;
 use App\Models\Category;
 use App\Models\Layout;
-use App\Models\Team;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

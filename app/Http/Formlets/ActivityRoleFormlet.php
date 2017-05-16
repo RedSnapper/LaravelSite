@@ -9,7 +9,6 @@ namespace App\Http\Formlets;
 
 use RS\Form\Formlet;
 use RS\Form\Fields\Checkbox;
-use RS\Form\Fields\Input;
 
 class ActivityRoleFormlet extends Formlet {
 	public $formletView = "activity.role";

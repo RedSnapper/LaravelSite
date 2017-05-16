@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Role;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller {
 

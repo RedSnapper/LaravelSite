@@ -2,9 +2,7 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\Helpers\CategoryHelper;
-use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use App\Models\Layout;

@@ -2,7 +2,7 @@
 
 namespace App\View\Role;
 
-use App\View\Form\Main;
+use RS\Form\View\Main;
 use RS\NView\Document;
 
 class Category extends Main {

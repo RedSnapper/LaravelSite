@@ -7,11 +7,11 @@
 
 namespace App\Http\Formlets;
 
-use App\Http\Controllers\CategoryController;
+
 use App\Http\Formlets\Helpers\CategoryHelper;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
-use RS\Form\Fields\Select;
+
 use RS\Form\Fields\TextArea;
 use App\Models\Segment;
 use Illuminate\Database\Eloquent\Model;

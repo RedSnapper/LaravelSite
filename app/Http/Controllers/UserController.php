@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Formlets\UserComposite;
-use App\Models\Category;
-use App\Models\Team;
+
 use App\Models\User;
-use App\Models\UserProfile;
+
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use App\Http\Formlets\UserFormlet;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller {
 

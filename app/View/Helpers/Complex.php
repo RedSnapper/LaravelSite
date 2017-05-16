@@ -2,7 +2,6 @@
 
 namespace App\View\Helpers;
 
-
 use RS\NView\Document;
 use RS\NView\View;
 use RS\NView\ViewController;

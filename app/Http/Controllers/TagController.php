@@ -21,7 +21,6 @@ class TagController extends Controller {
 
 	public function __construct(TagFormlet $form) {
 		$this->form = $form;
-//		$this->middleware('auth');
 	}
 
 	/**

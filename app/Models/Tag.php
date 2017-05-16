@@ -20,6 +20,15 @@ class Tag extends Model
 		return $this->belongsToMany(Media::class);
 	}
 
+	/**
+	 * This comes (most likely) from a form-post checkbox.
+	 * @param $value
+	 * @return int
+	 */
+	public function setModeratedAttribute($value) : int {
+		return is_null($value) ? 0 : 1 ;
+	}
+
 	public static function options(Collection $categories = null) {
 		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');
 	}

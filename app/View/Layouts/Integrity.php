@@ -5,7 +5,6 @@ use App\Models\Category;
 use RS\NView\View;
 use RS\NView\ViewController;
 
-
 class Integrity extends ViewController {
 	private $category;
 	function __construct(Category $category) {
