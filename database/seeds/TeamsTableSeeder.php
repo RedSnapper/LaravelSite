@@ -30,7 +30,7 @@ class TeamsTableSeeder extends BaseTableSeeder {
 
 			$roles = Role::teamed()->pluck('id');
 			foreach($roles as $role) {
-				$team->attachRoleUsers($role,[1,2]);
+				$team->attachRoleUsers($role,[1,2,3]);
 			}
 
 			return $team;

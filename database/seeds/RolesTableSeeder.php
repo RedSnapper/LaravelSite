@@ -21,6 +21,7 @@ class RolesTableSeeder extends BaseTableSeeder {
 		$category = Category::reference('Team Roles')->first()->id;
 		$mediaCat = Category::section('MEDIA')->first();
 		$this->withJoins(1,0,['name'=>'MediaModify','team_based'=>true,'category_id'=> $category],$mediaCat);
+		$this->withJoins(1,0,['name'=>'MediaAccess','team_based'=>true,'category_id'=> $category],$mediaCat);
 	}
 
 	private function withJoins($count, $activities, $values = [],Category $cat = null) {
@@ -29,10 +30,10 @@ class RolesTableSeeder extends BaseTableSeeder {
 			$role = factory(Role::class)->create($values);
 			if(! is_null($cat)) {
 				$role->givePermissionToCategory($cat,UserPolicy::CAN_MODIFY);
-				$role->users()->attach([1, 2]); //Ben n Param
+				$role->users()->attach([1, 2, 3]); //Ben n Param
 			} else {
 				$role->activities()->attach(Activity::inRandomOrder()->limit($activities)->pluck('id'));
-				$role->users()->attach([1, 2]); //Ben n Param
+				$role->users()->attach([1, 2, 3]); //Ben n Param
 				$role->users()->attach(User::inRandomOrder()->whereNotIn('id', [1, 2])->limit(4)->pluck('id'));
 			}
 			return $role;
