@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.27.2",
+            "version": "3.27.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "eb10e43cccf8e868f9622ab8ce2beb9fb756b5a8"
+                "reference": "5530121afccd4c7842de11d0e5c1d1ac2526f26d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/eb10e43cccf8e868f9622ab8ce2beb9fb756b5a8",
-                "reference": "eb10e43cccf8e868f9622ab8ce2beb9fb756b5a8",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5530121afccd4c7842de11d0e5c1d1ac2526f26d",
+                "reference": "5530121afccd4c7842de11d0e5c1d1ac2526f26d",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-05-11T21:23:43+00:00"
+            "time": "2017-05-15T21:42:26+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2056,7 +2056,7 @@
             "dist": {
                 "type": "path",
                 "url": "/Users/Shared/nview",
-                "reference": "296db2741d3aa08a0b690e71d73da89ee6dda5f0",
+                "reference": "df20e664f2d52acc449e1a3c7ff978a3a76b64fa",
                 "shasum": null
             },
             "require": {
