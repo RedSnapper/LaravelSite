@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 class Tag extends Model
 {
 	protected $fillable = [
-		'name','category_id'
+		'name','category_id','moderated'
 	];
 
 	public function category() {

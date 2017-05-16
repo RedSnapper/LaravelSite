@@ -16,6 +16,7 @@ class CreateTagsTable extends Migration {
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');
 			$table->string('name')->unique();
+			$table->integer('moderated')->unsigned()->default(0);
 			$table->timestamps();
 		});
 	}
@@ -30,6 +31,7 @@ class CreateTagsTable extends Migration {
 			$table->dropForeign('tags_category_id_foreign');
 			$table->dropColumn(['category_id']);
 		});
+
 		Schema::dropIfExists('tags');
 	}
 }

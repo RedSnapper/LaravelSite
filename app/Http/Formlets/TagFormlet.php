@@ -9,6 +9,7 @@ namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Tag;
+use RS\Form\Fields\Checkbox;
 use RS\Form\Fields\Input;
 use RS\Form\Formlet;
 
@@ -26,6 +27,11 @@ class TagFormlet extends Formlet {
 		$field = new Input('text', 'name');
 		$field->setLabel('Name')->setRequired();
 		$this->add($field);
+
+		$field = new Checkbox('moderated');
+		$field->setLabel('Moderated');
+		$this->add($field);
+
 		$this->categoryHelper->field($this,'TAGS');
 	}
 
