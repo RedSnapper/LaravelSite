@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 
 class User extends Authenticatable {
 	use Notifiable;
@@ -46,12 +45,13 @@ class User extends Authenticatable {
 		return $this->belongsToMany(Role::class);
 	}
 
-	public function syncTeamRoles(int $team,array $roles) {
-		$sync=[];
-		foreach($roles as $role) {
-			$sync[$role] = ['team_id'=>$team];
+	public function syncTeamRoles(Team $team, array $roles) {
+		$teamId = $team->getKey();
+		$sync = [];
+		foreach ($roles as $role) {
+			$sync[$role] = ['team_id' => $teamId];
 		}
-		$this->teamRoles()->wherePivot('team_id',$team)->sync($sync);
+		$this->teamRoles()->wherePivot('team_id', $teamId)->sync($sync);
 	}
 
 	public function teamRoles() {
@@ -63,7 +63,10 @@ class User extends Authenticatable {
 	}
 
 	public function teams() {
-		return $this->belongsToMany(Team::class,'role_team_user', 'user_id', 'team_id')->groupBy(["teams.id","role_team_user.user_id"]);
+		return $this->belongsToMany(Team::class, 'role_team_user', 'user_id', 'team_id')->groupBy([
+			"teams.id",
+			"role_team_user.user_id"
+		]);
 	}
 
 	public function hasRole($role, $team = null) {
@@ -74,12 +77,11 @@ class User extends Authenticatable {
 			return !!$role->intersect($this->roles)->count();
 		} else {
 			if (is_string($role)) {
-				return $this->teamRoles->wherePivot('team_id',$team)->contains('name', $role);
+				return $this->teamRoles->wherePivot('team_id', $team)->contains('name', $role);
 			}
-			return !!$role->intersect($this->teamRoles->wherePivot('team_id',$team))->count();
+			return !!$role->intersect($this->teamRoles->wherePivot('team_id', $team))->count();
 		}
 	}
-
 
 	public function assignRole($role, $team = null) {
 		if (is_null($team)) {

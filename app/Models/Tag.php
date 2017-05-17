@@ -8,6 +8,10 @@ use Illuminate\Support\Collection;
 
 class Tag extends Model
 {
+	protected $casts = [
+		'moderated' => 'integer',
+	];
+
 	protected $fillable = [
 		'name','category_id','moderated'
 	];
@@ -23,11 +27,12 @@ class Tag extends Model
 	/**
 	 * This comes (most likely) from a form-post checkbox.
 	 * @param $value
-	 * @return int
+	 * @return void
+	 * formlet returns null for unchecked.
 	 */
-	public function setModeratedAttribute($value) : int {
-		return is_null($value) ? 0 : 1 ;
-	}
+	//public function setModeratedAttribute($value) {
+	//	$this->attributes['moderated'] = $value ? 1 : 0;
+	//}
 
 	public static function options(Collection $categories = null) {
 		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');

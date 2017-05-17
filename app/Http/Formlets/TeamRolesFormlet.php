@@ -29,10 +29,13 @@ class TeamRolesFormlet extends Formlet {
 	 * @return void
 	 */
 	public function prepareForm() {
+//		$id = $this->model->getKey();
 		$field = new Select('role[]', Role::options($this->categoryController->getIds("ROLES")));
+		$roles = $this->model->userRoles->pluck('id')->all();
 		$this->add(
 			$field->setMultiple(true)
-				->setValue($this->model->userRoles->pluck('id')->all())
+				->setValue($roles)
 		);
 	}
 }
+

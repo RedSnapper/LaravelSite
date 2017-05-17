@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 class UserRoleFormlet extends Formlet {
 
 	public function prepareForm(){
-		$items = $this->model->roles()->getRelated()->teamed(false)->get();
-		foreach ($items as $item) {
-			$this->add((new Checkbox('',$item->id))
-				->setLabel($item->name)
+		$allRoles = $this->model->roles()->getRelated()->teamed(false)->get();
+		foreach ($allRoles as $role) {
+			$this->add((new Checkbox()) //we don't want a name, because we are using sync below.
+				->setLabel($role->name)
+				->setValue($role->id)
 			);
 		}
 	}
@@ -28,8 +29,7 @@ class UserRoleFormlet extends Formlet {
 	}
 
 	public function persist(): Model {
-		$this->model->roles()->sync($this->fields());
-		return $this->model;
+		return $this->edit();
 	}
 
 

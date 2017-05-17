@@ -28,7 +28,8 @@ class TagFormlet extends Formlet {
 		$field->setLabel('Name')->setRequired();
 		$this->add($field);
 
-		$field = new Checkbox('moderated');
+		$field = new Checkbox('moderated',1); //Set the checked value here..
+		$field->setDefault(0); //because this is an integer field.
 		$field->setLabel('Moderated');
 		$this->add($field);
 

@@ -29,9 +29,13 @@ class RoleFormlet extends Formlet {
 
 	public function edit(): Model {
 
+		//Do main role.
 		$role = $this->getFormlet('role')->edit();
+
+		//Do activities
 		$role->activities()->sync($this->getSubscriberFields('activities'));
 
+		//Do categories
 		$closure = function (Collection $collection): Collection {
 			return $collection->filter(
 				function ($array) {

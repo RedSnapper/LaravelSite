@@ -36,12 +36,12 @@ class UserController extends Controller {
 	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id = null) {
+	public function show(User $user) {
 		$this->authorize('USER_SHOW');
 		$form = $this->form->create(
 		  ['route' => 'user.store']
 		);
-		$form->setKey($id);
+		$form->setModel($user);
 		$form->render();
 		return view('user.form', compact('form'));
 	}
@@ -63,11 +63,11 @@ class UserController extends Controller {
 	 * @param User     $user
 	 * @return \Illuminate\Contracts\View\View
 	 */
-	public function edit($id = null) {
+	public function edit(User $user) {
 		$this->authorize('USER_MODIFY');
-		$this->form->setKey($id);
+		$this->form->setModel($user);
 		//now update method for updating an existing model.
-		return $this->form->renderWith(['route'  => ['user.update', $id],'method' => 'PATCH'])
+		return $this->form->renderWith(['route'  => ['user.update', $user->getKey()],'method' => 'PATCH'])
 		  ->with('title',"Edit User: {$this->form->getModel('user')->name}");
 	}
 
@@ -89,9 +89,9 @@ class UserController extends Controller {
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update($id) {
+	public function update(User $user) {
 		$this->authorize('USER_MODIFY');
-		$this->form->setKey($id);
+		$this->form->setModel($user);
 		$user = $this->form->update();
 		return redirect()->route('user.edit',$user->id);
 	}

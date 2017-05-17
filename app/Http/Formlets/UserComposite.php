@@ -3,6 +3,7 @@
 namespace App\Http\Formlets;
 
 use App\Models\Team;
+use App\Models\User;
 use RS\Form\Formlet;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,26 +13,25 @@ class UserComposite extends Formlet {
 	public $formView = "user.form";
 
 	public function prepareForm(){
-		if(!isset($this->key)) {
+		if(!isset($this->model)) {
 			$this->addFormlet('user',UserFormlet::class);
+			$this->model = $this->getModel('user');//->with('profile');
 		} else {
-			$this->addFormlet('user',UserEmailFormlet::class)->setKey($this->key);
+			$this->addFormlet('user',UserEmailFormlet::class)->setModel($this->model);
 		}
-		$model = $this->getModel('user');
-		$this->addFormlet('profile',UserProfileForm::class)->setKey($this->key);
 
-		$this->addFormlet('roles',UserRoleFormlet::class)->setModel($model);
+		//Set UserProfile
+		$this->addFormlet('profile',UserProfileForm::class)->setModel($this->model->profile()->first());
+
+		//Set UserRoles
+		$roles = $this->model->roles()->get();
+		$this->model->setRelation('roles',$roles);
+		$this->addFormlet("roles",UserRoleFormlet::class)->setModel($this->model);
 
 		//Set UserTeamRoles
-		$user = $this->key;
-		$teams = Team::with([
-			'userRoles' => function ($query) use ($user) {
-				$query->wherePivot('user_id', $user);
-			}
-		])->get();
+		$teams = Team::withUser($this->model)->get();
 		foreach ($teams as $team) {
-			$this->addFormlets("teams", TeamRolesFormlet::class)
-				->setKey($team->getKey())
+			$this->addFormlets("teams",TeamRolesFormlet::class)
 				->setModel($team);
 		}
 	}
@@ -64,9 +64,9 @@ class UserComposite extends Formlet {
 	public function syncTeamRoles($user) {
 		$teams = Team::get();
 		foreach($teams as $teamModel) {
-			$team = $teamModel->id;
-			$roles = $this->fields("teams.role.$team");
-			$user->syncTeamRoles($team, $roles);
+			$teamId = $teamModel->id;
+			$roles = $this->fields("teams.role.$teamId");
+			$user->syncTeamRoles($teamModel, $roles);
 		}
 	}
 

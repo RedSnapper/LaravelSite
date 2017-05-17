@@ -9,10 +9,6 @@ use App\Models\UserProfile;
 class UserProfileForm extends Formlet {
 	public $formView = "user.form";
 
-	public function __construct(UserProfile $profile) {
-		$this->setModel($profile);
-	}
-
 	public function prepareForm(){
 		$field = new Input('tel','telephone');
 		$this->add(
