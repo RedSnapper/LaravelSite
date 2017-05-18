@@ -2,17 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Activity;
 use App\Models\Category;
-use App\Models\Role;
 use App\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CategoriesTest extends TestCase {
-	use DatabaseTransactions;
 
 	/** @test */
 	function unauthorized_users_may_not_create_categories() {
@@ -20,11 +14,9 @@ class CategoriesTest extends TestCase {
 		$this->post('/api/category')
 		  ->assertRedirect('/login');
 
-		$root = create(Category::class);
-
 		$this->signIn();
 
-		$child = make(Category::class, ['parent' => $root->id]);
+		$child = make(Category::class, ['parent' => 1]);
 
 		$response = $this->json('POST', '/api/category', $child->toArray());
 
@@ -35,19 +27,16 @@ class CategoriesTest extends TestCase {
 	/** @test */
 	function an_authenticated_user_can_create_a_category() {
 
-		$root = create(Category::class);
+		$param = User::find(1);
+		$user = $this->signIn($param);
+		assertTrue($user->can('MEDIA_ACCESS'));
 
-		$user = $this->signIn();
+		$category = Category::section("MEDIA")->first()->descendants(false)->first();
+		//Source
 
-		$user->roles()->first()->givePermissionToCategory($root);
-		
-		$child = make(Category::class, ['parent' => $root->id]);
+		//Needs a team also
+		assertTrue($user->cannot('access',[$category]));
 
-		$response = $this->json('POST', '/api/category', $child->toArray());
-
-		$response
-		  ->assertStatus(201)
-		  ->assertJsonFragment(['name' => $child->name]);
 	}
 
 }
