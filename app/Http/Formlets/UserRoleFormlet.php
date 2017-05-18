@@ -21,8 +21,7 @@ use RS\Form\Formlet;
 
 class UserRoleFormlet extends Formlet {
 	public function prepareForm() {
-		$allRoles = $this->model->unteamedRoles();
-	//	$allRoles = $this->model->roles()->getRelated()->unteamed()->get();
+		$allRoles = $this->model->roles()->getRelated()->unteamed()->get();
 		foreach ($allRoles as $role) {
 			$this->add((new Checkbox())//we don't want a name, because we are using sync below.
 			->setLabel($role->name)
