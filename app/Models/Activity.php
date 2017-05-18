@@ -14,6 +14,14 @@ class Activity extends Model {
 		return $this->belongsToMany(Role::class);
 	}
 
+	/**
+	 * The following is commented because it may be plausible for material roles to be available to teams.
+	 */
+	public function availableRoles() {
+		return $this->belongsToMany(Role::class)->getRelated()->get();
+//		return $this->belongsToMany(Role::class)->getRelated()->unteamed()->get();
+	}
+
 	public function category() {
 		return $this->belongsTo(Category::class);
 	}

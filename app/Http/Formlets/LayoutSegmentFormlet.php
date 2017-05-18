@@ -10,6 +10,8 @@ use Illuminate\Contracts\Validation\Validator;
 class LayoutSegmentFormlet extends Formlet {
 
 	public $formletView = "layout.segment";
+	protected $subscriber = "subscriber";
+
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));

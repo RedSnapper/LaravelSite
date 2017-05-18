@@ -33,28 +33,7 @@ class ActivityFormlet extends Formlet {
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
 		$this->categoryHelper->field($this,'ACTIVITIES');
-		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles());
-
-	}
-
-	/**
-	 * Add subscribers to this formlet
-	 *
-	 * @param string        $name
-	 * @param string        $class
-	 * @param BelongsToMany $builder
-	 */
-	public function addSubscribers(string $name, string $class, BelongsToMany $builder, $items = null) {
-
-		$items = $builder->getRelated()->all();
-		$models = $builder->get();
-
-		foreach ($items as $item) {
-			$formlet = app()->make($class);
-			$formlet->with('activity', $this->model);
-			$model = $this->getModelByKey($item->getKey(), $models);
-			$this->addSubscriberFormlet($formlet, $name, $item, $model);
-		}
+		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles(),$this->model->availableRoles());
 	}
 
 	public function rules(): array {

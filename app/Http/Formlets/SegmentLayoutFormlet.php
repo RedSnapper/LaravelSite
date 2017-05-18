@@ -9,6 +9,7 @@ use RS\Form\Fields\Input;
 class SegmentLayoutFormlet extends Formlet {
 
 	public $formletView = "segment.layout";
+	protected $subscriber = "subscriber";
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));

@@ -14,8 +14,12 @@ class Role extends Model
 		'name','category_id','team_based'
 	];
 
-	public function scopeTeamed(Builder $query,bool $teams = true) {
-		return $query->where('team_based', $teams);
+	public function scopeTeamed(Builder $query) {
+		return $query->where('team_based',true);
+	}
+
+	public function scopeUnteamed(Builder $query) {
+		return $query->where('team_based',false);
 	}
 
 	public function category() {

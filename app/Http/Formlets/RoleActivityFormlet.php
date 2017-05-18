@@ -9,7 +9,11 @@ class RoleActivityFormlet extends Formlet{
 
 	public $formletView = "role.activity";
 
-   /**
+	//Used to mark which field is used for subscriptions.
+	protected $subscriber = 'subscriber';
+
+
+	/**
     * Prepare the form with fields
     *
     * @return void

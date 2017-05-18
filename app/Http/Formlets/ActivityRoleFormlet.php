@@ -11,6 +11,7 @@ use RS\Form\Formlet;
 use RS\Form\Fields\Checkbox;
 
 class ActivityRoleFormlet extends Formlet {
+	protected $subscriber = 'subscriber';
 	public $formletView = "activity.role";
 
 	public function prepareForm() {

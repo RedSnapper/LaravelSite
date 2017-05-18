@@ -16,16 +16,25 @@ class RoleFormlet extends Formlet {
 		$this->setModel($role);
 	}
 
-	/**
-	 * TODO: The base checkbox failed:- it is always returning true. So FTM changed this to a pure composite.
-	 * ..and that made no difference at all.
-	 */
 	public function prepareForm() {
-		$this->addFormlet('role',RoleRecordFormlet::class)->setModel($this->model);
-		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
-		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories()->withPivot('modify'), Category::ordered()->get());
-	}
+		$this->addFormlet('role', RoleRecordFormlet::class)->setModel($this->model);
 
+		//Activities
+		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
+
+		//Now do Categories.
+		$subscribeOptions = Category::ordered()->get();
+		$subscribedModels = $this->model->categories()->withPivot('modify')->get();
+		foreach ($subscribeOptions as $option) {
+			$subscribed = $this->getModelByKey($option->getKey(), $subscribedModels);
+			$formlet = $this->addFormlets('categories', RoleCategoryFormlet::class); //despite the name, addFormlets adds 1 formlet.
+			$formlet->setKey($option->getKey());
+			if(!is_null($subscribed)) {
+				$formlet->setModel($subscribed->pivot);
+			}
+			$formlet->with('option', $option);
+		}
+	}
 
 	public function edit(): Model {
 
@@ -36,15 +45,14 @@ class RoleFormlet extends Formlet {
 		$role->activities()->sync($this->getSubscriberFields('activities'));
 
 		//Do categories
-		$closure = function (Collection $collection): Collection {
-			return $collection->filter(
-				function ($array) {
-					return ((int)$array['modify'] !== UserPolicy::INHERITING);
-				}
-			);
-		};
-		$catSubs = $this->getSubscriberFields('categories', 'modify', $closure);
-		$role->categories()->sync($catSubs);
+		$categoriesToFilter = new Collection($this->fields('categories'));
+		$categories = $categoriesToFilter->filter(
+			function ($array) {
+				return ((int)$array['modify'] !== UserPolicy::INHERITING);
+			}
+		);
+
+		$role->categories()->sync($categories);
 		return $role;
 	}
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 class Tag extends Model
 {
+	//!! cast of null doesn't seem to cast to integer..
 	protected $casts = [
 		'moderated' => 'integer',
 	];
@@ -29,10 +30,11 @@ class Tag extends Model
 	 * @param $value
 	 * @return void
 	 * formlet returns null for unchecked.
+	 * For some reason unknown to me, the 'cast' doesn't seem to work on null.
 	 */
-	//public function setModeratedAttribute($value) {
-	//	$this->attributes['moderated'] = $value ? 1 : 0;
-	//}
+	public function setModeratedAttribute($value) {
+		$this->attributes['moderated'] = $value ? 1 : 0;
+	}
 
 	public static function options(Collection $categories = null) {
 		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');
