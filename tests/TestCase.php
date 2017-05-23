@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase {
 	use CreatesApplication;
-
 	private $live = false;
 	private $dead = false;
 
@@ -21,18 +20,17 @@ abstract class TestCase extends BaseTestCase {
 		}
 
 		$this->beforeApplicationDestroyed(function () {
-			if(!$this->dead) {
+			if (!$this->dead) {
 				$this->artisan('migrate:reset');
 				$this->dead = false;
 			}
 		});
 	}
 
-
 	protected function signIn($user = null) {
-		$user = $user ?: create(User::class);
-
+		$user = $user ?: User::find(1); //Param
 		$this->actingAs($user);
 		return $user;
 	}
+
 }

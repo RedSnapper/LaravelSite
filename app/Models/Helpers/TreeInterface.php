@@ -23,7 +23,7 @@ interface TreeInterface {
 
 	public function moveInto(TreeInterface $parent);
 
-	public function scopeIndex(Builder $query, int $index);
+	public function scopeIndex(Builder $query, $index);
 
 	public function scopeReference(Builder $query,string $reference);
 

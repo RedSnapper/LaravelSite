@@ -35,7 +35,14 @@ trait TreeTrait {
 		return $this->update(['parent' => $parent->idx]);
 	}
 
-	public function scopeIndex(Builder $query, int $index) {
+	private function indexWithModel(Builder $query, TreeInterface $index) {
+		return $query->where('idx', $index->id);
+	}
+
+	public function scopeIndex(Builder $query, $index) {
+		if(is_a($index,TreeInterface::class)) {
+			return $this->indexWithModel($query,$index);
+		}
 		return $query->where('idx', $index);
 	}
 
