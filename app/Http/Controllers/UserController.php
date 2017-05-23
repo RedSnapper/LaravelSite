@@ -97,14 +97,14 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
+	 * @param User $user
+	 * @return \Illuminate\Http\RedirectResponse
+	 * @throws \Exception
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function destroy($id) {
-		$this->authorize('USER_DESTROY');
-		$this->form->delete($id);
-		return redirect()->back();
+	public function destroy(User $user) {
+		$this->authorize('USER_MODIFY');
+		$user->delete();
+		return redirect()->route('user.index');
 	}
 }

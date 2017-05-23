@@ -82,13 +82,15 @@ class LayoutController extends Controller {
 	}
 
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
+	 * @param Layout $layout
+	 * @return \Illuminate\Http\RedirectResponse
+	 * @throws \Exception
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function destroy($id) {
-		$this->form->delete($id);
-		return redirect()->back();
+	public function destroy(Layout $layout) {
+		$category = $layout->category;
+		$this->authorize('modify', [$category]);
+		$layout->delete();
+		return redirect()->route('layout.index',[$category]);
 	}
 }

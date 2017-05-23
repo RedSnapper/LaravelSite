@@ -59,32 +59,32 @@ class TeamController extends Controller {
 	/**
 	 * @return \Illuminate\Contracts\View\View
 	 */
-	public function edit($id) {
-		$this->form->setKey($id);
+	public function edit(Team $team) {
+		$this->authorize('modify', [$team->category]);
+		$this->form->setModel($team);
 		return $this->form->renderWith([
-			'route'  => ['team.update', $id],
+			'route'  => ['team.update', $team->id],
 			'method' => 'PUT'
 		])
 			->with('category', "{$this->form->getModel('team')->category_id}")
 			->with('title', "Edit Team: {$this->form->getModel('team')->name}");
 	}
 
-	public function update($id) {
-		$this->form->setKey($id);
+	public function update(Team $team) {
+		$category = $team->category;
+		$this->authorize('modify', [$category]);
+		$this->form->setKey($team->id);
 		$team = $this->form->update();
 		return redirect()->route('team.edit', $team->id);
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy($id) {
-		$this->form->delete($id);
-		return redirect()->back();
+	public function destroy(Team $team) {
+		$category = $team->category;
+		$this->authorize('modify', [$category]);
+		$team->delete();
+		return redirect()->route('team.index',[$category]);
 	}
+
 
 	public function getCollection() {
 //		return $this->treeController->options($reference, $this->allowsAccess());

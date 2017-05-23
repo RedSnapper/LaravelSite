@@ -8,6 +8,7 @@
 namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
+use RS\Form\Fields\TextArea;
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
 use App\Models\Activity;
@@ -29,9 +30,9 @@ class ActivityFormlet extends Formlet {
 	}
 
 	public function prepareForm() {
-
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
+		$this->add((new TextArea('comment'))->setLabel('Comment'));
 		$this->categoryHelper->field($this,'ACTIVITIES');
 		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles(),$this->model->availableRoles());
 	}
@@ -45,11 +46,8 @@ class ActivityFormlet extends Formlet {
 	}
 
 	public function edit(): Model {
-
 		$activity = parent::edit();
-
 		$activity->roles()->sync($this->getSubscriberFields('roles'));
-
 		return $activity;
 	}
 

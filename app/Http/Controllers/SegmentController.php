@@ -78,16 +78,11 @@ class SegmentController extends Controller {
 		return redirect()->route('segment.edit', $segment->id);
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy($id) {
-		$this->form->delete($id);
-
-		return redirect()->route('segment.index');
+	public function destroy(Segment $segment) {
+		$category = $segment->category;
+		$this->authorize('modify', [$category]);
+		$segment->delete();
+		return redirect()->route('segment.index',[$category]);
 	}
 
 }

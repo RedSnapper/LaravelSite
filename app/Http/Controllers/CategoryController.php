@@ -87,15 +87,10 @@ class CategoryController extends ApiController {
 	}
 
 	public function destroy(Category $category) {
-
 		$this->authorize('modify',$category);
-
 		$category->delete();
-
 		return $this->respondWithItem($category);
 	}
-
-
 
 	private function allowsModify() {
 		return function (Category $category) {

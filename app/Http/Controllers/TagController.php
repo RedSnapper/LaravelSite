@@ -84,7 +84,6 @@ class TagController extends Controller {
 	public function destroy(Tag $tag) {
 		$this->authorize('modify', $tag->category);
 		$category = $tag->category;
-		//Now delete the object.
 		$tag->delete();
 		return redirect()->route('tag.index',[$category]);
 	}

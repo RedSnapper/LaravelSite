@@ -109,9 +109,9 @@ class MediaController extends Controller {
 	}
 
 	public function destroy(Media $medium) {
-		$this->authorize('modify', [$medium->category, $medium->team]);
 		$team = $medium->team;
 		$category = $medium->category;
+		$this->authorize('modify', [$category, $team]);
 		//Now delete the media.
 		$medium->delete();
 		return redirect()->route('media.index',[$team,$category]);

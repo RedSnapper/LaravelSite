@@ -70,20 +70,23 @@ class ActivityController extends Controller {
 			->with('title',"Edit Activity: {$this->form->getModel('activity')->name}");
 	}
 
-	public function update($id) {
-		$this->form->setKey($id);
+	public function update(Activity $activity) {
+		$this->authorize('modify', [$activity->category]);
+		$this->form->setKey($activity->id);
 		$activity = $this->form->update();
 		return redirect()->route('activity.edit',$activity->id);
 	}
 
-
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int $id
-	 * @return \Illuminate\Http\Response
+	 * @param Activity $activity
+	 * @return \Illuminate\Http\RedirectResponse
+	 * @throws \Exception
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function destroy($id) {
-		return redirect()->back();
+	public function destroy(Activity $activity) {
+		$category = $activity->category;
+		$this->authorize('modify', [$category]);
+		$activity->delete();
+		return redirect()->route('activity.index',[$category]);
 	}
 }

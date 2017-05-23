@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Activity extends Model {
 
 	protected $fillable = [
-		'name','label','category_id'
+		'name','label','category_id','comment'
 	];
 
 	public function roles() {
