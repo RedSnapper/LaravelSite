@@ -33,14 +33,14 @@ class TreeObserver {
 			$heaven = $treeSize + 1000;
 			if (($node->idx == $originalIndex) || (is_null($node->idx))) { //we only have the parent.
 				$parent = $node->parent()->first();
-				$node->idx = $parent->nextchild; //now we have the parent's nextChild.
+				$node->idx = ($parent->idx + $parent->size); //now we have the parent's nextChild.
 			} elseif( is_null($node->parent) ) { //moving by index. if index is same then we need to see if it's parent
 				$node->parent = $node->index($node->idx)->first()->parent;
 			} else {
 				//we have both node and parent. we need to check that the parent's nc >= our idx.
 				$parent = $node->parent()->first();
-				if($parent->nextchild < $node->idx) {
-					$node->idx = $parent->nextchild;
+				if( ($parent->idx + $parent->size) < $node->idx) {
+					$node->idx =  ($parent->idx + $parent->size);
 				}
 			}
 			//now both the index and parent are ready. Let's check that they have actually changed after all.
@@ -98,14 +98,14 @@ class TreeObserver {
 		$node->size = 1; //The size of a new node is always going to be 1. so the nextchild will be index+1;
 		$root = $node->index(1)->first();
 		if(isset($root->idx)) {
-			if(!isset($node->idx) || ($node->idx > $root->nextchild) || ($node->idx < 1)) {
+			if(!isset($node->idx) || ($node->idx > ($root->idx + $root->size)) || ($node->idx < 1)) {
 				if(!isset($node->parent)) {
 					$parent = $root;
 				} else {
 					$parent = $node->index($node->parent)->first();
 				}
 				$node->parent = $parent->idx;
-				$node->idx = $parent->nextchild;
+				$node->idx = ($parent->idx + $parent->size);
 				$node->depth = $parent->depth+1;
 			} else {
 				//new tree.

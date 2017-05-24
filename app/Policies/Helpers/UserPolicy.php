@@ -113,7 +113,7 @@ class UserPolicy {
 		$user = $this->getUserID($user);
 		$query = $this->connection->table('categories as self')->select('self.id', DB::raw('max(category_role.modify) as modify'))
 			->join('categories', function ($join) {
-				$join->on('self.idx', '<', 'categories.nextchild')->on('self.idx', '>=', 'categories.idx');
+				$join->on('self.idx', '<', DB::raw('(categories.idx+categories.size)'))->on('self.idx', '>=', 'categories.idx');
 			})
 			->join('category_role', 'categories.id', 'category_role.category_id')
 			->join('role_user', 'category_role.role_id', 'role_user.role_id')
@@ -136,7 +136,7 @@ class UserPolicy {
 			DB::raw('max(category_role.modify) as modify')
 		)
 			->join('categories', function ($join) {
-				$join->on('self.idx', '<', 'categories.nextchild')->on('self.idx', '>=', 'categories.idx');
+				$join->on('self.idx', '<', DB::raw('(categories.idx+categories.size)'))->on('self.idx', '>=', 'categories.idx');
 			})
 			->join('category_role', 'categories.id', 'category_role.category_id')
 			->join('role_team_user', 'category_role.role_id', 'role_team_user.role_id')

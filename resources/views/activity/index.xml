@@ -10,7 +10,7 @@
         <h3 data-v.child="category.name"/>
         <ul data-v.foreach="activities" data-v.name="activity" class="list-group">
             <li class="list-group-item">
-                <a data-v.url="/activity/{activity.id}/edit">
+                <a data-v.route="activity.edit" data-v.param="activity">
                     <span data-v.replace="activity.label"/>
                 </a>
             </li>
@@ -18,7 +18,7 @@
         <div data-v.contents="#document"/>
         <div data-v.pagination="layouts.pagination" data-v.name="activities"/>
         <div data-v.exists="category.id" class="well text-right">
-            <a data-v.url="/activity/create/{category.id}" data-v.can="modify" data-v.param="category"
+            <a data-v.route="activity.create" data-v.can="modify" data-v.param="category"
                class="btn btn-primary">New Activity
             </a>
         </div>

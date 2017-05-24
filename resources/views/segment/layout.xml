@@ -1,6 +1,6 @@
 <!DOCTYPE tr>
 <tr xmlns="http://www.w3.org/1999/xhtml" data-v.controller="form.main">
-    <td><a data-v.url="/layout/{option.id}/edit"><div data-v.replace="option.name"/></a></td>
+    <td><a data-v.route="layout.edit" data-v.param="option"><div data-v.replace="option.name"/></a></td>
     <td><div data-v.field="subscriber"/></td>
     <td><div data-v.field="syntax"/></td>
 </tr>

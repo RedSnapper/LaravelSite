@@ -20,6 +20,7 @@ Route::resource('/user','UserController');
 //Teams
 Route::resource('/team','TeamController', ['except' => 'show']);
 Route::get('team/{category?}', 'TeamController@index')->name('team.index');
+Route::get('team/create/{category?}', 'TeamController@create')->name('team.create');
 
 //Activities
 Route::resource('/activity','ActivityController', ['except' => 'show']);
@@ -29,10 +30,12 @@ Route::get('activity/create/{category?}', 'ActivityController@create')->name('ac
 //Layouts
 Route::resource('/layout','LayoutController', ['except' => 'show']);
 Route::get('layout/{category?}', 'LayoutController@index')->name('layout.index');
+Route::get('layout/create/{category?}', 'LayoutController@create')->name('layout.create');
 
 //Segments
 Route::resource('/segment','SegmentController', ['except' => 'show']);
 Route::get('segment/{category?}', 'SegmentController@index')->name('segment.index');
+Route::get('segment/create/{category?}', 'SegmentController@create')->name('segment.create');
 
 //Roles;
 Route::resource('/role','RoleController', ['except' => 'show']);

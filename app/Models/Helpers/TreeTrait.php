@@ -23,11 +23,11 @@ trait TreeTrait {
 	}
 
 	public function moveAfter(TreeInterface $sibling) {
-		$siblingRight = $this->index($sibling->nextchild)->first();
+		$siblingRight = $this->index($sibling->idx + $sibling->size)->first();
 		if(is_null($siblingRight) || ($siblingRight->parent != $sibling->parent)) {
 			return  $this->update(['idx' => null, 'parent'=> $sibling->parent ] );
 		} else {
-			return  $this->update(['idx' => $sibling->nextchild,'parent'=> $sibling->parent ] );
+			return  $this->update(['idx' => ($sibling->idx + $sibling->size),'parent'=> $sibling->parent ] );
 		}
 	}
 
@@ -50,7 +50,7 @@ trait TreeTrait {
 		if (!empty($scope)) {
 			$table = $this->getTable();
 			return $query->select("$table.*")->join("$table as a", function ($join) use ($table) {
-				return $join->on("a.nextchild", '>', "$table.idx")->on("a.idx", '<', "$table.idx");
+				return $join->on(DB::raw('(a.idx+a.size)'), '>', "$table.idx")->on("a.idx", '<', "$table.idx");
 			})->where("$table.section", false)->where("$table.name", $reference)->where("a.section", true)->where("a.name", $scope);
 		} else {
 			return $query->where('name', $reference)->where('section', false);
@@ -72,7 +72,7 @@ trait TreeTrait {
 	public function scopeAncestors(Builder $query, bool $self = false) {
 		$plus = $self ? [$this->parent, $this->idx] : [$this->parent];
 		return $query->where(function ($node) {
-			$node->where('nextchild', '>=', $this->idx)->where('idx', '<', $this->parent);
+			$node->where(DB::raw('(idx+size)'), '>=', $this->idx)->where('idx', '<', $this->parent);
 		})->orWhereIn('idx', $plus)->ordered();
 	}
 
@@ -90,7 +90,7 @@ trait TreeTrait {
 
 	public function scopeDescendants(Builder $query, bool $self = false, bool $ordered = true) {
 		$alsoSelf = $self ? '>=' : '>';
-		$result = $query->where("idx", "<", $this->nextchild)->where("idx", $alsoSelf, $this->idx);
+		$result = $query->where("idx", "<", ($this->idx + $this->size))->where("idx", $alsoSelf, $this->idx);
 		if ($ordered) {
 			$result = $result->ordered();
 		}
@@ -114,7 +114,7 @@ trait TreeTrait {
 
 		//select *  from node where nextchild > (select count(*)+1 from node);
 		$bad_nodes = $this->newQuery()
-			->where('nextchild', '>', function ($query) use ($table) {
+			->where(DB::raw('(idx+size)'), '>', function ($query) use ($table) {
 				$query->selectRaw('count(*) + 1')->from($table);
 			})->get();
 		if ($bad_nodes->count() > 0) {
@@ -123,7 +123,7 @@ trait TreeTrait {
 
 		//select * from node n left join node m on m.idx = if((n.idx-1) = 0,n.nextchild-1,n.idx-1) where n.idx is null;
 		$bad_nodes = DB::table("$table as n")->leftJoin("$table as m", function ($join) {
-			$join->on('m.idx', '=', DB::Raw("if((n.idx-1) = 0,n.nextchild-1,n.idx-1)"));
+			$join->on('m.idx', '=', DB::Raw("if((n.idx-1) = 0,(n.idx+n.size)-1,n.idx-1)"));
 		})->whereNull('n.idx')->get();
 		if ($bad_nodes->count() > 0) {
 			$result['invalid index ordinal'] = $bad_nodes->all();
@@ -131,7 +131,7 @@ trait TreeTrait {
 
 		//select * from node p,node n where p.id=n.p and not(p.idx < n.idx and p.nextchild > n.idx)";
 		$bad_nodes = DB::table("$table as m")->join("$table as d", function ($join) {
-			$join->on('d.idx', '<', DB::Raw("m.nextchild and d.idx > m.idx and not(d.parent >= m.idx or d.nextchild <= m.nextchild or d.parent < m.nextchild)"));
+			$join->on('d.idx', '<', DB::Raw("(m.idx+m.size) and d.idx > m.idx and not(d.parent >= m.idx or (d.idx+d.size) <= (m.idx+m.size) or d.parent < (m.idx+m.size))"));
 		})->get();
 		if ($bad_nodes->count() > 0) {
 			$result['greedy descendants'] = $bad_nodes->all();
@@ -139,14 +139,14 @@ trait TreeTrait {
 
 		//select m.* from `node` as `m` left join `node` as `d` on `d`.`idx` < m.nextchild and d.idx > m.idx and d.parent >= m.idx and d.nextchild <= m.nextchild and d.parent < m.nextchild group by m.id having m.size!=count(d.id)+1
 		$bad_nodes = DB::table("$table as m")->select(DB::Raw('m.*'))->leftJoin("$table as d", function ($join) {
-			$join->on('d.idx', '<', DB::Raw("m.nextchild and d.idx > m.idx and d.parent >= m.idx and d.nextchild <= m.nextchild and d.parent < m.nextchild"));
+			$join->on('d.idx', '<', DB::Raw("(m.idx+m.size) and d.idx > m.idx and d.parent >= m.idx and (d.idx+d.size) <= (m.idx+m.size) and d.parent < (m.idx+m.size)"));
 		})->groupBy('m.id')->havingRaw("m.size!=count(d.id)+1")->get();
 		if ($bad_nodes->count() > 0) {
 			$result['descendants not well-formed'] = $bad_nodes->all();
 		}
 
 		$bad_nodes = collect(DB::select(DB::Raw("select m.*,1+count(a.id) as tier from $table as m,$table as a 
-		where a.nextchild > m.idx and a.idx < m.idx group by m.id having m.depth != tier")));
+		where (a.idx+a.size) > m.idx and a.idx < m.idx group by m.id having m.depth != tier")));
 		if ($bad_nodes->count() > 0) {
 			$result['incorrect depths'] = $bad_nodes->all();
 		}
@@ -159,7 +159,7 @@ trait TreeTrait {
 
 		//select * from node p,node n where p.id=n.p and not(p.idx < n.idx and p.nextchild > n.idx)";
 		$bad_nodes = DB::table("$table as p")->join("$table as n", function ($join) {
-			$join->on('p.idx', '=', DB::Raw("n.parent and not(p.idx < n.idx and p.nextchild > n.idx)"));
+			$join->on('p.idx', '=', DB::Raw("n.parent and not(p.idx < n.idx and (p.idx+p.size) > n.idx)"));
 		})->get();
 		if ($bad_nodes->count() > 0) {
 			$result['self-descendant parents'] = $bad_nodes->all();
@@ -167,7 +167,7 @@ trait TreeTrait {
 
 		//select * from node as n inner join `node` as m on (m.idx=n.nextchild and n.size != m.idx-n.idx)
 		$bad_nodes = DB::table("$table as n")->join("$table as m", function ($join) {
-			$join->on('m.idx', '=', DB::Raw("n.nextchild and n.size != m.idx-n.idx"));
+			$join->on('m.idx', '=', DB::Raw("(n.idx+n.size) and n.size != m.idx-n.idx"));
 		})->get();
 		if ($bad_nodes->count() > 0) {
 			$result['bad branch sizes'] = $bad_nodes->all();

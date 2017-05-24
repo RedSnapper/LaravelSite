@@ -12,6 +12,7 @@ abstract class TestCase extends BaseTestCase {
 
 	//Run Database setup.
 	protected function setUp() {
+		echo 'P';
 		if (!$this->live) {
 			parent::setUp();
 			$this->artisan('migrate');

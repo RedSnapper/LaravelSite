@@ -12,7 +12,7 @@
             <h3 data-v.child="category.name"/>
             <ul data-v.foreach="teams" data-v.name="team" class="list-group">
                 <li class="list-group-item">
-                    <a data-v.url="/team/{team.id}/edit">
+                    <a data-v.route="team.edit" data-v.param="team">
                         <span data-v.replace="team.name"/>
                     </a>
                 </li>
@@ -20,7 +20,7 @@
             <div data-v.contents="#document"/>
             <div data-v.pagination="layouts.pagination" data-v.name="teams"/>
             <div data-v.exists="category.id" class="well text-right">
-                <a data-v.url="/team/create/{category.id}" class="btn btn-primary">New Team</a>
+                <a data-v.route="team.create" data-v.can="modify" data-v.param="category" class="btn btn-primary">New Team</a>
             </div>
 
         </div>

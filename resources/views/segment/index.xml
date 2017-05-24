@@ -10,7 +10,7 @@
         <h3 data-v.child="category.name"/>
         <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
             <li class="list-group-item">
-                <a data-v.url="/segment/{segment.id}/edit">
+                <a data-v.route="segment.edit" data-v.param="segment">
                     <span data-v.replace="segment.name"/>
                 </a>
             </li>
@@ -19,15 +19,10 @@
         <div data-v.pagination="layouts.pagination" data-v.name="segments"/>
 
         <div data-v.exists="category.id" class="well text-right">
-            <a data-v.url="/segment/create/{category.id}" data-v.can="modify" data-v.param="category"
+            <a data-v.route="segment.create" data-v.can="modify" data-v.param="category"
                class="btn btn-primary">New Segment
             </a>
         </div>
         <div data-v.include="layouts.integrity"/>
     </div>
 </div>
-
-
-
-
-

@@ -17,7 +17,7 @@
             <ul data-v.foreach="medias" data-v.name="media" class="list-group">
                 <li class="list-group-item">
                     <div data-v.can="modify" data-v.param="category;team">
-                        <a data-v.url="/media/{media.id}/edit">
+                        <a data-v.route="media.edit" data-v.param="media">
                             <img data-v.attr.src="{media.thumbnail}"/>
                             <span data-v.replace="media.name"/>
                         </a>
@@ -34,7 +34,7 @@
             <div data-v.pagination="layouts.pagination" data-v.name="medias"/>
             <div data-v.exists="category">
                 <div data-v.can="modify" data-v.param="category;team" class="well text-right">
-                    <a data-v.url="/media/create/{team.id}/{category.id}" class="btn btn-primary">New Media</a>
+                    <a data-v.route="media.create" data-v.param="team;category" class="btn btn-primary">New Media</a>
                 </div>
             </div>
         </div>

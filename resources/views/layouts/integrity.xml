@@ -11,8 +11,7 @@
                     <th>index</th>
                     <th>size</th>
                     <th>depth</th>
-                    <th>nextchild</th>
-                </tr>
+                 </tr>
             </thead>
             <tbody data-v.foreach="item" data-v.name="node">
                 <tr>
@@ -22,7 +21,6 @@
                     <td data-v.child="node.idx"/>
                     <td data-v.child="node.size"/>
                     <td data-v.child="node.depth"/>
-                    <td data-v.child="node.nextchild"/>
                 </tr>
             </tbody>
         </table>

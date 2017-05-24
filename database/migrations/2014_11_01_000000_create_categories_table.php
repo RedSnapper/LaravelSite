@@ -13,7 +13,6 @@ class CreateCategoriesTable extends Migration {
 			$table->integer('idx')->unsigned()->index();
 			$table->integer('parent')->unsigned()->index()->nullable();
 			$table->integer('size')->unsigned()->nullable();
-			$table->integer('nextchild')->storedAs("`idx`+size")->index();
 			$table->integer('depth')->unsigned()->nullable();
 		});
 
