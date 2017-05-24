@@ -1,5 +1,5 @@
 <!DOCTYPE li>
-<li xmlns="http://www.w3.org/1999/xhtml" data-v.can="ACCESS_CONTROL" class="dropdown">
+<li xmlns="http://www.w3.org/1999/xhtml" class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
        aria-expanded="false">Access Control
         <span class="caret"/>

@@ -39,7 +39,7 @@ class MediaController extends Controller {
 			->category($category->id)
 			->paginate(10);
 
-		return view("media.index", compact('team', 'medias', 'category'));
+		return view("media.index", compact('team', 'medias', 'category'))->with('section','MEDIA');
 	}
 
 	public function show(Media $medium) {
@@ -65,6 +65,7 @@ class MediaController extends Controller {
 			return $form->render()
 				->with('title', 'New Media')
 				->with('category', $category)
+				->with('section','MEDIA')
 				->with('team', $team);
 		}
 	}
@@ -97,7 +98,8 @@ class MediaController extends Controller {
 		])
 			->with('media', $medium)
 			->with('category', $medium->category)
-			->with('team', $medium->team);
+			->with('team', $medium->team)
+		  ->with('section','MEDIA');
 	}
 
 	public function update(Media $medium, MediaEditFormlet $form) {
@@ -123,6 +125,6 @@ class MediaController extends Controller {
 		if ($query) {
 			$medias = Media::search($query)->paginate(10);
 		}
-		return view("media.search", compact('medias', 'query'));
+		return view("media.search", compact('medias', 'query'))->with('section','MEDIA');
 	}
 }

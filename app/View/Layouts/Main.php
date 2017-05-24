@@ -11,7 +11,7 @@ class Main extends ViewController {
 	//protected $parent = "page";
 
 	public function compose(View $view) {
-		$view->with('foo','bar');
+//		$view->with('foo','bar');
 	}
 
 	public function renderChild(Document $view, Document $child,array $data): Document {

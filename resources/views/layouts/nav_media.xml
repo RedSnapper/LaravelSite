@@ -1,11 +1,20 @@
 <!DOCTYPE li>
 <li xmlns="http://www.w3.org/1999/xhtml" class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Media<span class="caret"/></a>
-    <ul class="dropdown-menu" data-v.foreach="teams" data-v.name="team" >
+
+    <ul class="dropdown-menu" data-v.foreach="teams" data-v.name="team" data-v.nomatch="section" data-v.literal="MEDIA">
+        <li data-v.can="access" data-v.param="team">
+            <a data-v.route="media.index" data-v.param="team">
+                <span data-v.replace="team.name"/>
+            </a>
+        </li>
+    </ul>
+
+    <ul class="dropdown-menu" data-v.foreach="teams" data-v.name="team" data-v.match="section" data-v.literal="MEDIA" >
         <li data-v.can="access" data-v.param="team">
             <a data-v.route="media.index" data-v.param="team;category">
                 <span data-v.replace="team.name"/>
             </a>
         </li>
-    </ul>
+   </ul>
 </li>
