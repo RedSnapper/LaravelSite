@@ -2,11 +2,11 @@
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
     <div class="row" data-v.can="modify" data-v.param="category;team">
         <div class="col-md-3 col-lg-2">
-            <h4>Media:
+            <h3>Media:
                 <i data-v.child="team.name">
                     <span data-replace="media.id"/>
                 </i>
-            </h4>
+            </h3>
             <div id="treeTeam"
                  data-v.xp="tree"
                  data-v.attr.data-link="/media/{team.id}"

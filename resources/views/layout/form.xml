@@ -1,10 +1,16 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main">
-    <h1 data-v.child="title"/>
-    <div class="row" data-v.container="form.form">
-        <div class="col-md-8">
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Layouts</h3>
+            <div>
+                <div id="tree" data-v.xp="tree" data-v.attr.data-link="/layout"
+                     data-url="/api/category?section=LAYOUTS"/>
+                <div data-v.include="layouts.treemenu"/>
+            </div>
+        </div>
+        <div class="col-md-8" data-v.container="form.form">
             <div data-v.replace="form.base"/>
-
             <table class="table">
                 <thead>
                     <tr>
@@ -17,7 +23,7 @@
                     <tr data-v.replace="segment"/>
                 </tbody>
             </table>
-            <div data-v.include="form.buttons" />
+            <div data-v.include="form.buttons"/>
         </div>
     </div>
 </div>

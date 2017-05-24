@@ -1,7 +1,7 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
     <div class="col-md-3">
-        <h1>Tags</h1>
+        <h3>Tags</h3>
         <div>
             <div id="tree" data-v.xp="tree" data-v.attr.data-link="/tag" data-url="/api/category?section=TAGS"/>
             <div data-v.include="layouts.treemenu"/>

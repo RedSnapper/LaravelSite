@@ -1,15 +1,14 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
 
-    <h1>Media Search</h1>
-
+    <h3>Media Search</h3>
 
     <div class="row">
         <div class="col-md-8">
             <form class="form-inline">
                 <div class="form-group">
                     <label class="sr-only" for="query">Search</label>
-                    <input type="search" name="query" class="form-control" id="query" data-v.attr.value="{query}" />
+                    <input type="search" name="query" class="form-control" id="query" data-v.attr.value="{query}"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
@@ -21,7 +20,7 @@
             <ul data-v.foreach="medias" data-v.name="media" class="list-group">
                 <li class="list-group-item" data-v.can="access" data-v.param="media.category;media.team">
                     <a data-v.url="/media/{media.id}/edit">
-                        <img data-v.attr.src="{media.thumbnail}" />
+                        <img data-v.attr.src="{media.thumbnail}"/>
                         <span data-v.replace="media.name"/>
                     </a>
                 </li>

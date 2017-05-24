@@ -1,30 +1,33 @@
 <!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
-
-    <div class="row">
-        <div class="col-md-3">
-            <h1>Segments</h1>
-            <div id="tree" data-v.xp="tree" data-v.attr.data-link="/segment" data-url="/api/category?section=SEGMENTS"/>
-            <div data-v.include="layouts.treemenu"/>
-        </div>
-
-        <div class="col-md-6">
-            <h2 data-v.child="category.name"/>
-            <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
-                <li class="list-group-item">
-                    <a data-v.url="/segment/{segment.id}/edit">
-                        <span data-v.replace="segment.name"/>
-                    </a>
-                </li>
-            </ul>
-
-            <div data-v.pagination="layouts.pagination" data-v.name="segments"/>
-
-        </div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category"
+     class="row">
+    <div class="col-md-3">
+        <h3>Segments</h3>
+        <div id="tree" data-v.xp="tree" data-v.attr.data-link="/segment" data-url="/api/category?section=SEGMENTS"/>
+        <div data-v.include="layouts.treemenu"/>
     </div>
+    <div class="col-md-6">
+        <h3 data-v.child="category.name"/>
+        <ul data-v.foreach="segments" data-v.name="segment" class="list-group">
+            <li class="list-group-item">
+                <a data-v.url="/segment/{segment.id}/edit">
+                    <span data-v.replace="segment.name"/>
+                </a>
+            </li>
+        </ul>
+        <div data-v.contents="#document"/>
+        <div data-v.pagination="layouts.pagination" data-v.name="segments"/>
 
-    <div data-v.exists="category.id" class="well text-right">
-        <a data-v.url="/segment/create/?category={category.id}" class="btn btn-primary">New Segment</a>
+        <div data-v.exists="category.id" class="well text-right">
+            <a data-v.url="/segment/create/{category.id}" data-v.can="modify" data-v.param="category"
+               class="btn btn-primary">New Segment
+            </a>
+        </div>
+        <div data-v.include="layouts.integrity"/>
     </div>
-    <div data-v.include="layouts.integrity" />
 </div>
+
+
+
+
+
