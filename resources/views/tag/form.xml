@@ -11,7 +11,7 @@
         <div class="col-md-8">
             <h1 data-v.child="title" />
                 <div data-v.replace="form"/>
-            <button class="btn btn-primary" type="submit">Save</button>
+                <div data-v.include="form.buttons" />
         </div>
     </div>
 </div>

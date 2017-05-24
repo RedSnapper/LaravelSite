@@ -15,6 +15,7 @@ class CreateActivitiesTable extends Migration {
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->string('label')->nullable();
+			$table->text('comment')->nullable();
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');

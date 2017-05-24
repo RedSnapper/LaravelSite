@@ -10,10 +10,6 @@ class Layout extends Model
 		'name','category_id'
 	];
 
-	public function mm() {
-		return $this->belongsToMany(Segment::class)->withPivot('syntax');
-	}
-
 	public function category() {
 //	HasOne for 1:1 relation .
 //	BelongsTo for 1:* relation

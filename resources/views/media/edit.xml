@@ -27,16 +27,8 @@
                 <div class="row" data-v.container="form.form">
                     <div class="col-md-12">
                         <div data-v.replace="form"/>
-                        <button name="_method" class="btn btn-danger" type="submit" value="delete">Delete</button>
-
-                        <button data-v.exists="media.prev_id" class="btn btn-secondary" name="_fn" value="undo"
-                                type="submit">Undo
-                        </button>
-                        <button data-v.exists="media.next_id" class="btn btn-secondary" name="_fn" value="redo"
-                                type="submit">Redo
-                        </button>
-                        <button class="btn btn-primary" type="submit">Save Edits</button>
-                    </div>
+                        <div data-v.include="form.buttons" data-v.param="prev_id:media.prev_id;next_id:media.next_id"/>
+                     </div>
                 </div>
             </div>
             <div class="row-fluid col-md-12 col-lg-7">

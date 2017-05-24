@@ -3,4 +3,3 @@
     <td><a data-v.url="/activity/{option.id}/edit"><div data-v.replace="option.name"/></a></td>
     <td><div data-v.field="subscriber"/></td>
 </tr>
-

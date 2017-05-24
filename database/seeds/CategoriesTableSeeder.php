@@ -22,7 +22,7 @@ class CategoriesTableSeeder extends Seeder  {
 		$this->addGroup('ROLES',['General Roles','Team Roles']);
 		$this->addGroup('SEGMENTS',['Segments']);
 		$this->addGroup('LAYOUTS',['Layouts']);
-		$this->addGroup('ACTIVITIES',['Control']);
+		$this->addGroup('ACTIVITIES',['Control','Editorial']);
 		$this->addGroup('MEDIA',['Source','Pre-Production','Post-Production']);
 		$this->addGroup('TEAMS',['Organisations','Agencies','Other']);
 		$this->addGroup('TAGS',['Media']);

@@ -83,6 +83,7 @@ class User extends Authenticatable {
 		}
 	}
 
+//public function revoke
 	public function assignRole($role, $team = null) {
 		if (is_null($team)) {
 			return $this->roles()->save(

@@ -36,7 +36,7 @@
                     <tr data-v.replace="category"/>
                 </tbody>
             </table>
-            <button class="btn btn-primary" type="submit">Submit</button>
+            <div data-v.include="form.buttons" />
         </div>
     </div>
 </div>

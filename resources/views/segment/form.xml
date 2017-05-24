@@ -17,10 +17,7 @@
                     <tr data-v.replace="layout"/>
                 </tbody>
             </table>
-
-            <button name="_method" class="btn btn-danger" type="submit" value="delete">Delete</button>
-            <button class="btn btn-primary" type="submit">Submit</button>
-
+            <div data-v.include="form.buttons" />
         </div>
     </div>
 </div>

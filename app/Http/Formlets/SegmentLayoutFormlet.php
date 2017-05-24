@@ -7,16 +7,16 @@ use RS\Form\Fields\Checkbox;
 use RS\Form\Fields\Input;
 
 class SegmentLayoutFormlet extends Formlet {
-
 	public $formletView = "segment.layout";
 	protected $subscriber = "subscriber";
 
 	public function prepareForm() {
 		$this->add((new Checkbox('subscriber')));
+
 		$field = new Input('text', 'syntax');
-		$this->add(
-		  $field->setDefault($this->getData('segment.syntax'))
-		);
+		$field->setValue($this->getData('subscriber.pivot.syntax'));
+		$field->setDefault($this->getData('master.syntax'));
+		$this->add($field);
 	}
 
 }

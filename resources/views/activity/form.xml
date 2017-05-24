@@ -8,7 +8,6 @@
                 <div data-v.include="layouts.treemenu"/>
             </div>
         </div>
-
         <div class="col-md-8" data-v.container="form.form">
             <div data-v.replace="form.base"/>
 
@@ -23,10 +22,7 @@
                     <tr data-v.replace="role"/>
                 </tbody>
             </table>
-
-            <button name="_method" class="btn btn-danger" type="submit" value="delete">Delete</button>
-            <button class="btn btn-primary" type="submit">Submit</button>
-
+            <div data-v.include="form.buttons"/>
         </div>
     </div>
 </div>

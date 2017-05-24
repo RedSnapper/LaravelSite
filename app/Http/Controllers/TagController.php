@@ -55,20 +55,16 @@ class TagController extends Controller {
 	}
 
 
-	/**
-	 * @return \Illuminate\Contracts\View\View
-	 */
 	public function edit(Tag $tag) {
 		$this->authorize('modify', $tag->category);
-
 		$form = $this->form->create(
 			['route'  => ['tag.update',$tag ],
 			 'method' => 'PUT'
 			]);
 		$form->setModel($tag);
 		return $form->render()
-			->with(['title' => "Editing"]);
-
+			->with(['title' => "Tag '$tag->name'"])
+			->with('category', $tag->category);
 	}
 
 	public function update(Tag $tag, TagFormlet $form) {

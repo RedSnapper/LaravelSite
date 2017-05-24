@@ -13,7 +13,7 @@ use RS\NView\Document;
 use RS\NView\View;
 use RS\NView\ViewController;
 
-class MediaNav extends ViewController {
+class NavMedia extends ViewController {
 
 	public function compose(View $view) {
 

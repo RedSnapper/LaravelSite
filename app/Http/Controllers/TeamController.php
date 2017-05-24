@@ -34,15 +34,19 @@ class TeamController extends Controller {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return View
+	 * @param Category $category
+	 * @return mixed
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function create(Request $request) {
-		$category = $request->get('category', '');
-		$form = $this->form->create(['route' => 'team.store']);
-		$form->with('category', $category);
-		return $form->render()->with('title', 'New Team');
+	public function create(Category $category) {
+		if ($category->exists) {
+			$this->authorize('modify', $category);
+			$form = $this->form->create(['route' => 'team.store']);
+			$form->with('category', $category);
+			return $form->render()
+				->with('name', 'New Team')
+				->with('category', $category);
+		}
 	}
 
 	/**

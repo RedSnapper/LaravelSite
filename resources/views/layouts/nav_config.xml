@@ -1,0 +1,14 @@
+<!DOCTYPE li>
+<li xmlns="http://www.w3.org/1999/xhtml" class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+       aria-expanded="false">Editorial Config<span class="caret"/>
+    </a>
+    <ul class="dropdown-menu">
+        <li data-v.can="LAYOUTS_ACCESS">
+            <a data-v.route="layout.index">Layouts</a>
+        </li>
+        <li data-v.can="SEGMENTS_ACCESS">
+            <a data-v.route="segment.index">Segments</a>
+        </li>
+    </ul>
+</li>

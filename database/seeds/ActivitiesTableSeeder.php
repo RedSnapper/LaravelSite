@@ -9,16 +9,20 @@ class ActivitiesTableSeeder extends BaseTableSeeder {
 	public function run() {
 
 		//Do NOT add ACCESS/MODIFY to Category controlled objects.
-		//Users
+
+		//User/Access
 		$category = $this->getCategory('Control');
-		$this->create('USER_CONTROL','Eligible to reach user control',$category); //All Users do we need this?
+		//General Access Management
+		$this->create('ACCESS_CONTROL','Eligible to reach access control',$category); //All of Roles/Activities/Teams
+
 		$this->create('USER_ACCESS','User management access',$category);
 		$this->create('USER_MODIFY','User modification',$category);
 		$this->create('USER_SELF_MODIFY','Own Profile Editing',$category);
 		$this->create('USER_SHOW','User show details',$category);
 
-		//General Access Management
-		$this->create('ACCESS_CONTROL','Eligible to reach access control',$category); //All of Roles/Activities/Teams
+		//Editorial config (layouts, segments, etc).
+		$category = $this->getCategory('Editorial');
+		$this->create('EDIT_CONFIG','Editorial configuration access',$category);
 
 	}
 

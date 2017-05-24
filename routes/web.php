@@ -24,6 +24,7 @@ Route::get('team/{category?}', 'TeamController@index')->name('team.index');
 //Activities
 Route::resource('/activity','ActivityController', ['except' => 'show']);
 Route::get('activity/{category?}', 'ActivityController@index')->name('activity.index');
+Route::get('activity/create/{category?}', 'ActivityController@create')->name('activity.create');
 
 //Layouts
 Route::resource('/layout','LayoutController', ['except' => 'show']);

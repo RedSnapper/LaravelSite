@@ -1,0 +1,7 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml" class="row" dir="rtl">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <button name="_fn" value="redo" data-v.exists="next_id" class="btn btn-secondary" >Redo</button>
+    <button name="_fn" value="undo" data-v.exists="prev_id" class="btn btn-secondary" >Undo</button>
+    <button name="_method" class="btn btn-danger" value="delete">Delete</button>
+</div>

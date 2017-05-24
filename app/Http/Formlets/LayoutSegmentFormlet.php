@@ -17,13 +17,9 @@ class LayoutSegmentFormlet extends Formlet {
 		$this->add((new Checkbox('subscriber')));
 
 		$field = new Input('text', 'syntax');
-		$this->add(
-		  $field->setDefault($this->getData('segments.syntax'))
-		);
-	}
-
-	public function rules(): array {
-		return[];
+		$field->setValue($this->getData('subscriber.pivot.syntax'));
+		$field->setDefault($this->getData('option.syntax'));
+		$this->add($field);
 	}
 
 	public function addCustomValidation(Validator $validator) {

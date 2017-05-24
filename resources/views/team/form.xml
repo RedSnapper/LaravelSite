@@ -17,7 +17,7 @@
                      <form data-v.replace="user" />
                 </div>
              </div>
-            <button class="btn btn-primary" type="submit">Submit</button>
+            <div data-v.include="form.buttons" />
         </div>
     </div>
 </div>

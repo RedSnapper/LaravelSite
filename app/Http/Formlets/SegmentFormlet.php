@@ -20,9 +20,6 @@ use Illuminate\Validation\Rule;
 
 class SegmentFormlet extends Formlet {
 	public $formView = "segment.form";
-	/**
-	 * @var CategoryHelper
-	 */
 	private $categoryHelper;
 
 	public function __construct(Segment $segment,CategoryHelper $categoryHelper) {
@@ -37,29 +34,8 @@ class SegmentFormlet extends Formlet {
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
 
 		$this->categoryHelper->field($this,'SEGMENTS');
-
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
 
-	}
-
-	/**
-	 * Add subscribers to this formlet
-	 *
-	 * @param string        $name
-	 * @param string        $class
-	 * @param BelongsToMany $builder
-	 */
-	public function addSubscribers(string $name, string $class, BelongsToMany $builder, $items = null) {
-
-		$items = $builder->getRelated()->all();
-		$models = $builder->get();
-
-		foreach ($items as $item) {
-			$formlet = app()->make($class);
-			$formlet->with('segment', $this->model);
-			$model = $this->getModelByKey($item->getKey(), $models);
-			$this->addSubscriberFormlet($formlet, $name, $item, $model);
-		}
 	}
 
 	public function rules(): array {
@@ -71,16 +47,9 @@ class SegmentFormlet extends Formlet {
 	}
 
 	public function edit(): Model {
-
 		$segment = parent::edit();
-
 		$segment->layouts()->sync($this->getSubscriberFields('layouts'));
-
 		return $segment;
-	}
-
-	public function persist(): Model {
-		return $this->edit();
 	}
 
 }

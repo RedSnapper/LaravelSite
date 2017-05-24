@@ -20,11 +20,7 @@ class LayoutController extends Controller {
 		$this->middleware('auth');
 	}
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
+
 	public function index(Category $category) {
 		if ($category->exists) {
 			if (Gate::allows('LAYOUTS_ACCESS',$category)) {
@@ -32,26 +28,32 @@ class LayoutController extends Controller {
 				if ($category->exists) {
 					$layouts->where('category_id', $category->id);
 				}
-				$layouts = []; //$layouts->paginate(10);
+				$layouts = $layouts->paginate(20);
+				return view("layout.index", compact('layouts', 'category'));
 			}
 		} else {
 			if (Gate::allows('LAYOUTS_ACCESS')) {
-				$layouts = []; //$layouts->paginate(10);
+				return view("layout.index");
 			}
 		}
-		return view("layout.index", compact('layouts', 'category'));
 	}
 
 	/**
-	 * Show the form for creating a new resource.
+	 * @param Category $category
+	 * @return mixed
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function create(Request $request) {
-
-		$category = $request->get('category');
-		$form = $this->form->create(['route' => 'layout.store']);
-		$form->with('category', $category);
-		return $form->render()->with('title', 'New Layout');
+	public function create(Category $category) {
+		if ($category->exists) {
+			$this->authorize('modify', $category);
+			$form = $this->form->create(['route' => 'layout.store']);
+			$form->with('category', $category);
+			return $form->render()
+				->with('name', 'New Layout')
+				->with('category', $category);
+		}
 	}
+
 
 	/**
 	 * Store a newly created resource in storage.
@@ -64,15 +66,16 @@ class LayoutController extends Controller {
 		return redirect()->route('layout.edit', $layout->id);
 	}
 
-	/**
-	 * @return \Illuminate\Contracts\View\View
-	 */
-	public function edit($id) {
-		$this->form->setKey($id);
-		return $this->form->renderWith([
-			'route'  => ['layout.update', $id],
-			'method' => 'PUT'
-		])->with('title', "Edit Layout: {$this->form->getModel()->name}");
+	public function edit(Layout $layout) {
+		$this->authorize('modify', $layout->category);
+		$form = $this->form->create(
+			['route'  => ['layout.update',$layout ],
+			 'method' => 'PUT'
+			]);
+		$form->setModel($layout);
+		return $form->render()
+			->with('title', "Layout: '$layout->name'")
+			->with('category', $layout->category);
 	}
 
 	public function update($id) {

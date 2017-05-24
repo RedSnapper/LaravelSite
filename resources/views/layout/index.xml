@@ -1,5 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.container="layouts.main" data-v.controller="helpers.category">
+
     <div class="row">
         <div class="col-md-3">
             <h1>Layouts</h1>
@@ -16,14 +17,12 @@
                     </a>
                 </li>
             </ul>
-
+            <div data-v.contents="#document"/>
             <div data-v.pagination="layouts.pagination" data-v.name="layouts"/>
+            <div data-v.exists="category.id" class="well text-right">
+                <a data-v.url="/layout/create/{category.id}" class="btn btn-primary">New Layout</a>
+            </div>
 
         </div>
     </div>
-
-    <div class="well text-right">
-        <a data-v.url="/layout/create/?category={category.id}" class="btn btn-primary">New Layout</a>
-    </div>
-
 </div>

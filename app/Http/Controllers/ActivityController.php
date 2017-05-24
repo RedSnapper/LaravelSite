@@ -35,16 +35,22 @@ class ActivityController extends Controller {
 		return view("activity.index");
 	}
 
-
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return View
+	 * @param Category $category
+	 * @return mixed
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
-	public function create() {
-		return $this->form->renderWith(['route' => 'activity.store'])
-			->with('title','New Activity');
+	public function create(Category $category) {
+		if ($category->exists) {
+			$this->authorize('modify', $category);
+			$form = $this->form->create(['route' => 'activity.store']);
+			$form->with('category', $category);
+			return $form->render()
+				->with('name', 'NEW_ACTIVITY')
+				->with('category', $category);
+		}
 	}
+
 
 	/**
 	 * Store a newly created resource in storage.

@@ -10,10 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 class LayoutFormlet  extends Formlet {
+	public $formView = "layout.form";
 
-	/**
-	 * @var CategoryHelper
-	 */
 	private $categoryHelper;
 
 	public function __construct(Layout $layout,CategoryHelper $categoryHelper) {
@@ -23,10 +21,9 @@ class LayoutFormlet  extends Formlet {
 
 	public function prepareForm(){
 		$field = new Input('text','name');
-		$this->add($field->setLabel('Name'));
+		$this->add($field->setLabel('Name')->setRequired());
 		$this->categoryHelper->field($this,'LAYOUTS');
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
-
 	}
 
 	public function rules():array{
@@ -37,17 +34,11 @@ class LayoutFormlet  extends Formlet {
 	}
 
 	public function edit(): Model {
-
 		$layout = parent::edit();
-
-		$layout->segments()->sync($this->getSubscriberFields('segments'));
-
+		$segments = $this->getSubscriberFields('segments');
+		$layout->segments()->sync($segments);
 		return $layout;
 	}
 
-
-	public function persist():Model {
-		return $this->edit();
-	}
 
 }
