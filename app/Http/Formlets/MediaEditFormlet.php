@@ -55,8 +55,9 @@ class MediaEditFormlet extends Formlet {
 		$field = new TextArea('license_ta');
 		$this->add($field->setLabel("License Information"));
 
-		$media = Category::reference('Media',"TAGS")->get();
-		$field = new Select('tag[]',Tag::options($media));
+		$mediaTagCat = Category::reference("Media","TAGS")->first();
+		$mediaTagCats = collect($mediaTagCat->descendants(true,true)->pluck('id')->all());
+		$field = new Select('tag[]',Tag::options($mediaTagCats));
 		$tags = $this->model->tags()->pluck('id')->all();
 		$this->add(
 			$field->setMultiple(true)
