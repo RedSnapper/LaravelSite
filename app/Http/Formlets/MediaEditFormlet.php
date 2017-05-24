@@ -4,7 +4,9 @@ namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Http\Formlets\Helpers\Rating;
+use App\Models\Category;
 use App\Models\Media;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use RS\Form\Fields\Input;
@@ -53,9 +55,20 @@ class MediaEditFormlet extends Formlet {
 		$field = new TextArea('license_ta');
 		$this->add($field->setLabel("License Information"));
 
+		$media = Category::reference('Media',"TAGS")->get();
+		$field = new Select('tag[]',Tag::options($media));
+		$tags = $this->model->tags()->pluck('id')->all();
+		$this->add(
+			$field->setMultiple(true)
+				->setLabel("Tags")
+				->setValue($tags)
+		);
+
 	}
 
 	public function edit(): Model {
+		$tags = $this->fields('tag');
+		$this->model->tags()->sync($tags);
 		return $this->model->saveMedia($this->fields(), $this->request->file('media'));
 	}
 
