@@ -64,7 +64,6 @@ class MediaEditFormlet extends Formlet {
 				->setLabel("Tags")
 				->setValue($tags)
 		);
-
 	}
 
 	public function edit(): Model {
