@@ -7,6 +7,8 @@ use App\Models\Category;
 
 class CreateTagsTable extends Migration {
 
+	private $cats = ['Media'=>['Quality','Type','Subject','Features','Mood']];
+
 //'TAGS':'Quality','Type','Subject','Features','Mood']
 	private $cols = ['name','category_id'];
 	private $data = [
@@ -50,8 +52,8 @@ class CreateTagsTable extends Migration {
 		['Professional',4],
 		['Inspired',4],
 		['Appealing',4]
-
 	];
+
 
 	public function up() {
 		Schema::create('tags', function (Blueprint $table) {
@@ -64,17 +66,15 @@ class CreateTagsTable extends Migration {
 			$table->timestamps();
 		});
 
-
 		$this->populate('tags');
 	}
 
 	public function populate(string $table = "") {
-		$cats=[];
-		array_push($cats,Category::reference('Quality','TAGS')->first()->id);
-		array_push($cats,Category::reference('Type','TAGS')->first()->id);
-		array_push($cats,Category::reference('Subject','TAGS')->first()->id);
-		array_push($cats,Category::reference('Features','TAGS')->first()->id);
-		array_push($cats,Category::reference('Mood','TAGS')->first()->id);
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
+		$cats = Category::reference('Media','TAGS')->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];

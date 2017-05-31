@@ -89,7 +89,6 @@ class MediaController extends Controller {
 		// Medium is the generated name by Laravel
 		// If we want model binding we need to use this name or change it
 		// in the routes file
-
 		$this->authorize('modify', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		return $form->renderWith([

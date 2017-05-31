@@ -7,14 +7,13 @@ use App\Models\Category;
 
 class CreateTeamsTable extends Migration {
 
-	//'§TEAMS'=>['Organisations','Agencies','Other'],
 	private $cols = ['name','category_id'];
 	private $data = [
 		['Otsuka US',0],
 		['Red Snapper',1],
 		['Demonstration',2],
 	];
-
+	private $cats = ['Organisations','Agencies','Other'];
 
 	public function up() {
 		Schema::create('teams', function (Blueprint $table) {
@@ -30,10 +29,11 @@ class CreateTeamsTable extends Migration {
 	}
 
 	public function populate(string $table) {
-		$cats=[];
-		array_push($cats,Category::reference('Organisations','TEAMS')->first()->id);
-		array_push($cats,Category::reference('Agencies','TEAMS')->first()->id);
-		array_push($cats,Category::reference('Other','TEAMS')->first()->id);
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
+		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];

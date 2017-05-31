@@ -3,8 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Category;
 
 class CreateMediaTable extends Migration {
+
+	private $cats = 	['Source','Pre-Production','Post-Production'];
+
 /**
 +-------------+------------------+------+-----+---------+----------------+
 | Field       | Type             | Null | Key | Default | Extra          |
@@ -97,6 +101,15 @@ v next_id     | int(10) unsigned | YES  | MUL | NULL    |                |
 			$table->foreign('primary')->references('id')->on('media')->onDelete('cascade');
 		});
 
+		$this->populate('media');
+
+	}
+
+	public function populate(string $table) {
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
+//		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
 	}
 
 	/**

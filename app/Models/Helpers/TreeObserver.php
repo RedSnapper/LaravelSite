@@ -96,7 +96,7 @@ class TreeObserver {
 		 * (2) a treewalk. It will inherit the current index position and nodes to it's right will be shifted.
 		 */
 		$node->size = 1; //The size of a new node is always going to be 1. so the nextchild will be index+1;
-		$root = $node->index(1)->first();
+		$root = $node->index(1)->first(); //maybe use static::root();
 		if(isset($root->idx)) {
 			if(!isset($node->idx) || ($node->idx > ($root->idx + $root->size)) || ($node->idx < 1)) {
 				if(!isset($node->parent)) {

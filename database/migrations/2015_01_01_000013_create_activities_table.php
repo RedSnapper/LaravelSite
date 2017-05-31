@@ -17,6 +17,7 @@ class CreateActivitiesTable extends Migration {
 		['USER_SHOW','User show details',0],
 		['EDIT_CONFIG','Editorial configuration access',1],
 	];
+	private $cats = ['Control','Editorial'];
 
 
 	public function up() {
@@ -36,9 +37,11 @@ class CreateActivitiesTable extends Migration {
 	}
 
 	public function populate(string $table) {
-		$cats=[];
-		array_push($cats,Category::reference('Control','ACTIVITIES')->first()->id);
-		array_push($cats,Category::reference('Editorial','ACTIVITIES')->first()->id);
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
+		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[2] = $cats[$record[2]];

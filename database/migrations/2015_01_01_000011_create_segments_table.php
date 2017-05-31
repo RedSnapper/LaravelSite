@@ -1,19 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use App\Models\Category;
-
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSegmentsTable extends Migration {
-
-	private $cols = ['name','category_id','syntax','docs'];
+	private $cols = ['name', 'category_id', 'syntax', 'docs'];
 	private $data = [
-		['Content',0,'BUILDER','Edited content'],
-		['View',0,'XML','Markup stuff'],
-		['Control',0,'PHP','Dynamic stuff'],
+		['Content', 0, 'BUILDER', 'Edited content'],
+		['View', 0, 'XML', 'Markup stuff'],
+		['Control', 0, 'PHP', 'Dynamic stuff'],
 	];
+	private $cats = ['General Purpose'];
 
 	public function up() {
 		Schema::create('segments', function (Blueprint $table) {
@@ -31,8 +30,11 @@ class CreateSegmentsTable extends Migration {
 	}
 
 	public function populate(string $table = "") {
-		$cats=[];
-		array_push($cats,Category::reference('General Purpose','SEGMENTS')->first()->id); //General Purpose
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]);
+		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];

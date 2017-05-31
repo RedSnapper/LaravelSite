@@ -14,6 +14,7 @@ class CreateLayoutsTable extends Migration {
 		['Article',0],
 		['Search',0]
 	];
+	private $cats = ['General Purpose'];
 
 	public function up() {
 		Schema::create('layouts', function (Blueprint $table) {
@@ -30,8 +31,11 @@ class CreateLayoutsTable extends Migration {
 	}
 
 	public function populate(string $table = "") {
-		$cats=[];
-		array_push($cats,Category::reference('General Purpose','LAYOUTS')->first()->id); //General Purpose
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
+		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];

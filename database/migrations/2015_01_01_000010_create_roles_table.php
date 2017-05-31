@@ -7,13 +7,15 @@ use App\Models\Category;
 
 class CreateRolesTable extends Migration {
 
+
 	private $cols = ['name','category_id','team_based'];
 	private $data = [
 		['Super User',0,false],
 		['User',0,false],
 		['Media Modify',1,true],
 		['Media Access',1,true],
-];
+	];
+	private $cats = ['General Roles','Team Roles'];
 
 	public function up() {
 		Schema::create('roles', function (Blueprint $table) {
@@ -30,9 +32,11 @@ class CreateRolesTable extends Migration {
 	}
 
 	public function populate(string $table) {
-		$cats=[];
-		array_push($cats,Category::reference("General Roles","ROLES")->first()->id);
-		array_push($cats,Category::reference("Team Roles","ROLES")->first()->id);
+		$section = strtoupper($table);
+		$root = Category::root();
+		$root->compose($root,["§$section" => $this->cats]);
+		$cats = Category::section($section)->first()->descendants(false)->pluck('id');
+
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];

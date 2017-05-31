@@ -11,11 +11,25 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 trait TreeTrait {
+
+	/**
+	 * @var TreeInterface|null
+	 */
+	private static $root = null;
+
 	protected static function boot() {
 		if (method_exists(parent::class, 'boot')) {
 			parent::boot();
 			self::observe(TreeObserver::class);
 		}
+	}
+
+	//get the root node as
+	public static function root() {
+		if(static::$root == null) {
+			static::$root = static::index(1)->first();
+		}
+		return static::$root;
 	}
 
 	public function moveBefore(TreeInterface $sibling,TreeInterface $parent) {
@@ -58,7 +72,7 @@ trait TreeTrait {
 	}
 
 	public function scopeSection(Builder $query, string $reference) {
-		return $query->where('name', $reference)->where('section', true);
+		return $query->where('name',$reference)->where('section', true);
 	}
 
 	public function scopeSections(Builder $query) {

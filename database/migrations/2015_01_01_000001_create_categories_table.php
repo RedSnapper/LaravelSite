@@ -7,19 +7,6 @@ use App\Models\Category;
 
 class CreateCategoriesTable extends Migration {
 
-	//§ means it's a section. Cf. treetrait compose();
-	private $data = [
-			'§ROLES'=>['General Roles','Team Roles'],
-			'§SEGMENTS'=>['General Purpose'],
-			'§LAYOUTS'=>['General Purpose'],
-			'§ACTIVITIES'=>['Control','Editorial'],
-			'§MEDIA'=>['Source','Pre-Production','Post-Production'],
-			'§TEAMS'=>['Organisations','Agencies','Other'],
-			'§TAGS'=>[
-				'Media'=>['Quality','Type','Subject','Features','Mood']
-			]
-	];
-
 	public function up() {
 		Schema::create('categories', function (Blueprint $table) {
 			$table->increments('id');
@@ -38,13 +25,11 @@ class CreateCategoriesTable extends Migration {
 				->onDelete('cascade');
 		});
 
-		$this->populate('categories');
-
+		$this->populate();
 	}
 
-	public function populate(string $table) {
-		$root = Category::create(['parent'=>null,'name'=>'ROOT','section'=>true]);
-		(new Category())->compose($root,$this->data);
+	public function populate(string $table="") {
+		Category::create(['parent'=>null,'name'=>'ROOT','section'=>true]);
 	}
 
 	/**

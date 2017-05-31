@@ -39,9 +39,10 @@ class CreateCategoryRoleTable extends Migration
 		}
 
 		public function populate(string $table = "") {
+    	//Category, Role, Media need to be created before this table.
     	//Enable SuperUser
+			$root = Category::root();
 			$role = Role::where('name','Super User')->first();
-			$root = Category::section('ROOT')->first();
 			$role->givePermissionToCategory($root,UserPolicy::CAN_MODIFY);
 
 			//Do Team-based Media Access

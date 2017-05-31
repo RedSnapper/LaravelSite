@@ -11,7 +11,6 @@ class Category extends Model implements TreeInterface {
 	use TreeTrait;
 
 	protected $guarded = ['id', 'size', 'depth'];
-
 	public $timestamps = false;
 	protected $table = "categories";
 
