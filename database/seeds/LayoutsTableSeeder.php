@@ -12,15 +12,15 @@ class LayoutsTableSeeder extends BaseTableSeeder {
 	 * @return void
 	 */
 	public function run() {
-
-		Collection::times(5, function () {
-
-			$values['category_id'] = $this->getRandomCategory('LAYOUTS');
-			$layout = factory(Layout::class)->create($values);
-			$layout->segments()->attach(Segment::inRandomOrder()->limit(3)->pluck('id'));
-
-			return $layout;
-		});
+		//
+		//Collection::times(5, function () {
+		//
+		//	$values['category_id'] = $this->getRandomCategory('LAYOUTS');
+		//	$layout = factory(Layout::class)->create($values);
+		//	$layout->segments()->attach(Segment::inRandomOrder()->limit(3)->pluck('id'));
+		//
+		//	return $layout;
+		//});
 
 
 	}

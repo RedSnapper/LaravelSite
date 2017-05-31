@@ -12,15 +12,15 @@ class RolesTableSeeder extends BaseTableSeeder {
 
 	public function run() {
 
-		$totalActivities = Activity::count();
-		$category = Category::reference('General Roles')->first()->id;
-		$this->withJoins(1,$totalActivities,['name'=>'SuperUser','team_based'=>false,'category_id'=> $category]);
-		$this->withJoins(1,0,['name'=>'User','team_based'=>false,'category_id'=> $category]);
-		$this->giveAccessToAllCategories();
+		//$totalActivities = Activity::count();
+		//$category = Category::reference('General Roles')->first()->id;
+		//$this->withJoins(1,$totalActivities,['name'=>'SuperUser','team_based'=>false,'category_id'=> $category]);
+		//$this->withJoins(1,0,['name'=>'User','team_based'=>false,'category_id'=> $category]);
+		//$this->giveAccessToAllCategories();
 
-		$category = Category::reference('Team Roles')->first()->id;
-		$mediaCat = Category::section('MEDIA')->first();
-		$this->withJoins(1,0,['name'=>'MediaModify','team_based'=>true,'category_id'=> $category],$mediaCat);
+		//$category = Category::reference('Team Roles')->first()->id;
+		//$mediaCat = Category::section('MEDIA')->first();
+		//$this->withJoins(1,0,['name'=>'MediaModify','team_based'=>true,'category_id'=> $category],$mediaCat);
 	}
 
 	private function withJoins($count, $activities, $values = [],Category $cat = null) {
@@ -37,12 +37,6 @@ class RolesTableSeeder extends BaseTableSeeder {
 			}
 			return $role;
 		});
-	}
-
-	//Give superuser access to all categories
-	protected function giveAccessToAllCategories(){
-		$category = Category::section('ROOT')->first();
-		Role::first()->givePermissionToCategory($category,UserPolicy::CAN_MODIFY);
 	}
 
 

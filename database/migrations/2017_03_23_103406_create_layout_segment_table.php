@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Layout;
+use App\Models\Segment;
+
 
 class CreateLayoutSegmentTable extends Migration {
 	/**
@@ -27,6 +30,16 @@ class CreateLayoutSegmentTable extends Migration {
 			  ->onDelete('cascade');
 			$table->primary(['layout_id', 'segment_id']);
 		});
+
+
+		//populate()
+		$content = Segment::where('name','Content')->first();
+		foreach(Layout::all() as $layout) {
+			$layout->addSegment($content);
+		}
+		$control = Segment::where('name','Control')->first();
+		Layout::where('name','Search')->first()->addSegment($control);
+
 	}
 
 	/**

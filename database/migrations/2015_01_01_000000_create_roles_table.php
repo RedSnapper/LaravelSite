@@ -3,13 +3,20 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Category;
+use App\Models\Role;
+use App\Policies\Helpers\UserPolicy;
 
 class CreateRolesTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
+
+	private $cols = ['name','category_id','team_based'];
+	private $data = [
+		['Super User',0,false],
+		['User',0,false],
+		['Media Modify',1,true],
+		['Media Access',1,true],
+];
+
 	public function up() {
 		Schema::create('roles', function (Blueprint $table) {
 			$table->increments('id');
@@ -18,9 +25,19 @@ class CreateRolesTable extends Migration {
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');
-
 			$table->timestamps();
 		});
+
+		$cats=[];
+		array_push($cats,Category::reference("General Roles","ROLES")->first()->id);
+		array_push($cats,Category::reference("Team Roles","ROLES")->first()->id);
+		$records = [];
+		foreach ($this->data as $record) {
+			$record[1] = $cats[$record[1]];
+			array_push($records, array_combine($this->cols, $record));
+		}
+		DB::table('roles')->insert($records);
+
 	}
 
 	/**

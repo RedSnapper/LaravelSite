@@ -50,6 +50,14 @@ class Role extends Model
 		return $this->activities()->save($activity);
 	}
 
+	public function allowUser(User $user){
+		return $this->users()->save($user);
+	}
+
+	public function allowTeamUser(Team $team,User $user){
+		return $this->teamUsers($team->id)->save($user,['team_id'=>$team->id]);
+	}
+
 	public function givePermissionToCategory(Category $category,int $modify = UserPolicy::CAN_ACCESS){
 		return $this->categories()->save($category,['modify'=>$modify]);
 	}

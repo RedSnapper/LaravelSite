@@ -12,10 +12,10 @@ class SegmentsTableSeeder extends BaseTableSeeder {
 	 */
 	public function run() {
 
-		Collection::times(5, function () {
-			$values['category_id'] = $this->getRandomCategory('SEGMENTS');
-			return factory(Segment::class)->create($values);
-		});
+		//Collection::times(5, function () {
+		//	$values['category_id'] = $this->getRandomCategory('SEGMENTS');
+		//	return factory(Segment::class)->create($values);
+		//});
 
 	}
 

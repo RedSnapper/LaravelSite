@@ -3,13 +3,19 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Category;
 
 class CreateTeamsTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
+
+	//'§TEAMS'=>['Organisations','Agencies','Other'],
+	private $cols = ['name','category_id'];
+	private $data = [
+		['Otsuka US',0],
+		['Red Snapper',1],
+		['Demonstration',2],
+	];
+
+
 	public function up() {
 		Schema::create('teams', function (Blueprint $table) {
 			$table->increments('id');
@@ -19,6 +25,17 @@ class CreateTeamsTable extends Migration {
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict'); //was set null. should be either restrict or cascade.
 		});
+
+		$cats=[];
+		array_push($cats,Category::reference('Organisations','TEAMS')->first()->id);
+		array_push($cats,Category::reference('Agencies','TEAMS')->first()->id);
+		array_push($cats,Category::reference('Other','TEAMS')->first()->id);
+		$records = [];
+		foreach ($this->data as $record) {
+			$record[1] = $cats[$record[1]];
+			array_push($records, array_combine($this->cols, $record));
+		}
+		DB::table('teams')->insert($records);
 
 	}
 
@@ -37,3 +54,5 @@ class CreateTeamsTable extends Migration {
 		Schema::dropIfExists('teams');
 	}
 }
+
+

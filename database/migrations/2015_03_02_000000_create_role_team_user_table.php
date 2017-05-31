@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Team;
+
 /**
  * Part of form
  * User: ben ©2017 Red Snapper Ltd.
@@ -33,6 +37,23 @@ class CreateRoleTeamUserTable  extends Migration {
 			$table->primary(['role_id','team_id','user_id']);
 
 		});
+
+
+		//populate()
+		//all users have access to all teams...
+		$role = Role::where('name','Media Access')->first();
+		foreach(User::all() as $user) {
+			foreach (Team::all() as $team) {
+				$role->allowTeamUser($team,$user);
+			}
+		}
+
+		$role = Role::where('name','Media Modify')->first();
+		foreach(User::where('name','Ben')->orWhere('name','Param')->get() as $user) {
+			foreach (Team::all() as $team) {
+				$role->allowTeamUser($team,$user);
+			}
+		}
 
 	}
 

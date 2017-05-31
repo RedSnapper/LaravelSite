@@ -3,13 +3,22 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Category;
 
 class CreateActivitiesTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
+
+	//'§ACTIVITIES'=>['Control','Editorial']
+	private $cols = ['name','label','category_id'];
+	private $data = [
+		['ACCESS_CONTROL','Eligible to reach access control',0],
+		['USER_ACCESS','User management access',0],
+		['USER_MODIFY','User modification',0],
+		['USER_SELF_MODIFY','Own Profile Editing',0],
+		['USER_SHOW','User show details',0],
+		['EDIT_CONFIG','Editorial configuration access',1],
+	];
+
+
 	public function up() {
 		Schema::create('activities', function (Blueprint $table) {
 			$table->increments('id');
@@ -22,12 +31,21 @@ class CreateActivitiesTable extends Migration {
 
 			$table->timestamps();
 		});
+
+		$cats=[];
+		array_push($cats,Category::reference('Control','ACTIVITIES')->first()->id);
+		array_push($cats,Category::reference('Editorial','ACTIVITIES')->first()->id);
+		$records = [];
+		foreach ($this->data as $record) {
+			$record[2] = $cats[$record[2]];
+			array_push($records, array_combine($this->cols, $record));
+		}
+		DB::table('activities')->insert($records);
+
 	}
 
 	/**
 	 * Reverse the migrations.
-	 *
-	 * @return void
 	 */
 	public function down() {
 

@@ -3,13 +3,18 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Category;
 
 class CreateLayoutsTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
+
+	private $cols = ['name','category_id'];
+	private $data = [
+		['Home Page',0],
+		['Landing Page',0],
+		['Article',0],
+		['Search',0]
+	];
+
 	public function up() {
 		Schema::create('layouts', function (Blueprint $table) {
 			$table->increments('id');
@@ -20,6 +25,18 @@ class CreateLayoutsTable extends Migration {
 
 			$table->timestamps();
 		});
+
+		//populate
+
+		$cats=[];
+		array_push($cats,Category::reference('General Purpose','LAYOUTS')->first()->id); //General Purpose
+		$records = [];
+		foreach ($this->data as $record) {
+			$record[1] = $cats[$record[1]];
+			array_push($records, array_combine($this->cols, $record));
+		}
+		DB::table('layouts')->insert($records);
+
 	}
 
 	/**

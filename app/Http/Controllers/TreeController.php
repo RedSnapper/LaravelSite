@@ -54,7 +54,7 @@ class TreeController {
 	}
 
 	public function createNode(int $parentId = null,string $name,\Closure $allow = null): TreeInterface {
-		$fields = ['name' => $name];
+		$fields = ['name' => $name,'section' => false];
 		if (!is_null($parentId)) {
 			$parent = $this->node->find($parentId);
 			if (!$this->allowed($allow,$parent)) {

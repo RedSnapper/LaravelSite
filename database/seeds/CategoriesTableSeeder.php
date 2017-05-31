@@ -15,17 +15,7 @@ class CategoriesTableSeeder extends Seeder  {
 	private $faker;
 
 	public function run() {
-		$this->faker = Faker\Factory::create();
-
-		//Do ROOT node first.
-		factory(Category::class,1)->create(['id'=>1,'idx'=>1,'size'=>1,'parent'=>null,'name'=>'ROOT','section'=>true]);
-		$this->addGroup('ROLES',['General Roles','Team Roles']);
-		$this->addGroup('SEGMENTS',['Segments']);
-		$this->addGroup('LAYOUTS',['Layouts']);
-		$this->addGroup('ACTIVITIES',['Control','Editorial']);
-		$this->addGroup('MEDIA',['Source','Pre-Production','Post-Production']);
-		$this->addGroup('TEAMS',['Organisations','Agencies','Other']);
-		$this->addGroup('TAGS',['Media']);
+		//$this->addGroup('SEGMENTS',['Segments']);
 	}
 
 	private function addGroup($name,array $names = []) {

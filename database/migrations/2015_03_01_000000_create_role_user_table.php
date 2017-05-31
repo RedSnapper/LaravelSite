@@ -3,13 +3,11 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Role;
+use App\Models\User;
 
 class CreateRoleUserTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
+
 	public function up() {
 		Schema::create('role_user', function (Blueprint $table) {
 			$table->integer('role_id')->unsigned()->index();
@@ -26,8 +24,18 @@ class CreateRoleUserTable extends Migration {
 			  ->onDelete('cascade');
 
 			$table->primary(['role_id','user_id']);
-
 		});
+
+		//Populate role_user
+		$role = Role::where('name','User')->first();
+		foreach(User::all() as $user) {
+			$role->allowUser($user);
+		}
+		$su = Role::where('name','Super User')->first();
+		foreach(User::where('name','Ben')->orWhere('name','Param')->get() as $user) {
+			$su->allowUser($user);
+		}
+
 
 	}
 

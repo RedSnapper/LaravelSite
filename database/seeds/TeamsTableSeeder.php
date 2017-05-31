@@ -15,10 +15,10 @@ class TeamsTableSeeder extends BaseTableSeeder {
 	 */
 
 	public function run() {
-		$devCategory = Category::reference('Organisations')->first()->id;
-		$this->withJoins(['name'=>'Otsuka Staff','category_id'=> $devCategory]);
-		$this->withJoins(['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
-		$this->withJoins(['name'=>'Freelancers','category_id'=> $devCategory]);
+		//$devCategory = Category::reference('Organisations')->first()->id;
+		//$this->withJoins(['name'=>'Otsuka Staff','category_id'=> $devCategory]);
+		//$this->withJoins(['name'=>'Red Snapper Staff','category_id'=> $devCategory]);
+		//$this->withJoins(['name'=>'Freelancers','category_id'=> $devCategory]);
 	}
 
 	private function withJoins($values = []) {

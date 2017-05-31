@@ -101,6 +101,36 @@ trait TreeTrait {
 		return $query->orderBy('idx', 'asc');
 	}
 
+	/**
+	 * compose() uses the values from array data to recursively compose a valid branch.
+	 * It needs a parent node under which the data will be added.
+	 * example: 	$branch=['§ROLES'=>['General Roles','Team Roles'=>['Happy','Sad']],'§SEGMENTS'=>['General Purpose']];
+	 * Category::compose($root,$branch); //$root has already been determined..
+	 *
+	 * Quite possibly this method should belong to the trait itself.
+	 * @param TreeInterface $parent
+	 * @param array $children
+	 *
+	 */
+	public function compose(TreeInterface $parent,array $children) {
+		foreach ($children as $childName => $kids) {
+			if(is_int($childName)) { //it's a leaf node. '$kids' is it's name, thanks to the oddities of php.
+				$childName = $kids;
+				$kids = [];
+			}
+			$section = false;
+			if(mb_substr($childName, 0, 1) == '§') { //Section Character.
+				$section = true;
+				$childName = mb_substr($childName,1);
+			}
+			$child = $this->create(['parent'=>$parent->idx,'name'=>$childName,'section'=>$section]);
+			if(count($kids) > 0) {
+				$this->compose($child,$kids);
+			}
+		}
+	}
+
+
 	public function checkIntegrity(): array {
 		$result = [];
 		$table = $this->getTable();

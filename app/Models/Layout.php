@@ -20,4 +20,8 @@ class Layout extends Model
 		return $this->belongsToMany(Segment::class)->withPivot('syntax');
 	}
 
+	public function addSegment(Segment $segment){
+		return $this->segments()->save($segment);
+	}
+
 }

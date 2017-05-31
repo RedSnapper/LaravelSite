@@ -70,7 +70,6 @@ class MediaFormlet extends Formlet {
 	}
 
 	public function rules(): array {
-
 		return [
 		  'media'       => 'required',
 		  'name'        => 'required|max:255|unique:media',

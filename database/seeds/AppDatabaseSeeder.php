@@ -31,23 +31,23 @@ class AppDatabaseSeeder extends Seeder {
 	 */
 	public function run() {
 
-		Schema::disableForeignKeyConstraints();
-
-		foreach ($this->toTruncate as $truncate) {
-			DB::table($truncate)->truncate();
-		}
-
-		Schema::enableForeignKeyConstraints();
-
-		$this->call(CategoriesTableSeeder::class);
-
-		$this->call(ActivitiesTableSeeder::class);
-		$this->call(UsersTableSeeder::class);
-		$this->call(RolesTableSeeder::class);
-		$this->call(TeamsTableSeeder::class);
-
-		$this->call(SegmentsTableSeeder::class);
-		$this->call(LayoutsTableSeeder::class);
+		//Schema::disableForeignKeyConstraints();
+		//
+		//foreach ($this->toTruncate as $truncate) {
+		//	DB::table($truncate)->truncate();
+		//}
+		//
+		//Schema::enableForeignKeyConstraints();
+		//
+		//$this->call(CategoriesTableSeeder::class);
+		//
+		//$this->call(ActivitiesTableSeeder::class);
+		//$this->call(UsersTableSeeder::class);
+		//$this->call(RolesTableSeeder::class);
+		//$this->call(TeamsTableSeeder::class);
+		//
+		//$this->call(SegmentsTableSeeder::class);
+		//$this->call(LayoutsTableSeeder::class);
 
 	}
 }
