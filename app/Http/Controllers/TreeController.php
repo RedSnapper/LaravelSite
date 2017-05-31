@@ -21,16 +21,14 @@ class TreeController {
 		$this->node = $node;
 	}
 
-
-	public function branch($name = 'ROOT',\Closure $allow = null): array {
-		$node = $this->node->section($name)->first();
+	public function nodeBranch(TreeInterface $node,\Closure $allow = null) : Node {
 		$items = $node->descendants(true)->get();
 		$objects = [];
 		$nodes = [];
 		foreach ($items as $item) {
 			$objects[$item->idx] = $item; //so we can get parent from object.
 			$nodes[$item->idx] = new Node($item->id, $item->name);
-			if ($item->name != $name) {
+			if ($item->name != $node->name) {
 				if ($this->allowed($allow,$item)) {
 					if ($this->allowed($allow,$objects[$item->parent])) {
 						$nodes[$item->parent]->addChild($nodes[$item->idx]);
@@ -40,7 +38,29 @@ class TreeController {
 				}
 			}
 		}
-		return reset($nodes)->children;
+		return array_shift($nodes);
+	}
+
+	public function branch($name = 'ROOT',\Closure $allow = null): array {
+		$node = $this->node->section($name)->first();
+		$items = $node->descendants(true)->get(); //don't key them.
+		$objects = [];
+		$nodes = [];
+		foreach ($items as $item) {
+			$objects[$item->idx] = $item; //so we can get parent from object.
+			$nodes[$item->idx] = new Node($item->id, $item->name);
+			if ($item->name != $name) {
+				if ($this->allowed($allow,$item)) {
+					if ($this->allowed($allow,$objects[$item->parent])) {
+						$nodes[$item->parent]->addChild($nodes[$item->idx],false);
+					} else {
+						$nodes[$node->idx]->addChild($nodes[$item->idx]);
+					}
+				}
+			}
+		}
+		$result = array_values(reset($nodes)->children);
+		return $result;
 	}
 
 	public function options(string $reference,\Closure $allow = null) {

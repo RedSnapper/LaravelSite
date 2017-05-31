@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 
+use App\Http\Controllers\TreeController;
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Http\Formlets\Helpers\Rating;
 use App\Models\Category;
@@ -55,9 +56,8 @@ class MediaEditFormlet extends Formlet {
 		$field = new TextArea('license_ta');
 		$this->add($field->setLabel("License Information"));
 
-		$mediaTagCat = Category::reference("Media","TAGS")->first();
-		$mediaTagCats = collect($mediaTagCat->descendants(true,true)->pluck('id')->all());
-		$field = new Select('tag[]',Tag::options($mediaTagCats));
+		$base = Category::reference("Media","TAGS")->first();
+		$field = new Select('tag[]',Tag::optGroup($base));
 		$tags = $this->model->tags()->pluck('id')->all();
 		$this->add(
 			$field->setMultiple(true)

@@ -29,8 +29,8 @@ class TagController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index(Category $category) {
-		$tags = Tag::orderBy('name');
 		if ($category->exists) {
+			$tags = Tag::orderBy('name');
 			$tags->where('category_id', $category->id);
 			$tags =  $tags->paginate(10);
 			return view("tag.index",compact('tags','category'));
