@@ -115,6 +115,7 @@ trait TreeTrait {
 		return $query->orderBy('idx', 'asc');
 	}
 
+
 	/**
 	 * compose() uses the values from array data to recursively compose a valid branch.
 	 * It needs a parent node under which the data will be added.

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\TreeController;
+use App\Models\Helpers\Node;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -38,6 +40,14 @@ class Tag extends Model
 
 	public static function options(Collection $categories = null) {
 		return with(new static)->whereIn('category_id',$categories)->pluck('name','id');
+	}
+
+	public static function optGroup(Category $base) {
+		$branch = (new TreeController(Category::root()))->nodeBranch($base);
+		$bKeys = $branch->keys([],false); //don't want the root node included.
+		$tags = with(new static)->whereIn('category_id',$bKeys)->get();
+		$result = $branch->merge($tags,'category_id')->asOptGroup(false);
+		return $result;
 	}
 
 }

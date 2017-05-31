@@ -16,6 +16,7 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/user','UserController');
+Route::resource('/category','CategoryController',['except'=>['create','edit','show']]);
 
 //Teams
 Route::resource('/team','TeamController', ['except' => 'show']);
