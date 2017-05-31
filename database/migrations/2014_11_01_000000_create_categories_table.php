@@ -38,6 +38,11 @@ class CreateCategoriesTable extends Migration {
 				->onDelete('cascade');
 		});
 
+		$this->populate('categories');
+
+	}
+
+	public function populate(string $table) {
 		$root = Category::create(['parent'=>null,'name'=>'ROOT','section'=>true]);
 		(new Category())->compose($root,$this->data);
 	}

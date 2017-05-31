@@ -26,9 +26,12 @@ class CreateUsersTable extends Migration {
 			$table->rememberToken();
 			$table->timestamps();
 		});
+		$this->populate('users');
+	}
 
+	public function populate(string $table) {
 		$records = []; foreach ($this->data as $record) {array_push($records, array_combine($this->cols, $record));}
-		DB::table('users')->insert($records);
+		DB::table($table)->insert($records);
 	}
 
 	/**

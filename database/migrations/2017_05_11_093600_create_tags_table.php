@@ -63,8 +63,12 @@ class CreateTagsTable extends Migration {
 			$table->integer('moderated')->unsigned()->default(0);
 			$table->timestamps();
 		});
-//populate
 
+
+		$this->populate('tags');
+	}
+
+	public function populate(string $table = "") {
 		$cats=[];
 		array_push($cats,Category::reference('Quality','TAGS')->first()->id);
 		array_push($cats,Category::reference('Type','TAGS')->first()->id);
@@ -76,8 +80,7 @@ class CreateTagsTable extends Migration {
 			$record[1] = $cats[$record[1]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('tags')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**

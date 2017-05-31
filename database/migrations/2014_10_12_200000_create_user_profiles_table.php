@@ -28,9 +28,12 @@ class CreateUserProfilesTable extends Migration {
 				->onDelete('cascade');
 		});
 
-		$records = []; foreach ($this->data as $record) {array_push($records, array_combine($this->cols, $record));}
-		DB::table('user_profiles')->insert($records);
+		$this->populate('user_profiles');
+	}
 
+	public function populate(string $table) {
+		$records = []; foreach ($this->data as $record) {array_push($records, array_combine($this->cols, $record));}
+		DB::table($table)->insert($records);
 	}
 
 	/**

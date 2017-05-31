@@ -26,8 +26,10 @@ class CreateLayoutsTable extends Migration {
 			$table->timestamps();
 		});
 
-		//populate
+		$this->populate('layouts');
+	}
 
+	public function populate(string $table = "") {
 		$cats=[];
 		array_push($cats,Category::reference('General Purpose','LAYOUTS')->first()->id); //General Purpose
 		$records = [];
@@ -35,8 +37,7 @@ class CreateLayoutsTable extends Migration {
 			$record[1] = $cats[$record[1]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('layouts')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**

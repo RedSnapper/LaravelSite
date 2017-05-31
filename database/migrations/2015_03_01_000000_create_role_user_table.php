@@ -26,19 +26,25 @@ class CreateRoleUserTable extends Migration {
 			$table->primary(['role_id','user_id']);
 		});
 
-		//Populate role_user
-		$role = Role::where('name','User')->first();
-		foreach(User::all() as $user) {
-			$role->allowUser($user);
-		}
+		$this->populate();
+
+	}
+
+	public function populate(string $table = "") {
+
+		//Set 'Ben' and 'Param' to SuperUser
 		$su = Role::where('name','Super User')->first();
 		foreach(User::where('name','Ben')->orWhere('name','Param')->get() as $user) {
 			$su->allowUser($user);
 		}
 
+		//Set All Users to have the 'User' Role..
+		$role = Role::where('name','User')->first();
+		foreach(User::all() as $user) {
+			$role->allowUser($user);
+		}
 
 	}
-
 
 	/**
 	 * Reverse the migrations.

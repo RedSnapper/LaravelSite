@@ -34,6 +34,12 @@ class CreateCategoryRoleTable extends Migration
 				$table->primary(['role_id', 'category_id']);
 			});
 
+			$this->populate();
+
+		}
+
+		public function populate(string $table = "") {
+    	//Enable SuperUser
 			$role = Role::where('name','Super User')->first();
 			$root = Category::section('ROOT')->first();
 			$role->givePermissionToCategory($root,UserPolicy::CAN_MODIFY);
@@ -46,7 +52,7 @@ class CreateCategoryRoleTable extends Migration
 			$modify->givePermissionToCategory($media,UserPolicy::CAN_MODIFY);
 		}
 
-    /**
+		/**
      * Reverse the migrations.
      *
      * @return void

@@ -27,9 +27,14 @@ class CreateAddressesTable extends Migration {
 			$table->foreign('delivery_id')->references('id')->on('addresses')
 				->onDelete('cascade');
 		});
+
+		$this->populate();
 	}
 
-	/**
+	public function populate(string $table = "") {
+		//currently unused.
+	}
+		/**
 	 * Reverse the migrations.
 	 *
 	 * @return void

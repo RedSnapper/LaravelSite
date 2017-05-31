@@ -27,8 +27,10 @@ class CreateSegmentsTable extends Migration {
 			$table->timestamps();
 		});
 
-		//populate
+		$this->populate('segments');
+	}
 
+	public function populate(string $table = "") {
 		$cats=[];
 		array_push($cats,Category::reference('General Purpose','SEGMENTS')->first()->id); //General Purpose
 		$records = [];
@@ -36,8 +38,7 @@ class CreateSegmentsTable extends Migration {
 			$record[1] = $cats[$record[1]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('segments')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**

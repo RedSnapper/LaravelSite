@@ -28,10 +28,14 @@ class CreateActivitiesTable extends Migration {
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');
-
 			$table->timestamps();
 		});
 
+		$this->populate('activities');
+
+	}
+
+	public function populate(string $table) {
 		$cats=[];
 		array_push($cats,Category::reference('Control','ACTIVITIES')->first()->id);
 		array_push($cats,Category::reference('Editorial','ACTIVITIES')->first()->id);
@@ -40,8 +44,7 @@ class CreateActivitiesTable extends Migration {
 			$record[2] = $cats[$record[2]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('activities')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**

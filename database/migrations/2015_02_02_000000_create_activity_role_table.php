@@ -39,19 +39,25 @@ class CreateActivityRoleTable extends Migration {
 			$table->primary(['role_id', 'activity_id']);
 		});
 
-		//Populate activity_role
+		$this->populate();
+
+	}
+
+	public function populate(string $table = "") {
+
+		//Give rights of all activities to 'SuperUser' role
 		$su = Role::where('name','Super User')->first();
 		foreach(Activity::all() as $activity) {
 			$su->givePermissionTo($activity);
 		}
+
+		//Give SelfEdit rights to 'User' role.
 		$user = Role::where('name','User')->first();
 		$activity = Activity::where('name','USER_SELF_MODIFY')->first();
 		$user->givePermissionTo($activity);
 
-
 	}
-
-	/**
+		/**
 	 * Reverse the migrations.
 	 *
 	 * @return void

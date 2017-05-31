@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Models\Category;
-use App\Models\Role;
-use App\Policies\Helpers\UserPolicy;
 
 class CreateRolesTable extends Migration {
 
@@ -28,6 +26,10 @@ class CreateRolesTable extends Migration {
 			$table->timestamps();
 		});
 
+	$this->populate('roles');
+	}
+
+	public function populate(string $table) {
 		$cats=[];
 		array_push($cats,Category::reference("General Roles","ROLES")->first()->id);
 		array_push($cats,Category::reference("Team Roles","ROLES")->first()->id);
@@ -36,8 +38,7 @@ class CreateRolesTable extends Migration {
 			$record[1] = $cats[$record[1]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('roles')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**

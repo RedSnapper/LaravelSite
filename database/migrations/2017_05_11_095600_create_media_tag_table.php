@@ -29,6 +29,11 @@ class CreateMediaTagTable extends Migration {
 
 		});
 
+		$this->populate();
+	}
+
+	public function populate(string $table = "") {
+		//currently unused.
 	}
 
 

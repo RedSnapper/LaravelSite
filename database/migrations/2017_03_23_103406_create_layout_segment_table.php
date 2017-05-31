@@ -31,15 +31,16 @@ class CreateLayoutSegmentTable extends Migration {
 			$table->primary(['layout_id', 'segment_id']);
 		});
 
+		$this->populate();
+	}
 
-		//populate()
+	public function populate(string $table = "") {
 		$content = Segment::where('name','Content')->first();
 		foreach(Layout::all() as $layout) {
 			$layout->addSegment($content);
 		}
 		$control = Segment::where('name','Control')->first();
 		Layout::where('name','Search')->first()->addSegment($control);
-
 	}
 
 	/**

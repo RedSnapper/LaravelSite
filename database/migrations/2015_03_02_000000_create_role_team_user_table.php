@@ -39,8 +39,12 @@ class CreateRoleTeamUserTable  extends Migration {
 		});
 
 
-		//populate()
-		//all users have access to all teams...
+		$this->populate();
+
+	}
+
+	public function populate(string $table = "") {
+		//Open up Media for Access to all users.
 		$role = Role::where('name','Media Access')->first();
 		foreach(User::all() as $user) {
 			foreach (Team::all() as $team) {
@@ -48,16 +52,16 @@ class CreateRoleTeamUserTable  extends Migration {
 			}
 		}
 
+		//Open up Media for Modification to 'Ben' and 'Param'.
 		$role = Role::where('name','Media Modify')->first();
 		foreach(User::where('name','Ben')->orWhere('name','Param')->get() as $user) {
 			foreach (Team::all() as $team) {
 				$role->allowTeamUser($team,$user);
 			}
 		}
-
 	}
 
-	/**
+		/**
 	 * Reverse the migrations.
 	 *
 	 * @return void

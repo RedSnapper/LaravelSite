@@ -26,6 +26,10 @@ class CreateTeamsTable extends Migration {
 				->onDelete('restrict'); //was set null. should be either restrict or cascade.
 		});
 
+		$this->populate('teams');
+	}
+
+	public function populate(string $table) {
 		$cats=[];
 		array_push($cats,Category::reference('Organisations','TEAMS')->first()->id);
 		array_push($cats,Category::reference('Agencies','TEAMS')->first()->id);
@@ -35,8 +39,7 @@ class CreateTeamsTable extends Migration {
 			$record[1] = $cats[$record[1]];
 			array_push($records, array_combine($this->cols, $record));
 		}
-		DB::table('teams')->insert($records);
-
+		DB::table($table)->insert($records);
 	}
 
 	/**
