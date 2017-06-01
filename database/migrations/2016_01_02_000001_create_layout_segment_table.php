@@ -17,6 +17,8 @@ class CreateLayoutSegmentTable extends Migration {
 		Schema::create('layout_segment', function (Blueprint $table) {
 			$table->integer('layout_id')->unsigned()->index();
 			$table->integer('segment_id')->unsigned()->index();
+			$table->string('local_name')->nullable();
+			$table->string('tab')->nullable();
 			$table->string('syntax')->nullable();
 
 			$table->foreign('layout_id')

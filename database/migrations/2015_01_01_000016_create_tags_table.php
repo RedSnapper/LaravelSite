@@ -7,7 +7,7 @@ use App\Models\Category;
 
 class CreateTagsTable extends Migration {
 
-	private $cats = ['Media'=>['Issues','Type','Subject','Features','Mood']];
+	private $cats = ['Media'=>['Issues','Type','Subject','Features','Mood','Judgement']];
 
 //'TAGS':'Quality','Type','Subject','Features','Mood','Judgement']
 	private $cols = ['name','category_id'];
@@ -16,7 +16,7 @@ class CreateTagsTable extends Migration {
 		['Colour cast',0],
 		['No Focus',0],
 		['Wrong Focus',0],
-		['Grainy ISO'],
+		['Grainy ISO',0],
 		['Camera Shake',0],
 		['Unwanted Motion',0],
 		['Deep DOF',0],
@@ -82,7 +82,6 @@ class CreateTagsTable extends Migration {
 		$root = Category::root();
 		$root->compose($root,["§$section" => $this->cats]); //§ means 'section' in compose
 		$cats = Category::reference('Media','TAGS')->first()->descendants(false)->pluck('id');
-
 		$records = [];
 		foreach ($this->data as $record) {
 			$record[1] = $cats[$record[1]];
