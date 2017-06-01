@@ -80,7 +80,7 @@ class CategoryController extends ApiController {
 	}
 
 	public function moveAfter(Category $category, Request $request) {
-		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify())) {
+		if ($this->treeController->moveAfter($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();

@@ -73,7 +73,7 @@ class TeamCategoryController extends ApiController {
 
 	public function moveAfter(Team $team, Category $category, Request $request) {
 		$node = $request->get('node');
-		if ($this->treeController->moveBefore($category, $node, $this->allowsModify($team))) {
+		if ($this->treeController->moveAfter($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
 		}
 		return $this->respondForbidden();
