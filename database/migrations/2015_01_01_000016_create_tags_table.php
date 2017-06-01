@@ -7,22 +7,25 @@ use App\Models\Category;
 
 class CreateTagsTable extends Migration {
 
-	private $cats = ['Media'=>['Quality','Type','Subject','Features','Mood']];
+	private $cats = ['Media'=>['Issues','Type','Subject','Features','Mood']];
 
-//'TAGS':'Quality','Type','Subject','Features','Mood']
+//'TAGS':'Quality','Type','Subject','Features','Mood','Judgement']
 	private $cols = ['name','category_id'];
 	private $data = [
-//Quality
-		['Perfect',0],
-		['Excellent',0],
-		['Good',0],
-		['Poor',0],
-		['Bad Focus',0],
-		['Camera Shake',0],
+//Issues
 		['Colour cast',0],
+		['No Focus',0],
+		['Wrong Focus',0],
+		['Grainy ISO'],
+		['Camera Shake',0],
+		['Unwanted Motion',0],
+		['Deep DOF',0],
+		['Shallow DOF',0],
 		['Over Exposed',0],
+		['Over Processed',0],
 		['Under Exposed',0],
 		['Pixelated',0],
+		['Too Small',0],
 		['Needs Crop',0],
 		['Over Cropped',0],
 		['Red Eye',0],
@@ -51,7 +54,12 @@ class CreateTagsTable extends Migration {
 		['Serious',4],
 		['Professional',4],
 		['Inspired',4],
-		['Appealing',4]
+		['Appealing',4],
+//Judgement
+		['Excellent',5],
+		['Perfect',5],
+		['Good',5],
+		['Poor',5],
 	];
 
 
