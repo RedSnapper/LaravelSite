@@ -57,13 +57,12 @@ class MediaEditFormlet extends Formlet {
 		$this->add($field->setLabel("License Information"));
 
 		$base = Category::reference("Media","TAGS")->first();
-		$field = new Select('tag[]',Tag::optGroup($base));
 		$tags = $this->model->tags()->pluck('id')->all();
-		$this->add(
-			$field->setMultiple(true)
-				->setLabel("Tags")
-				->setValue($tags)
-		);
+		$groups = Tag::optGroup($base);
+		foreach ($groups as $name => $group) {
+			$field = new Select('tag[]',$group);
+			$this->add($field->setMultiple(true)->setLabel($name)->setValue($tags));
+		}
 	}
 
 	public function edit(): Model {
