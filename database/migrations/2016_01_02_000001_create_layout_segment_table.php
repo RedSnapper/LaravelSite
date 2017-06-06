@@ -30,6 +30,7 @@ class CreateLayoutSegmentTable extends Migration {
 			  ->references('id')
 			  ->on('segments')
 			  ->onDelete('cascade');
+
 			$table->primary(['layout_id', 'segment_id']);
 		});
 

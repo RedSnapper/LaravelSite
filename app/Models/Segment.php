@@ -17,7 +17,7 @@ class Segment extends Model {
 	}
 
 	public function layouts() {
-		return $this->belongsToMany(Layout::class)->withPivot('syntax');
+		return $this->belongsToMany(Layout::class)->withPivot(['local_name','tab','syntax']);
 	}
 
 }

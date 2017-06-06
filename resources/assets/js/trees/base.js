@@ -84,7 +84,6 @@ const moveNode = (moveInfo)=>{
 };
 
 const moveToFirstChild = (node,parent)=> {
-
     //We have the parent (in target).
     //If the parent has any children, we need to change the index to the id of the first child.
     //Otherwise we keep the parent, and have no index.

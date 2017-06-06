@@ -16,6 +16,8 @@
                     <tr>
                         <th>Segment</th>
                         <th>Used</th>
+                        <th>Local</th>
+                        <th>Tab</th>
                         <th>Syntax</th>
                     </tr>
                 </thead>

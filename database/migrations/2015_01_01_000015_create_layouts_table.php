@@ -21,10 +21,19 @@ class CreateLayoutsTable extends Migration {
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->integer('category_id')->unsigned()->nullable();
+			$table->integer('build_point')->unsigned()->default(1);
+			$table->integer('searchable')->unsigned()->default(0);
+			$table->integer('default_child')->unsigned()->nullable();
+			$table->integer('icon')->unsigned()->nullable(); //Need to add the icon table.
+
+			$table->timestamps();
+
 			$table->foreign('category_id')->references('id')->on('categories')
 				->onDelete('restrict');
 
-			$table->timestamps();
+			$table->foreign('default_child')->references('id')->on('layouts')
+				->onDelete('set null');
+
 		});
 
 		$this->populate('layouts');
