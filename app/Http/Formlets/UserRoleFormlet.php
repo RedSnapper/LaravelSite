@@ -7,6 +7,7 @@
 
 namespace App\Http\Formlets;
 
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Fields\Checkbox;
 use RS\Form\Formlet;
@@ -18,20 +19,22 @@ use RS\Form\Formlet;
  *
  * @package App\Http\Formlets
  */
+//$allRoles = $this->model->roles()->unteamed()->get();
 
 class UserRoleFormlet extends Formlet {
 	public function prepareForm() {
-		$allRoles = $this->model->roles()->getRelated()->unteamed()->get();
+		$allRoles = Role::unteamed()->get();
 		foreach ($allRoles as $role) {
 			$this->add((new Checkbox())//we don't want a name, because we are using sync below.
-			->setLabel($role->name)
+			  ->setLabel($role->name)
 				->setValue($role->id)
 			);
 		}
 	}
 
 	public function edit(): Model {
-		$this->model->roles()->sync($this->fields());
+		$fields = $this->fields();
+		$this->model->roles()->sync($fields);
 		return $this->model;
 	}
 

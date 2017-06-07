@@ -51,14 +51,9 @@ class LayoutFormlet  extends Formlet {
 
 	public function edit(): Model {
 		$layout = parent::edit();
-		$segments = $this->getSubscriberFields('segments');
-		$layout->segments()->sync($segments);
+		$subData = $this->subs($this->getFormlet('segments'));
+		$layout->segments()->sync($subData);
 		return $layout;
 	}
-//$speakers  = (array) Input::get('speakers'); // related ids
-//$pivotData = array_fill(0, count($speakers), ['is_speaker' => true]);
-//$syncData  = array_combine($speakers, $pivotData);
-//
-//$user->roles()->sync($syncData);
 
 }
