@@ -9,7 +9,7 @@ class RegisterForm extends Formlet {
 	public $formView = "auth.register";
 	protected $guarded = ['password', 'password_confirmation'];
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 
 		$this->add((new Input('text', 'name'))
 		  ->setLabel("Name")

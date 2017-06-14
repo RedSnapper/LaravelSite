@@ -96,13 +96,12 @@ class MediaController extends Controller {
 			'method' => 'PUT'
 		])
 			->with('media', $medium)
-			->with('category', $medium->category)
+			->with('category',$medium->category)
 			->with('team', $medium->team)
 		  ->with('section','MEDIA');
 	}
 
-	public function update(Media $medium, MediaEditFormlet $form) {
-
+	public function update(Media $medium, MediaEditFormlet $form,Request $request) {
 		$this->authorize('modify', [$medium->category, $medium->team]);
 		$form->setModel($medium);
 		$media = $form->update();

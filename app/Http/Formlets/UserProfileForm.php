@@ -9,7 +9,7 @@ use App\Models\UserProfile;
 class UserProfileForm extends Formlet {
 	public $formView = "user.form";
 
-	public function prepareForm(){
+	public function prepareForm() : void{
 		$field = new Input('tel','telephone');
 		$this->add(
 		  $field->setLabel('Telephone')

@@ -18,7 +18,7 @@ class RoleActivityFormlet extends Formlet{
     *
     * @return void
     */
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->add((new Checkbox('subscriber')));
 	}
 

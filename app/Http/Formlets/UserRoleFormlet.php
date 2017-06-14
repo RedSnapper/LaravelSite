@@ -12,24 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 use RS\Form\Fields\Checkbox;
 use RS\Form\Formlet;
 
-/**
- * Class UserRoleFormlet
- * An alternative to using the subscriber methods.
- *
- *
- * @package App\Http\Formlets
- */
-//$allRoles = $this->model->roles()->unteamed()->get();
-
 class UserRoleFormlet extends Formlet {
-	public function prepareForm() {
-		$allRoles = Role::unteamed()->get();
-		foreach ($allRoles as $role) {
-			$this->add((new Checkbox())//we don't want a name, because we are using sync below.
-			  ->setLabel($role->name)
-				->setValue($role->id)
-			);
-		}
+
+	protected $subscriber = "roleSubscription";
+
+	public function prepareForm() : void{
+		$field = new Checkbox('roleSubscription');
+		$label = $this->getData('option.name');
+		$field->setLabel($label);
+		$this->add($field);
 	}
 
 	public function edit(): Model {

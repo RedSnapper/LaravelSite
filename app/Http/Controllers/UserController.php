@@ -49,8 +49,9 @@ class UserController extends Controller {
 	/**
 	 * Show the form for creating a new resource.
 	 * This is an empty form.
-	 *
+	 * @param User     $id
 	 * @return View
+	 * @throws \Throwable
 	 */
 	public function create($id = null) {
 		$this->authorize('USER_MODIFY');
@@ -62,11 +63,11 @@ class UserController extends Controller {
 	 * Edit is called when wishing to show the record for editing.
 	 * @param User     $user
 	 * @return \Illuminate\Contracts\View\View
+	 * @throws \Throwable
 	 */
-	public function edit(User $user) {
+	public function edit(User $user) : View {
 		$this->authorize('USER_MODIFY');
 		$this->form->setModel($user);
-		//now update method for updating an existing model.
 		return $this->form->renderWith(['route'  => ['user.update', $user->getKey()],'method' => 'PATCH'])
 		  ->with('title',"Edit User: {$this->form->getModel('user')->name}");
 	}
@@ -76,6 +77,7 @@ class UserController extends Controller {
 	 *
 	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
+	 * @throws \Throwable
 	 */
 	public function store(Request $request) {
 		$this->authorize('USER_MODIFY');
@@ -86,8 +88,9 @@ class UserController extends Controller {
 	/**
 	 * update an existing resource in storage. It is the receiver from edit() above.
 	 *
-	 * @param  \Illuminate\Http\Request $request
+	 * @param User $user
 	 * @return \Illuminate\Http\Response
+	 * @throws \Throwable
 	 */
 	public function update(User $user) {
 		$this->authorize('USER_MODIFY');

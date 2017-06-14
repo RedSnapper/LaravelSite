@@ -13,13 +13,8 @@ class LayoutSegmentFormlet extends Formlet {
 	protected $subscriber = "subscriber";
 
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->add((new Checkbox('subscriber')));
-
-		$field = new Input('text', 'syntax');
-		$field->setValue($this->getData('subscriber.pivot.syntax'));
-		$field->setDefault($this->getData('option.syntax'));
-		$this->add($field);
 
 		$field = new Input('text','local_name');
 		$field->setValue($this->getData('subscriber.pivot.local_name'));
@@ -29,9 +24,14 @@ class LayoutSegmentFormlet extends Formlet {
 		$field->setValue($this->getData('subscriber.pivot.tab'));
 		$this->add($field);
 
+		$field = new Input('text', 'syntax');
+		$field->setValue($this->getData('subscriber.pivot.syntax'));
+		$field->setDefault($this->getData('option.syntax'));
+		$this->add($field);
+
 	}
 
-	public function addCustomValidation(Validator $validator) {
+	public function addCustomValidation(Validator $validator): void {
 		$validator->sometimes('syntax','required|max:50',function($input){
 			return isset($input->subscriber);
 		});

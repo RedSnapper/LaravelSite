@@ -14,7 +14,7 @@ class ActivityRoleFormlet extends Formlet {
 	protected $subscriber = 'subscriber';
 	public $formletView = "activity.role";
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->add((new Checkbox('subscriber')));
 	}
 }

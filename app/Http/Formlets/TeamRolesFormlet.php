@@ -9,33 +9,30 @@ namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
 use App\Models\Role;
+use RS\Form\Fields\Hidden;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
 class TeamRolesFormlet extends Formlet {
 	public $formletView = "team.role";
-	/**
-	 * @var CategoryController
-	 */
-	private $categoryController;
+	private $options = null;
+	protected $subscriber = "subscriber";
 
 	public function __construct(CategoryController $categoryController) {
-		$this->categoryController = $categoryController;
+		$this->options = Role::options($categoryController->getIds("ROLES"));
+	}
+	public function prepareForm() : void {
+
+		$this->add((new Hidden('subscriber'))->setValue(true));
+
+		$field = new Select('role[]',$this->options);
+		$value = $this->getData('subscriber.*.pivot.role_id'); //multiples..
+		$field->setMultiple(true)->setValue($value);
+		$this->add($field);
+
 	}
 
-	/**
-	 * Prepare the form with fields
-	 *
-	 * @return void
-	 */
-	public function prepareForm() {
-//		$id = $this->model->getKey();
-		$field = new Select('role[]', Role::options($this->categoryController->getIds("ROLES")));
-		$roles = $this->model->userRoles->pluck('id')->all();
-		$this->add(
-			$field->setMultiple(true)
-				->setValue($roles)
-		);
-	}
+
+
 }
 

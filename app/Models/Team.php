@@ -47,6 +47,8 @@ class Team extends Model {
 		return $this->belongsToMany(Role::class, 'role_team_user', 'team_id', 'role_id')->withPivot('user_id');
 	}
 
+
+
 	/**
 	 * TODO: Visibility of this list should probably be set by either/both:
 	 * 1: the visibility (by role) of the categories it is in.

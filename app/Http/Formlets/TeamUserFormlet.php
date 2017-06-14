@@ -26,12 +26,11 @@ class TeamUserFormlet extends Formlet {
 	 *
 	 * @return void
 	 */
-	public function prepareForm() {
+	public function prepareForm() : void {
+		$roles = $this->model->teamRoles->pluck('id')->all();
 		$field = new Select('role[]',Role::options($this->categoryController->getIds("ROLES")));
-		$this->add(
-			$field->setMultiple(true)
-				->setValue($this->model->teamRoles->pluck('id')->all())
-		);
+		$field->setMultiple(true)->setValue($roles);
+		$this->add($field);
 	}
 
 }

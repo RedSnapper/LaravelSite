@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable {
 	use Notifiable;
@@ -33,43 +36,57 @@ class User extends Authenticatable {
 	 * @param  string $value
 	 * @return void
 	 */
-	public function setPasswordAttribute($value) {
+	public function setPasswordAttribute($value) : void {
 		$this->attributes['password'] = bcrypt($value);
 	}
 
-	public function profile() {
+	public function profile() : HasOne  {
 		return $this->hasOne(UserProfile::class);
 	}
 
-	public function roles() {
-		return $this->belongsToMany(Role::class);
+	public function roles() : BelongsToMany {
+		$result = $this->belongsToMany(Role::class);
+		$result->getQuery()->where("roles.team_based",false);
+		return $result;
 	}
 
-	public function syncTeamRoles(Team $team, array $roles) {
-		$teamId = $team->getKey();
-		$sync = [];
-		foreach ($roles as $role) {
-			$sync[$role] = ['team_id' => $teamId];
-		}
-		$this->teamRoles()->wherePivot('team_id', $teamId)->sync($sync);
+	//public function syncTeamRoles(Team $team, array $roles) {
+	//	$teamId = $team->getKey();
+	//	$sync = [];
+	//	foreach ($roles as $role) {
+	//		$sync[$role] = ['team_id' => $teamId];
+	//	}
+	//	$this->teamRoles()->wherePivot('team_id', $teamId)->sync($sync);
+	//}
+
+	public function teamRoles() : BelongsToMany {
+		$result = $this->belongsToMany(Team::class, 'role_team_user', 'user_id','team_id')->withPivot('role_id');
+		return $result;
 	}
 
-	public function teamRoles() {
-		return $this->belongsToMany(Role::class, 'role_team_user', 'user_id', 'role_id')->withPivot('team_id');
+	public function roleTeams() : BelongsToMany {
+		$result = $this->belongsToMany(Role::class,'role_team_user','user_id','role_id')->withPivot('team_id');
+		$result->getQuery()->where("roles.team_based",true);
+		return $result;
 	}
 
-	public function roleTeams() {
-		return $this->belongsToMany(Team::class, 'role_team_user', 'user_id', 'team_id')->withPivot('role_id');
-	}
-
-	public function teams() {
+	public function teams() : BelongsToMany {
 		return $this->belongsToMany(Team::class, 'role_team_user', 'user_id', 'team_id')->groupBy([
 			"teams.id",
 			"role_team_user.user_id"
 		]);
 	}
 
-	public function hasRole($role, $team = null) {
+	//public function teamUsers(int $team) {
+	//	return $this->teamed->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
+	//}
+	//
+	//public function userTeams(int $user) {
+	//	return $this->teamed->belongsToMany(Team::class, 'role_team_user', 'role_id', 'team_id')->wherePivot('user_id','=',$user);
+	//}
+
+
+	public function hasRole($role, $team = null) : bool {
 		if (is_null($team)) {
 			if (is_string($role)) {
 				return $this->roles->contains('name', $role);

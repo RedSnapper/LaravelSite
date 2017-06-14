@@ -23,19 +23,16 @@ class SegmentFormlet extends Formlet {
 	private $categoryHelper;
 
 	public function __construct(Segment $segment,CategoryHelper $categoryHelper) {
-
 		$this->setModel($segment);
 		$this->categoryHelper = $categoryHelper;
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'syntax'))->setLabel('Syntax'));
 		$this->add((new TextArea('docs'))->setLabel('Docs')->setRows(3));
-
 		$this->categoryHelper->field($this,'SEGMENTS');
 		$this->addSubscribers('layouts', SegmentLayoutFormlet::class, $this->model->layouts());
-
 	}
 
 	public function rules(): array {
@@ -48,7 +45,9 @@ class SegmentFormlet extends Formlet {
 
 	public function edit(): Model {
 		$segment = parent::edit();
-		$segment->layouts()->sync($this->getSubscriberFields('layouts'));
+		//Done here because we can do all subscribes in a single query.
+		$subData = $this->subs($this->getFormlets('layouts'));
+		$segment->layouts()->sync($subData);
 		return $segment;
 	}
 

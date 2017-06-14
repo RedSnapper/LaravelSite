@@ -31,15 +31,15 @@ class Role extends Model
 	}
 
 	public function users() {
-		return $this->belongsToMany(User::class);
+		return $this->unteamed->belongsToMany(User::class);
 	}
 
 	public function teamUsers(int $team) {
-		return $this->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
+		return $this->teamed->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
 	}
 
 	public function userTeams(int $user) {
-		return $this->belongsToMany(Team::class, 'role_team_user', 'role_id', 'team_id')->wherePivot('user_id','=',$user);
+		return $this->teamed->belongsToMany(Team::class, 'role_team_user', 'role_id', 'team_id')->wherePivot('user_id','=',$user);
 	}
 
 	public function categories() {
@@ -51,11 +51,11 @@ class Role extends Model
 	}
 
 	public function allowUser(User $user){
-		return $this->users()->save($user);
+		return $this->unteamed->users()->save($user);
 	}
 
 	public function allowTeamUser(Team $team,User $user){
-		return $this->teamUsers($team->id)->save($user,['team_id'=>$team->id]);
+		return $this->teamed->teamUsers($team->id)->save($user,['team_id'=>$team->id]);
 	}
 
 	public function givePermissionToCategory(Category $category,int $modify = UserPolicy::CAN_ACCESS){

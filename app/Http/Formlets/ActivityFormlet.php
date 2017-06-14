@@ -29,7 +29,7 @@ class ActivityFormlet extends Formlet {
 		$this->categoryHelper = $categoryHelper;
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->add((new Input('text', 'name'))->setLabel('Name')->setRequired());
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
 		$this->add((new TextArea('comment'))->setLabel('Comment'));

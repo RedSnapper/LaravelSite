@@ -32,7 +32,7 @@ class MediaEditFormlet extends Formlet {
 	 *
 	 * @return void
 	 */
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$field = new Input('text', 'name');
 		$this->add($field->setLabel("Name")->setRequired(true));
 
@@ -56,8 +56,10 @@ class MediaEditFormlet extends Formlet {
 		$field = new TextArea('license_ta');
 		$this->add($field->setLabel("License Information"));
 
-		$base = Category::reference("Media","TAGS")->first();
+		//get my tags.
 		$tags = $this->model->tags()->pluck('id')->all();
+		//get all tags..
+		$base = Category::reference("Media","TAGS")->first();
 		$groups = Tag::optGroup($base);
 		foreach ($groups as $name => $group) {
 			$field = new Select('tag[]',$group);

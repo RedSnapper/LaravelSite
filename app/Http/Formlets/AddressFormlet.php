@@ -12,7 +12,7 @@ class AddressFormlet extends Formlet {
 		$this->setModel($address);
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$field = new Input('text', 'street');
 		$this->add($field->setLabel('Street'));
 		$field = new Input('text', 'city');

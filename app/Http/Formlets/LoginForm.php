@@ -12,7 +12,7 @@ class LoginForm extends Formlet {
 
 	protected $guarded = ['password'];
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 
 		$field = new Input('email', 'email');
 		$this->add(

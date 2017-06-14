@@ -14,7 +14,7 @@ class RoleCategoryFormlet extends Formlet {
 	 *
 	 * @return void
 	 */
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$select = new Select('modify', [
 			UserPolicy::CAN_ACCESS => 'Access',
 			UserPolicy::CAN_MODIFY => 'Modify',

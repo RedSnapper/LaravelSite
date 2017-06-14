@@ -8,7 +8,7 @@ class LogoutForm extends Formlet {
 
 	public $formView = "auth.logout";
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 
 	}
 

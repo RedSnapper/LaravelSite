@@ -48,15 +48,16 @@ class Complex extends ViewController {
 			$prime->set("//*[@data-v.title-holder]");
 		}
 		foreach($data as $key => $value) {
-			if(is_array($value)) {
-				$container = new Document($this->complex);
-				$container->set("//*[@data-v.inner]",$this->recurse($key,$value));
-			} else {
-				$container = new Document($this->simple);
-				$container->set("//*[@data-v.key]",$this->sanitise($key));
-				$container->set("//*[@data-v.value]",$this->sanitise($value));
-			}
-			$prime->set("//*[@data-v.container]/child-gap()",$container);
+			$vKey = $key ?? "(null)";
+				if(is_array($value)) {
+					$container = new Document($this->complex);
+					$container->set("//*[@data-v.inner]",$this->recurse($vKey,$value));
+				} else {
+						$container = new Document($this->simple);
+						$container->set("//*[@data-v.key]",$this->sanitise($vKey));
+						$container->set("//*[@data-v.value]",$this->sanitise($value ?? "(null)"));
+				}
+				$prime->set("//*[@data-v.container]/child-gap()",$container);
 		}
 		$prime->set("//*[@data-v.container]/@data-v.container");
 		return $prime;

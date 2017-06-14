@@ -21,7 +21,7 @@ class LayoutFormlet  extends Formlet {
 		$this->categoryHelper = $categoryHelper;
 	}
 
-	public function prepareForm(){
+	public function prepareForm(): void {
 		$field = new Input('text','name');
 		$this->add($field->setLabel('Name')->setRequired());
 
@@ -32,6 +32,7 @@ class LayoutFormlet  extends Formlet {
 		$this->add($field->setDefault(false)->setLabel('Searchable'));
 
 		$this->categoryHelper->field($this,'LAYOUTS');
+
 		$this->addSubscribers('segments',LayoutSegmentFormlet::class,$this->model->segments());
 
 		$options = Layout::options();
@@ -51,7 +52,7 @@ class LayoutFormlet  extends Formlet {
 
 	public function edit(): Model {
 		$layout = parent::edit();
-		$subData = $this->subs($this->getFormlet('segments'));
+		$subData = $this->subs($this->getFormlets('segments'));
 		$layout->segments()->sync($subData);
 		return $layout;
 	}

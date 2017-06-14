@@ -29,7 +29,7 @@ class RoleRecordFormlet extends Formlet {
 		];
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$field = new Input('text', 'name');
 		$this->add(
 			$field->setLabel('Name')->setRequired()

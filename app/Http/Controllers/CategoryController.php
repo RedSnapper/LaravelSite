@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Transformers\CategoryTransformer;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends ApiController {
@@ -35,7 +36,7 @@ class CategoryController extends ApiController {
 		return $this->treeController->options($reference, $this->allowsAccess());
 	}
 
-	public function getIds(string $reference){
+	public function getIds(string $reference) : Collection {
 		return $this->getCollection($reference)->pluck('id');
 	}
 

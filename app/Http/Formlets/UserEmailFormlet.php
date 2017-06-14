@@ -16,7 +16,7 @@ class UserEmailFormlet extends Formlet {
 		$this->setModel($user);
 	}
 
-	public function prepareForm(){
+	public function prepareForm() : void{
 
 		$field = new Input('text','name');
 		$this->add($field->setLabel('Name'));

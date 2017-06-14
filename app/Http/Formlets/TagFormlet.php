@@ -23,7 +23,7 @@ class TagFormlet extends Formlet {
 		$this->categoryHelper = $categoryHelper;
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$field = new Input('text', 'name');
 		$field->setLabel('Name')->setRequired();
 		$this->add($field);

@@ -16,7 +16,7 @@ class RoleFormlet extends Formlet {
 		$this->setModel($role);
 	}
 
-	public function prepareForm() {
+	public function prepareForm() : void {
 		$this->addFormlet('role', RoleRecordFormlet::class)->setModel($this->model);
 
 		//Activities
