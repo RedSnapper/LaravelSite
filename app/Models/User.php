@@ -59,6 +59,8 @@ class User extends Authenticatable {
 	//	$this->teamRoles()->wherePivot('team_id', $teamId)->sync($sync);
 	//}
 
+	//3 [] 1,2,3 [2]=>['team_id'=>3]
+
 	public function teamRoles() : BelongsToMany {
 		$result = $this->belongsToMany(Team::class, 'role_team_user', 'user_id','team_id')->withPivot('role_id');
 		return $result;
