@@ -24,10 +24,25 @@ class UserComposite extends Formlet {
 		//Set UserProfile
 		$this->addFormlet('profile',UserProfileForm::class)->setModel($this->model->profile()->first());
 
-		//Set UserRoles
+		//Set UserRoles (TODO: failing: save.)
 		$this->addSubscribers('roles',UserRoleFormlet::class,$this->model->roles());
 
-		//Set UserTeamRoles (roles over team)
+		//Set UserTeamRoles (roles over team) (TODO: failing both in load and save.)
+		/**
+		 * $this->model->teamRoles()->get()
+		 * returns eg 5 results, with the role_id,user_id available via the pivot data.
+		 *
+		+---------+---------+---------+
+		| team_id | role_id | user_id |
+		+---------+---------+---------+
+		|       1 |       3 |       1 |
+		|       2 |       3 |       1 |
+		|       2 |       4 |       1 |
+		|       3 |       3 |       1 |
+		|       3 |       4 |       1 |
+		+---------+---------+---------+
+		 * addSubscribers correctly derives the teams from this (including the fact that they are team_based).
+		**/
 		$this->addSubscribers('teams',TeamRolesFormlet::class,$this->model->teamRoles());
 
 	}

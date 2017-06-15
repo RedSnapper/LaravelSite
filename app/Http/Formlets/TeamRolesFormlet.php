@@ -16,17 +16,15 @@ use RS\Form\Formlet;
 class TeamRolesFormlet extends Formlet {
 	public $formletView = "team.role";
 	private $options = null;
-	protected $subscriber = "subscriber";
+	protected $subscriber = "role[]";
 
 	public function __construct(CategoryController $categoryController) {
 		$this->options = Role::options($categoryController->getIds("ROLES"));
 	}
 	public function prepareForm() : void {
 
-		$this->add((new Hidden('subscriber'))->setValue(true));
-
 		$field = new Select('role[]',$this->options);
-		$value = $this->getData('subscriber.*.pivot.role_id'); //multiples..
+		$value = $this->getData('role[].*.pivot.role_id'); //multiples..
 		$field->setMultiple(true)->setValue($value);
 		$this->add($field);
 
