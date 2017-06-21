@@ -9,6 +9,7 @@ namespace App\Http\Formlets;
 
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Checkbox;
 use RS\Form\Formlet;
 
@@ -18,8 +19,8 @@ class UserRoleFormlet extends Formlet {
 
 	public function prepareForm() : void{
 		$field = new Checkbox('roleSubscription');
-		$label = $this->getData('option.name');
-		$field->setLabel($label);
+		$field->setLabel($this->model->name);
+		$field->setValueType(AbstractField::TYPE_BOOL);
 		$this->add($field);
 	}
 

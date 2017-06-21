@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Activity extends Model {
 
@@ -10,16 +11,10 @@ class Activity extends Model {
 		'name','label','category_id','comment'
 	];
 
-	public function roles() {
-		return $this->belongsToMany(Role::class);
-	}
-
-	/**
-	 * The following is commented because it may be plausible for material roles to be available to teams.
-	 */
-	public function availableRoles() {
-		return $this->belongsToMany(Role::class)->getRelated()->get();
-//		return $this->belongsToMany(Role::class)->getRelated()->unteamed()->get();
+	public function roles() : BelongsToMany {
+		$result = $this->belongsToMany(Role::class);
+//		$result->getQuery()->where("roles.team_based",false); //commented because it may be plausible for material roles to be available to teams.
+		return $result;
 	}
 
 	public function category() {

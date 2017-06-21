@@ -7,6 +7,7 @@
 
 namespace App\Http\Formlets\Helpers;
 
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Input;
 
 class Rating extends Input {
@@ -14,7 +15,7 @@ class Rating extends Input {
 	public function __construct($name) {
 		//Note: Chrome does not handle fractional values with 'number' inputs.
 		parent::__construct('number', $name);
-
+		$this->setValueType(AbstractField::TYPE_INT);
 		//These are set here for cross-site consistency.
 		$this->setAttribute("class","hidden rating");
 		$this->setAttribute("min","0");

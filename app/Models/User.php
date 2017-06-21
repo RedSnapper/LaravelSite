@@ -50,19 +50,9 @@ class User extends Authenticatable {
 		return $result;
 	}
 
-	//public function syncTeamRoles(Team $team, array $roles) {
-	//	$teamId = $team->getKey();
-	//	$sync = [];
-	//	foreach ($roles as $role) {
-	//		$sync[$role] = ['team_id' => $teamId];
-	//	}
-	//	$this->teamRoles()->wherePivot('team_id', $teamId)->sync($sync);
-	//}
-
-	//3 [] 1,2,3 [2]=>['team_id'=>3]
 
 	public function teamRoles() : BelongsToMany {
-		$result = $this->belongsToMany(Team::class, 'role_team_user', 'user_id','team_id')->withPivot('role_id');
+		$result = $this->belongsToMany(Team::class, 'role_team_user','user_id','team_id')->withPivot('role_id');
 		return $result;
 	}
 
@@ -78,14 +68,6 @@ class User extends Authenticatable {
 			"role_team_user.user_id"
 		]);
 	}
-
-	//public function teamUsers(int $team) {
-	//	return $this->teamed->belongsToMany(User::class, 'role_team_user', 'role_id', 'user_id')->wherePivot('team_id','=',$team);
-	//}
-	//
-	//public function userTeams(int $user) {
-	//	return $this->teamed->belongsToMany(Team::class, 'role_team_user', 'role_id', 'team_id')->wherePivot('user_id','=',$user);
-	//}
 
 
 	public function hasRole($role, $team = null) : bool {

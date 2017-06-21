@@ -34,7 +34,7 @@ class ActivityFormlet extends Formlet {
 		$this->add((new Input('text', 'label'))->setLabel('Label'));
 		$this->add((new TextArea('comment'))->setLabel('Comment'));
 		$this->categoryHelper->field($this,'ACTIVITIES');
-		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles(),$this->model->availableRoles());
+		$this->addSubscribers('roles', ActivityRoleFormlet::class, $this->model->roles());
 	}
 
 	public function rules(): array {
@@ -47,11 +47,8 @@ class ActivityFormlet extends Formlet {
 
 	public function edit(): Model {
 		$activity = parent::edit();
-		$activity->roles()->sync($this->getSubscriberFields('roles'));
+		$this->subs($this->getFormlets('roles'));
 		return $activity;
 	}
 
-	public function persist(): Model {
-		return $this->edit();
-	}
 }

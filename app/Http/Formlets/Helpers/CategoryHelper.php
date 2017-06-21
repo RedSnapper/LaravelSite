@@ -5,6 +5,7 @@ namespace App\Http\Formlets\Helpers;
 use App\Http\Controllers\CategoryController;
 use App\Models\Category;
 use Illuminate\Support\Collection;
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
@@ -35,6 +36,7 @@ class CategoryHelper {
 			$field = new Select('category_id', $categoryOptions);
 			$form->add(
 				$field->setLabel("Category")
+					->setValueType(AbstractField::TYPE_INT)
 					->setPlaceholder("Please select a category")
 					->setDefault($model->category_id)
 			);

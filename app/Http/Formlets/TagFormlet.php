@@ -9,6 +9,7 @@ namespace App\Http\Formlets;
 
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Tag;
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Checkbox;
 use RS\Form\Fields\Input;
 use RS\Form\Formlet;
@@ -29,7 +30,7 @@ class TagFormlet extends Formlet {
 		$this->add($field);
 
 		$field = new Checkbox('moderated',1); //set checked here. also use a mutator or allow null.
-		$field->setDefault(0); //because this is an integer field.
+		$field->setValueType(AbstractField::TYPE_INT)->setDefault(0); //because this is an integer field.
 		$field->setLabel('Moderated');
 		$this->add($field);
 

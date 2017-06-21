@@ -3,9 +3,9 @@
 namespace App\Http\Formlets;
 
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Formlets\Helpers\CategoryHelper;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use RS\Form\Fields\Input;
 
@@ -13,38 +13,13 @@ use RS\Form\Formlet;
 
 class TeamFormlet extends Formlet {
 	public $formView = "team.form";
-	/**
-	 * @var CategoryHelper
-	 */
-	private $categoryHelper;
+	private $categoryHelper = null;
 
 	public function __construct(Team $team,CategoryHelper $categoryHelper) {
 		$this->setModel($team);
 		$this->categoryHelper = $categoryHelper;
 	}
 
-	public function prepareForm() : void {
-		$field = new Input('text', 'name');
-		$this->add(
-			$field->setLabel('Name')->setRequired()
-		);
-
-		$this->categoryHelper->field($this,'TEAMS');
-
-		//Set UserTeamRoles
-		$team = $this->getModel()->getKey();
-		$users = User::with([
-			'teamRoles' => function ($query) use ($team) {
-				$query->wherePivot('team_id', $team);
-			}
-		])->get();
-		foreach ($users as $user) {
-			$this->addFormlets("users", TeamUserFormlet::class)
-				->setKey($user->getKey())
-				->setModel($user);
-		}
-
-	}
 
 	public function rules(): array {
 		return [
@@ -53,19 +28,19 @@ class TeamFormlet extends Formlet {
 		];
 	}
 
+	public function prepareForm() : void {
+		$field = new Input('text', 'name');
+		$this->add(
+			$field->setLabel('Name')->setRequired()
+		);
+		$this->categoryHelper->field($this,"TEAMS");
+		$this->addSubscribers('users',TeamRolesFormlet::class,$this->model->userRoles());
+	}
+
 	public function edit(): Model {
 		$team = parent::edit();
-		$users = User::get();
-		//we need all users so that we can delete those which are set to empty.
-		foreach($users as $userModel) {
-			$user = $userModel->id;
-			$roles = $this->fields("users.role.$user");
-			$team->syncUserRoles($user, $roles);
-		}
+		$this->subs($this->getFormlets('users'));
 		return $team;
 	}
 
-	public function persist(): Model {
-		return $this->edit();
-	}
 }

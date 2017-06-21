@@ -9,28 +9,23 @@ namespace App\Http\Formlets;
 
 use App\Http\Controllers\CategoryController;
 use App\Models\Role;
+use RS\Form\Fields\Hidden;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
 class TeamUserFormlet extends Formlet {
 	public $formletView = "team.user";
-
-	private $categoryController;
+	private $options = null;
+	protected $subscriber = "role[]";
 
 	public function __construct(CategoryController $categoryController) {
-		$this->categoryController = $categoryController;
+		$this->options = Role::options($categoryController->getIds("ROLES"));
 	}
-
-	/**
-	 * Prepare the form with fields
-	 *
-	 * @return void
-	 */
 	public function prepareForm() : void {
-		$roles = $this->model->teamRoles->pluck('id')->all();
-		$field = new Select('role[]',Role::options($this->categoryController->getIds("ROLES")));
-		$field->setMultiple(true)->setValue($roles);
+		$field = new Select('user[]',$this->options);
+		$field->setMultiple(true)->setValueType(AbstractField::TYPE_ARRAY);
 		$this->add($field);
-	}
 
+	}
 }
+

@@ -13,6 +13,10 @@ class Role extends Model
 	protected $fillable = [
 		'name','category_id','team_based'
 	];
+	protected $casts = [
+		'team_based' => 'integer'
+	];
+
 
 	public function scopeTeamed(Builder $query) {
 		return $query->where('team_based',true);
@@ -43,7 +47,9 @@ class Role extends Model
 	}
 
 	public function categories() {
-		return $this->belongsToMany(Category::class);
+		$result = $this->belongsToMany(Category::class)->withPivot('modify');
+		$result->getQuery()->ordered();
+		return $result;
 	}
 
 	public function givePermissionTo(Activity $activity){

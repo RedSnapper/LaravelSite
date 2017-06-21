@@ -23,17 +23,7 @@ class RoleFormlet extends Formlet {
 		$this->addSubscribers('activities', RoleActivityFormlet::class, $this->model->activities());
 
 		//Now do Categories.
-		$subscribeOptions = Category::ordered()->get();
-		$subscribedModels = $this->model->categories()->withPivot('modify')->get();
-		foreach ($subscribeOptions as $option) {
-			$subscribed = $this->getModelByKey($option->getKey(), $subscribedModels);
-			$formlet = $this->addFormlets('categories', RoleCategoryFormlet::class); //despite the name, addFormlets adds 1 formlet.
-			$formlet->setKey($option->getKey());
-			if(!is_null($subscribed)) {
-				$formlet->setModel($subscribed->pivot);
-			}
-			$formlet->with('option', $option);
-		}
+		$this->addSubscribers('categories', RoleCategoryFormlet::class, $this->model->categories());
 	}
 
 	public function edit(): Model {
@@ -42,21 +32,27 @@ class RoleFormlet extends Formlet {
 		$role = $this->getFormlet('role')->edit();
 
 		//Do activities
-		$role->activities()->sync($this->getSubscriberFields('activities'));
+		$this->subs($this->getFormlets('activities'));
 
 		//Do categories
-		$categoriesToFilter = new Collection($this->fields('categories'));
-		$categories = $categoriesToFilter->filter(
-			function ($array) {
-				return ((int)$array['modify'] !== UserPolicy::INHERITING);
-			}
-		);
+		$this->subs($this->getFormlets('categories'));
 
-		$role->categories()->sync($categories);
 		return $role;
 	}
 
 	public function persist(): Model {
-		return $this->edit();
+
+		//Do main role.
+		$role = $this->getFormlet('role')->persist();
+		$this->setModel($role);
+
+		//Do activities
+		$this->subs($this->getFormlets('activities'));
+
+		//Do categories
+		$this->subs($this->getFormlets('categories'));
+
+		return $role;
 	}
+
 }

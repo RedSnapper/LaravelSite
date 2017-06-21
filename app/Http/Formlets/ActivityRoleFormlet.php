@@ -7,6 +7,7 @@
 
 namespace App\Http\Formlets;
 
+use RS\Form\Fields\AbstractField;
 use RS\Form\Formlet;
 use RS\Form\Fields\Checkbox;
 
@@ -15,6 +16,6 @@ class ActivityRoleFormlet extends Formlet {
 	public $formletView = "activity.role";
 
 	public function prepareForm() : void {
-		$this->add((new Checkbox('subscriber')));
+		$this->add((new Checkbox('subscriber'))->setValueType(AbstractField::TYPE_INT));
 	}
 }

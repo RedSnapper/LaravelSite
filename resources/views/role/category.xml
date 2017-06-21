@@ -1,6 +1,5 @@
 <!DOCTYPE tr>
 <tr xmlns="http://www.w3.org/1999/xhtml" >
-    <td data-xp="indent"><div data-v.replace="option.name"/></td>
+    <td data-xp="indent"><div data-v.replace="model.name"/></td>
     <td><div data-v.field="modify"/></td>
 </tr>
-

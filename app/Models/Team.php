@@ -19,31 +19,23 @@ class Team extends Model {
 		$this->roleUsers()->attach($users, ['role_id' => $role]);
 	}
 
-	public function syncRoleUsers(int $role, array $users) {
-		$sync = [];
-		foreach ($users as $user) {
-			$sync[$role] = ['user_id' => $user];
-		}
-		$this->userRoles()->wherePivot('user_id', $user)->sync($sync);
-	}
+	//public function syncRoleUsers(int $role, array $users) {
+	//	$sync = [];
+	//	foreach ($users as $user) {
+	//		$sync[$role] = ['user_id' => $user];
+	//	}
+	//	$this->userRoles()->wherePivot('user_id', $user)->sync($sync);
+	//}
 
 	public function attachUserRoles(int $user, array $roles) {
 		$this->userRoles()->attach($roles, ['user_id' => $user]);
 	}
 
-	public function syncUserRoles(int $user, array $roles) {
-		$sync = [];
-		foreach ($roles as $role) {
-			$sync[$role] = ['user_id' => $user];
-		}
-		$this->userRoles()->wherePivot('user_id', $user)->sync($sync);
-	}
-
-	public function roleUsers() {
+	public function userRoles() {
 		return $this->belongsToMany(User::class, 'role_team_user', 'team_id', 'user_id')->withPivot('role_id');
 	}
 
-	public function userRoles() {
+	public function roleUsers() {
 		return $this->belongsToMany(Role::class, 'role_team_user', 'team_id', 'role_id')->withPivot('user_id');
 	}
 

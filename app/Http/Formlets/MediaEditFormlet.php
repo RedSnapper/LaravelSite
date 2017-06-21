@@ -10,6 +10,7 @@ use App\Models\Media;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Input;
 use RS\Form\Fields\Select;
 use RS\Form\Fields\TextArea;
@@ -58,12 +59,13 @@ class MediaEditFormlet extends Formlet {
 
 		//get my tags.
 		$tags = $this->model->tags()->pluck('id')->all();
-		//get all tags..
+		//get all tags.. These are NOT subscribers..
 		$base = Category::reference("Media","TAGS")->first();
 		$groups = Tag::optGroup($base);
 		foreach ($groups as $name => $group) {
 			$field = new Select('tag[]',$group);
-			$this->add($field->setMultiple(true)->setLabel($name)->setValue($tags));
+			$field->setMultiple(true)->setValueType(AbstractField::TYPE_ARRAY)->setLabel($name)->setValue($tags);
+			$this->add($field);
 		}
 	}
 

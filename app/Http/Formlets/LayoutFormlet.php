@@ -52,8 +52,7 @@ class LayoutFormlet  extends Formlet {
 
 	public function edit(): Model {
 		$layout = parent::edit();
-		$subData = $this->subs($this->getFormlets('segments'));
-		$layout->segments()->sync($subData);
+		$this->subs($this->getFormlets('segments'));
 		return $layout;
 	}
 

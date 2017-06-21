@@ -3,11 +3,13 @@
 namespace App\Http\Formlets;
 
 use App\Policies\Helpers\UserPolicy;
+use RS\Form\Fields\AbstractField;
 use RS\Form\Fields\Select;
 use RS\Form\Formlet;
 
 class RoleCategoryFormlet extends Formlet {
 	public $formletView = "role.category";
+	protected $subscriber = "modify";
 
 	/**
 	 * Prepare the form with fields
@@ -15,12 +17,14 @@ class RoleCategoryFormlet extends Formlet {
 	 * @return void
 	 */
 	public function prepareForm() : void {
-		$select = new Select('modify', [
+		$field = new Select('modify', [
 			UserPolicy::CAN_ACCESS => 'Access',
 			UserPolicy::CAN_MODIFY => 'Modify',
 			UserPolicy::INHERITING => 'Inherit',
 			UserPolicy::NIL_ACCESS => 'None'
 		]);
-		$this->add($select->setDefault(UserPolicy::INHERITING));
+		$field->setValueType(AbstractField::TYPE_INT)->setUnChecked(UserPolicy::INHERITING);
+		$field->setMultiple(false)->setDefault(UserPolicy::INHERITING);
+		$this->add($field);
 	}
 }
