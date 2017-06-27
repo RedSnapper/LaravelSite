@@ -56,6 +56,8 @@ class TeamCategoryController extends ApiController {
 	}
 
 	public function moveInto(Team $team, Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify', [$team, $category]);
 		$node = $request->get('node');
 		if ($this->treeController->moveInto($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
@@ -64,6 +66,8 @@ class TeamCategoryController extends ApiController {
 	}
 
 	public function moveBefore(Team $team, Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify', [$team, $category]);
 		$node = $request->get('node');
 		if ($this->treeController->moveBefore($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
@@ -72,6 +76,8 @@ class TeamCategoryController extends ApiController {
 	}
 
 	public function moveAfter(Team $team, Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify', [$team, $category]);
 		$node = $request->get('node');
 		if ($this->treeController->moveAfter($category, $node, $this->allowsModify($team))) {
 			return $this->respondWithNoContent();
@@ -80,7 +86,7 @@ class TeamCategoryController extends ApiController {
 	}
 
 	public function destroy(Team $team, Category $category) {
-
+		$this->authorize('CAT_MODIFY');
 		$this->authorize('modify', [$team, $category]);
 
 		$category->delete();

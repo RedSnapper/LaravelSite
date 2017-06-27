@@ -40,7 +40,6 @@ class RoleRecordFormlet extends Formlet {
 		$field = new Checkbox('team_based',1,0);  //set checked here. also use a mutator or allow null
 		$this->add($field->setDefault(false)->setLabel('Team-based'));
 
-//		$field = (new Radio('team_based',[0=>"Global Purpose",1=>"For Teams"]))->setLabel("Type");
 		$this->add($field);
 	}
 

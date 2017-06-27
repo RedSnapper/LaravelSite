@@ -1,6 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml" data-v.controller="form.main">
-    <a data-v.route="user.edit" data-v.param="option.id">
+    <a data-v.route="user.edit" data-v.param="option">
         <div data-v.replace="model.name"/>
     </a>
     <div data-v.field="role[]"/>

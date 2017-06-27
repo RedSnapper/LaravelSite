@@ -28,7 +28,7 @@ class MediaController extends Controller {
 	public function index(Team $team, Category $category) {
 
 		if (!$category->exists) {
-			$this->authorize('MEDIA_ACCESS');
+			$this->authorize('MEDIA_ACCESS',$team);
 			return view("media.index", compact('team'));
 		}
 

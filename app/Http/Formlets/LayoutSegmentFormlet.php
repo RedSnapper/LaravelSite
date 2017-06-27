@@ -2,6 +2,7 @@
 
 namespace App\Http\Formlets;
 
+use RS\Form\Fields\AbstractField;
 use RS\Form\Formlet;
 use RS\Form\Fields\Checkbox;
 use RS\Form\Fields\Input;
@@ -12,23 +13,11 @@ class LayoutSegmentFormlet extends Formlet {
 	public $formletView = "layout.segment";
 	protected $subscriber = "subscriber";
 
-
 	public function prepareForm() : void {
-		$this->add((new Checkbox('subscriber')));
-
-		$field = new Input('text','local_name');
-		$field->setValue($this->getData('subscriber.pivot.local_name'));
-		$this->add($field);
-
-		$field = new Input('text','tab');
-		$field->setValue($this->getData('subscriber.pivot.tab'));
-		$this->add($field);
-
-		$field = new Input('text', 'syntax');
-		$field->setValue($this->getData('subscriber.pivot.syntax'));
-		$field->setDefault($this->getData('option.syntax'));
-		$this->add($field);
-
+		$this->add((new Checkbox('subscriber',true,false))->setValueType(AbstractField::TYPE_BOOL));
+		$this->add((new Input('text','local_name')));
+		$this->add((new Input('text','tab')));
+		$this->add((new Input('text','syntax'))->setDefault($this->getData('option.syntax')));
 	}
 
 	public function addCustomValidation(Validator $validator): void {

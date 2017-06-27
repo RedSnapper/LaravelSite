@@ -57,7 +57,7 @@ class CategoryController extends ApiController {
 	}
 
 	public function update(Category $category, Request $request) {
-
+		$this->authorize('CAT_MODIFY');
 		$this->authorize('modify',$category);
 
 		$category->fill($request->all());
@@ -67,6 +67,8 @@ class CategoryController extends ApiController {
 	}
 
 	public function moveInto(Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify',$category);
 		if ($this->treeController->moveInto($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
@@ -74,6 +76,8 @@ class CategoryController extends ApiController {
 	}
 
 	public function moveBefore(Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify',$category);
 		if ($this->treeController->moveBefore($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
@@ -81,6 +85,8 @@ class CategoryController extends ApiController {
 	}
 
 	public function moveAfter(Category $category, Request $request) {
+		$this->authorize('CAT_MODIFY');
+		$this->authorize('modify',$category);
 		if ($this->treeController->moveAfter($category, $request->get('node'), $this->allowsModify())) {
 			return $this->respondWithNoContent();
 		}
@@ -88,6 +94,7 @@ class CategoryController extends ApiController {
 	}
 
 	public function destroy(Category $category) {
+		$this->authorize('CAT_MODIFY');
 		$this->authorize('modify',$category);
 		$category->delete();
 		return $this->respondWithItem($category);

@@ -45,9 +45,7 @@ class SegmentFormlet extends Formlet {
 
 	public function edit(): Model {
 		$segment = parent::edit();
-		//Done here because we can do all subscribes in a single query.
-		$subData = $this->subs($this->getFormlets('layouts'));
-		$segment->layouts()->sync($subData);
+		$this->subs($this->getFormlets('layouts'));
 		return $segment;
 	}
 

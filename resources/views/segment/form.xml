@@ -6,7 +6,7 @@
         <div>
             <div id="tree" data-v.xp="tree" data-v.attr.data-link="/segment"
                  data-url="/api/category?section=SEGMENTS"/>
-            <div data-v.include="layouts.treemenu"/>
+            <div data-v.can="CAT_MODIFY" data-v.include="layouts.treemenu"/>
         </div>
     </div>
     <div class="col-md-8" data-v.container="form.form">

@@ -1,5 +1,5 @@
 <!DOCTYPE tr>
 <tr xmlns="http://www.w3.org/1999/xhtml" data-v.controller="form.main">
-    <td><a data-v.route="activity.edit" data-v.param="model"><div data-v.replace="model.name"/></a></td>
+    <td><a data-v.route="{model}.edit" data-v.param="model"><div data-v.replace="model.label"/></a></td>
     <td><div data-v.field="subscriber"/></td>
 </tr>

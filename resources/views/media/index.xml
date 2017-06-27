@@ -9,7 +9,7 @@
                  data-v.attr.data-url="/api/team/{team.id}/category?section=MEDIA"
                  data-v.attr.data-team="{team.id}"
             />
-            <div data-v.include="layouts.treemenu"/>
+            <div data-v.can="CAT_MODIFY" data-v.include="layouts.treemenu"/>
         </div>
 
         <div data-v.exists="team.id" class="col-md-9">

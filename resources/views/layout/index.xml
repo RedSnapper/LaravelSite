@@ -4,7 +4,7 @@
     <div class="col-md-3">
         <h3>Layouts</h3>
         <div id="tree" data-v.xp="tree" data-v.attr.data-link="/layout" data-url="/api/category?section=LAYOUTS"/>
-        <div data-v.include="layouts.treemenu"/>
+        <div data-v.can="CAT_MODIFY" data-v.include="layouts.treemenu"/>
     </div>
 
     <div class="col-md-6">

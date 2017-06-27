@@ -1,0 +1,12 @@
+<!DOCTYPE div>
+<div data-v.controller="form.fields.checkbox" class="form-group" xmlns="http://www.w3.org/1999/xhtml">
+    <div class="checkbox">
+        <label>
+            <input type="checkbox"/>
+            <a data-v.route="{model}.edit" data-v.param="model">
+                <span data-v.replace="model.name"/>
+            </a>
+        </label>
+    </div>
+    <div data-v.errors="form.fields.errors"/>
+</div>

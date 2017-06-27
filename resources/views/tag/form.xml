@@ -4,7 +4,7 @@
         <h3>Tags</h3>
         <div>
             <div id="tree" data-v.xp="tree" data-v.attr.data-link="/tag" data-url="/api/category?section=TAGS"/>
-            <div data-v.include="layouts.treemenu"/>
+            <div data-v.can="CAT_MODIFY" data-v.include="layouts.treemenu"/>
         </div>
     </div>
     <div class="row" data-v.container="form.form">

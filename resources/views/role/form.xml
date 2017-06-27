@@ -5,7 +5,7 @@
             <h3>Roles</h3>
             <div >
                 <div id="tree" data-v.xp="tree" data-v.attr.data-link="/role" data-url="/api/category?section=ROLES"/>
-                <div data-v.include="layouts.treemenu"/>
+                <div data-v.can="CAT_MODIFY" data-v.include="layouts.treemenu"/>
             </div>
         </div>
 

@@ -4,7 +4,6 @@ namespace App\Http\Formlets;
 
 use RS\Form\Formlet;
 use RS\Form\Fields\Input;
-use App\Models\UserProfile;
 
 class UserProfileForm extends Formlet {
 	public $formView = "user.form";

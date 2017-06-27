@@ -14,12 +14,11 @@ use RS\Form\Fields\Checkbox;
 use RS\Form\Formlet;
 
 class UserRoleFormlet extends Formlet {
-
 	protected $subscriber = "roleSubscription";
 
 	public function prepareForm() : void{
 		$field = new Checkbox('roleSubscription');
-		$field->setLabel($this->model->name);
+		$field->setView("layouts.a_checkbox");
 		$field->setValueType(AbstractField::TYPE_BOOL);
 		$this->add($field);
 	}
